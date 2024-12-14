@@ -1,3 +1,9 @@
+import { PersistentPermissionDialog } from "@/components/PersistentPermissionDialog";
+
 export default function Index() {
-  return <div></div>;
+  return (
+    <div>
+      <PersistentPermissionDialog />
+    </div>
+  );
 }
