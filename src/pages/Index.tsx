@@ -1,9 +1,14 @@
 import { PersistentPermissionDialog } from "@/components/PersistentPermissionDialog";
+import { WelcomeMenu } from "@/components/WelcomeMenu";
 
 export default function Index() {
   return (
-    <div>
+    <main className="size-full">
+      <div className="flex size-full items-center justify-center">
+        <WelcomeMenu />
+      </div>
+
       <PersistentPermissionDialog />
-    </div>
+    </main>
   );
 }
