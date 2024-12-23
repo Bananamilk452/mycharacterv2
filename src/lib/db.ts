@@ -1,14 +1,17 @@
 import { Dexie, type EntityTable } from "dexie";
 import { z } from "zod";
+import { v4 as uuidv4 } from "uuid";
 
 interface Character {
   id: number;
   name: string;
-  property: string[];
+  propertyKeys: string[];
+  propertyValues: string[];
   image: Blob;
 }
 
 interface CollectionInfo {
+  uuid: string;
   id: number;
   name: string;
   createdAt: Date;
@@ -16,6 +19,7 @@ interface CollectionInfo {
 }
 
 const collectionInfoSchema = z.object({
+  uuid: z.string(),
   id: z.number(),
   name: z.string(),
   createdAt: z.date(),
@@ -27,34 +31,32 @@ export function isCollectionInfo(obj: unknown): obj is CollectionInfo {
 }
 
 // new Dexie는 생성/연결을 둘 다 하므로 아래 함수는 내부 함수로만만 사용
-async function initCollection(name: string) {
-  const db = new Dexie(name) as Dexie & {
+async function initCollection(uuid: string) {
+  const db = new Dexie(uuid) as Dexie & {
     character: EntityTable<Character, "id">;
     collectionInfo: EntityTable<CollectionInfo, "id">;
   };
 
   db.version(1).stores({
-    // property 구분자로 ||| 사용
-    character: "++id, name, *property",
+    character: "++id, name, *propertyKeys, *propertyValues",
     collectionInfo: "++id, name",
   });
 
   return db;
 }
 
-async function isCollectionExists(collectionName: string): Promise<boolean> {
+async function isCollectionExists(uuid: string): Promise<boolean> {
   const collectionList = await Dexie.getDatabaseNames();
 
-  return collectionList.includes(collectionName);
+  return collectionList.includes(uuid);
 }
 
 async function createCollection(collectionName: string) {
-  if (await isCollectionExists(collectionName)) {
-    throw new Error("Collection already exists");
-  }
+  const uuid = uuidv4();
 
-  const db = await initCollection(collectionName);
+  const db = await initCollection(uuid);
   await db.collectionInfo.add({
+    uuid,
     name: collectionName,
     createdAt: new Date(),
     updatedAt: new Date(),
@@ -63,12 +65,12 @@ async function createCollection(collectionName: string) {
   return db;
 }
 
-async function connectCollection(collectionName: string) {
-  if (!(await isCollectionExists(collectionName))) {
+async function connectCollection(uuid: string) {
+  if (!(await isCollectionExists(uuid))) {
     throw new Error("Collection not exists");
   }
 
-  return await initCollection(collectionName);
+  return await initCollection(uuid);
 }
 
 export type { Character, CollectionInfo };
