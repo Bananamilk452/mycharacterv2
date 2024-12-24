@@ -4,10 +4,13 @@ import { v4 as uuidv4 } from "uuid";
 
 interface Character {
   id: number;
+  avatar?: Blob;
   name: string;
   propertyKeys: string[];
   propertyValues: string[];
-  image: Blob;
+  note: string;
+  createdAt: Date;
+  updatedAt: Date;
 }
 
 interface CollectionInfo {
@@ -17,6 +20,11 @@ interface CollectionInfo {
   createdAt: Date;
   updatedAt: Date;
 }
+
+type Collection = Dexie & {
+  character: EntityTable<Character, "id">;
+  collectionInfo: EntityTable<CollectionInfo, "id">;
+};
 
 const collectionInfoSchema = z.object({
   uuid: z.string(),
@@ -32,23 +40,21 @@ export function isCollectionInfo(obj: unknown): obj is CollectionInfo {
 
 // new Dexie는 생성/연결을 둘 다 하므로 아래 함수는 내부 함수로만만 사용
 async function initCollection(uuid: string) {
-  const db = new Dexie(uuid) as Dexie & {
-    character: EntityTable<Character, "id">;
-    collectionInfo: EntityTable<CollectionInfo, "id">;
-  };
+  const db = new Dexie(uuid) as Collection;
 
   db.version(1).stores({
-    character: "++id, name, *propertyKeys, *propertyValues",
-    collectionInfo: "++id, name",
+    character:
+      "++id, name, *propertyKeys, *propertyValues, note, createdAt, updatedAt",
+    collectionInfo: "++id, name, uuid, createdAt, updatedAt",
   });
 
   return db;
 }
 
 async function isCollectionExists(uuid: string): Promise<boolean> {
-  const collectionList = await Dexie.getDatabaseNames();
+  const result = await Dexie.exists(uuid);
 
-  return collectionList.includes(uuid);
+  return result;
 }
 
 async function createCollection(collectionName: string) {
@@ -73,5 +79,5 @@ async function connectCollection(uuid: string) {
   return await initCollection(uuid);
 }
 
-export type { Character, CollectionInfo };
+export type { Character, CollectionInfo, Collection };
 export { isCollectionExists, createCollection, connectCollection };
