@@ -3,12 +3,12 @@ import Dexie from "dexie";
 import { useEffect, useState } from "react";
 
 async function getRecentCollections() {
-  const collectionNames = await Dexie.getDatabaseNames();
+  const collectionUuids = await Dexie.getDatabaseNames();
 
   // 모든 콜렉션의 메타데이터 가져오기
   const collectionDatas = await Promise.all(
-    collectionNames.map(async (name) => {
-      const db = await connectCollection(name);
+    collectionUuids.map(async (uuid) => {
+      const db = await connectCollection(uuid);
       const info = await db.collectionInfo.get(1);
 
       return info;

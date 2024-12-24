@@ -23,12 +23,21 @@ export function WelcomeMenu() {
 
       <h3 className="mt-24 font-medium">최근 파일</h3>
       <ul className="mt-2 space-y-3">
+        {recentCollections.length === 0 && (
+          <li>
+            <span className="text-sm text-gray-500">최근 파일이 없습니다.</span>
+          </li>
+        )}
+
         {recentCollections.map((collection) => (
           <li key={collection.createdAt.getTime()}>
-            <button className="flex items-center gap-2 text-purple-600 hover:underline">
+            <a
+              href={`/editor/${collection.uuid}`}
+              className="flex items-center gap-2 text-purple-600 hover:underline"
+            >
               <Folder className="size-5" />
               <span className="text-sm">{collection.name}</span>
-            </button>
+            </a>
           </li>
         ))}
       </ul>
