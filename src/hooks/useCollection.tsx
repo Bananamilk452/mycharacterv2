@@ -3,10 +3,14 @@ import { useLiveQuery } from "dexie-react-hooks";
 import { useEffect, useState } from "react";
 
 export function useCollection(uuid: string) {
-  const [collection, setCollection] = useState<Collection | null>(null);
+  const [collection, setCollection] = useState<Collection | undefined>(
+    undefined,
+  );
+  const [ready, setReady] = useState(false);
+
   const collectionInfo = useLiveQuery(async () => {
     if (!collection) {
-      return null;
+      return undefined;
     }
 
     const collectionInfo = await collection.collectionInfo.get(1);
@@ -16,7 +20,7 @@ export function useCollection(uuid: string) {
 
   const characters = useLiveQuery(async () => {
     if (!collection) {
-      return null;
+      return undefined;
     }
 
     const characters = await collection.character.toArray();
@@ -30,7 +34,14 @@ export function useCollection(uuid: string) {
     });
   }, []);
 
+  useEffect(() => {
+    if (collection && collectionInfo && characters) {
+      setReady(true);
+    }
+  }, [collection, collectionInfo, characters]);
+
   return {
+    ready,
     collection,
     collectionInfo,
     characters,
