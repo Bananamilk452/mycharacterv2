@@ -24,8 +24,8 @@ import {
 import { Input } from "@/components/ui/Input";
 import { Button } from "@/components/ui/Button";
 import { Message } from "@/components/ui/Message";
-import { Label } from "@/components/ui/label";
-import { Textarea } from "@/components/ui/textarea";
+import { Label } from "@/components/ui/Label";
+import { Textarea } from "@/components/ui/Textarea";
 import errorMessages from "@/utils/errorMessages";
 import { Collection } from "@/lib/db";
 
