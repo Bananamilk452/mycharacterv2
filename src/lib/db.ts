@@ -14,9 +14,10 @@ interface Character {
 }
 
 interface CollectionInfo {
-  uuid: string;
   id: number;
+  uuid: string;
   name: string;
+  icon?: Blob;
   createdAt: Date;
   updatedAt: Date;
 }
@@ -27,9 +28,10 @@ type Collection = Dexie & {
 };
 
 const collectionInfoSchema = z.object({
-  uuid: z.string(),
   id: z.number(),
+  uuid: z.string(),
   name: z.string(),
+  icon: z.instanceof(Blob).optional(),
   createdAt: z.date(),
   updatedAt: z.date(),
 });
