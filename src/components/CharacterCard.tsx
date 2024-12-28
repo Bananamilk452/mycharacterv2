@@ -20,7 +20,7 @@ export function CharacterCard({ character }: Props) {
   }, []);
 
   return (
-    <button className="flex flex-col items-start gap-2 rounded-md border bg-gray-50 p-4 shadow-md">
+    <button className="flex flex-col items-start gap-2 rounded-md border bg-gray-50 p-4 shadow">
       <img
         className="flex size-32 items-center justify-center rounded-md bg-white object-contain text-sm"
         src={avatarUrl}
