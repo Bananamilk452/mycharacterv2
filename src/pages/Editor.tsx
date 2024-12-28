@@ -1,7 +1,7 @@
+import { AppSidebar } from "@/components/AppSidebar";
 import { CharacterCard } from "@/components/CharacterCard";
-import { CharacterDialog } from "@/components/CharacterDialog";
-import { Button } from "@/components/ui/Button";
 import { Dimmer } from "@/components/ui/Dimmer";
+import { SidebarProvider } from "@/components/ui/Sidebar";
 import { Spinner } from "@/components/ui/Spinner";
 import { useCollection } from "@/hooks/useCollection";
 import { useParams } from "crossroad";
@@ -17,21 +17,20 @@ function Editor() {
     <main>
       {ready ? (
         <>
-          <h1>Editor {collectionUuid}</h1>
-          <div>
-            Collection: <pre>{JSON.stringify(collectionInfo, null, 2)}</pre>
-          </div>
-          <div>My characters: {characters?.length}</div>
-
-          <section id="characters" className="flex flex-wrap gap-4">
-            {characters?.map((character) => (
-              <CharacterCard key={character.id} character={character} />
-            ))}
-          </section>
-
-          <CharacterDialog collection={collection!}>
-            <Button>캐릭터 생성</Button>
-          </CharacterDialog>
+          <SidebarProvider>
+            <AppSidebar
+              collection={collection!}
+              collectionInfo={collectionInfo!}
+              characters={characters!}
+            />
+            <section id="characters" className="p-4">
+              <ul className="flex flex-wrap gap-4">
+                {characters?.map((character) => (
+                  <CharacterCard key={character.id} character={character} />
+                ))}
+              </ul>
+            </section>
+          </SidebarProvider>
         </>
       ) : (
         <Dimmer>
