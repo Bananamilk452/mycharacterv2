@@ -8,6 +8,7 @@ interface Character {
   name: string;
   propertyKeys: string[];
   propertyValues: string[];
+  tags: string[];
   note: string;
   createdAt: Date;
   updatedAt: Date;
@@ -46,7 +47,7 @@ async function initCollection(uuid: string) {
 
   db.version(1).stores({
     character:
-      "++id, name, *propertyKeys, *propertyValues, note, createdAt, updatedAt",
+      "++id, name, *propertyKeys, *propertyValues, *tags, note, createdAt, updatedAt",
     collectionInfo: "++id, name, uuid, createdAt, updatedAt",
   });
 
