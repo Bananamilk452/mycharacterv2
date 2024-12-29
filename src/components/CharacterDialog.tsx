@@ -42,6 +42,7 @@ const formSchema = z.object({
       .string({ required_error: errorMessages.MIN_1_CHAR })
       .min(1, errorMessages.MIN_1_CHAR),
   ),
+  tags: z.array(z.string()),
   note: z.string(),
 });
 
@@ -64,6 +65,8 @@ export function CharacterDialog({ children, collection }: Props) {
       name: "",
       propertyKeys: [],
       propertyValues: [],
+      tags: [],
+      note: "",
     },
   });
 
@@ -99,8 +102,11 @@ export function CharacterDialog({ children, collection }: Props) {
 
         <Form {...form}>
           <form onSubmit={form.handleSubmit(onSubmit)}>
-            <main id="top" className="grid grid-cols-[3fr_7fr] gap-6">
-              <section id="left" className="flex flex-col">
+            <main
+              id="top"
+              className="grid grid-cols-[minmax(0,3fr)_minmax(0,7fr)] gap-6"
+            >
+              <section id="left" className="flex shrink-0 flex-col">
                 {/* 아바타 이미지 */}
                 <AvatarBox form={form} />
               </section>
@@ -125,7 +131,8 @@ export function CharacterDialog({ children, collection }: Props) {
                   )}
                 />
 
-                <hr />
+                {/* 태그 */}
+                <TagBox form={form} />
 
                 {/* 캐릭터 속성 */}
                 <PropertyBox form={form} />
@@ -222,6 +229,59 @@ function AvatarBox({ form }: FormProps) {
   );
 }
 
+function TagBox({ form }: FormProps) {
+  const [tags, setTags] = useState<string[]>([]);
+
+  function handleKeyUp(event: React.KeyboardEvent<HTMLInputElement>) {
+    // 엔터나 스페이스
+    if (event.key === "Enter" || event.key === " ") {
+      event.preventDefault();
+      const value = event.currentTarget.value.trim();
+
+      if (value) {
+        if (tags.includes(value)) {
+          return;
+        }
+
+        setTags((prevTags) => [...prevTags, value]);
+        form.setValue("tags", [...tags, value]);
+        event.currentTarget.value = "";
+      }
+    }
+  }
+
+  function handleRemove(index: number) {
+    setTags((prevTags) => prevTags.filter((_, i) => i !== index));
+    form.setValue(
+      "tags",
+      tags.filter((_, i) => i !== index),
+    );
+  }
+
+  return (
+    <div className="flex flex-col gap-4">
+      <Label>태그</Label>
+      <div className="flex max-h-[106px] min-h-9 flex-wrap items-center gap-2 overflow-y-auto rounded-md border px-3 py-2 shadow-sm ring-black has-[:focus-visible]:ring-1">
+        {tags.map((tag, i) => (
+          <span
+            key={i}
+            className="flex min-w-0 items-center gap-1 break-all rounded-full bg-primary/10 px-2 py-0.5 text-sm"
+          >
+            {tag}
+            <button type="button" onClick={() => handleRemove(i)}>
+              <X className="size-3 text-gray-700" />
+            </button>
+          </span>
+        ))}
+        <input
+          className="min-w-0 flex-grow basis-32 text-sm outline-none"
+          onKeyUp={handleKeyUp}
+        />
+      </div>
+    </div>
+  );
+}
+
 function PropertyBox({ form }: FormProps) {
   const propertyContainerRef = useRef<HTMLDivElement>(null);
   const [propertyCount, setPropertyCount] = useState(0);
@@ -253,8 +313,8 @@ function PropertyBox({ form }: FormProps) {
   return (
     <div className="flex flex-col">
       <div className="flex items-center justify-between">
-        <Label className="mt-1 shrink-0">속성</Label>
-        <Button type="button" onClick={handleAddProperty}>
+        <Label className="shrink-0">속성</Label>
+        <Button type="button" size="sm" onClick={handleAddProperty}>
           <Plus />
           속성 추가
         </Button>
