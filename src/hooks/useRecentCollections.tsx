@@ -1,14 +1,18 @@
+import { DB_PREFIX } from "@/constant";
 import { CollectionInfo, connectCollection, isCollectionInfo } from "@/lib/db";
 import Dexie from "dexie";
 import { useEffect, useState } from "react";
 
 async function getRecentCollections() {
-  const collectionUuids = await Dexie.getDatabaseNames();
+  const databaseNames = await Dexie.getDatabaseNames();
+  const collectionNames = databaseNames.filter((name) =>
+    name.startsWith(DB_PREFIX),
+  );
 
   // 모든 콜렉션의 메타데이터 가져오기
   const collectionDatas = await Promise.all(
-    collectionUuids.map(async (uuid) => {
-      const db = await connectCollection(uuid);
+    collectionNames.map(async (name) => {
+      const db = await connectCollection(name);
       const info = await db.collectionInfo.get(1);
 
       return info;
@@ -35,12 +39,16 @@ export function useRecentCollections() {
   );
 
   useEffect(() => {
-    getRecentCollections().then((recentCollections) => {
-      if (recentCollections) {
-        setRecentCollections(recentCollections);
-      }
-    });
-  });
+    getRecentCollections()
+      .then((recentCollections) => {
+        if (recentCollections) {
+          setRecentCollections(recentCollections);
+        }
+      })
+      .catch((err) => {
+        console.error("Failed to fetch recent collections:", err);
+      });
+  }, []);
 
   return { recentCollections };
 }

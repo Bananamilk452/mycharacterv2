@@ -1,3 +1,4 @@
+import { DB_PREFIX } from "@/constant";
 import { Collection, connectCollection } from "@/lib/db";
 import { useLiveQuery } from "dexie-react-hooks";
 import { useEffect, useState } from "react";
@@ -6,7 +7,7 @@ export function useCollection(uuid: string) {
   const [collection, setCollection] = useState<Collection | undefined>(
     undefined,
   );
-  const [ready, setReady] = useState(false);
+  const [error, setError] = useState<Error | undefined>(undefined);
 
   const collectionInfo = useLiveQuery(async () => {
     if (!collection) {
@@ -29,16 +30,20 @@ export function useCollection(uuid: string) {
   }, [collection]);
 
   useEffect(() => {
-    connectCollection(uuid).then((db) => {
-      setCollection(db);
-    });
-  }, []);
+    connectCollection(`${DB_PREFIX}${uuid}`)
+      .then((db) => {
+        setCollection(db);
+      })
+      .catch((err) => {
+        setError(err);
+      });
+  }, [uuid]);
 
-  useEffect(() => {
-    if (collection && collectionInfo && characters) {
-      setReady(true);
-    }
-  }, [collection, collectionInfo, characters]);
+  if (error) {
+    throw error;
+  }
+
+  const ready = Boolean(collection && collectionInfo && characters);
 
   return {
     ready,

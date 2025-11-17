@@ -1,3 +1,4 @@
+import { DB_PREFIX } from "@/constant";
 import { Dexie } from "dexie";
 import { z } from "zod";
 
@@ -48,15 +49,15 @@ async function initCollection(uuid: string) {
 
   db.version(1).stores({
     character:
-      "++id, name, *propertyKeys, *propertyValues, *tags, note, createdAt, updatedAt",
+      "++id, name, *propertyKeys, *propertyValues, *tags, createdAt, updatedAt",
     collectionInfo: "++id, name, uuid, createdAt, updatedAt",
   });
 
   return db;
 }
 
-async function isCollectionExists(uuid: string): Promise<boolean> {
-  const result = await Dexie.exists(uuid);
+async function isCollectionExists(name: string): Promise<boolean> {
+  const result = await Dexie.exists(name);
 
   return result;
 }
@@ -64,7 +65,7 @@ async function isCollectionExists(uuid: string): Promise<boolean> {
 async function createCollection(collectionName: string) {
   const uuid = crypto.randomUUID();
 
-  const db = await initCollection(uuid);
+  const db = await initCollection(`${DB_PREFIX}${uuid}`);
   await db.collectionInfo.add({
     uuid,
     name: collectionName,
@@ -75,12 +76,12 @@ async function createCollection(collectionName: string) {
   return db;
 }
 
-async function connectCollection(uuid: string) {
-  if (!(await isCollectionExists(uuid))) {
-    throw new Error("Collection not exists");
+async function connectCollection(name: string) {
+  if (!(await isCollectionExists(name))) {
+    throw new Error("콜렉션이 존재하지 않습니다.");
   }
 
-  return await initCollection(uuid);
+  return await initCollection(name);
 }
 
 export type { Character, CollectionInfo, Collection };
