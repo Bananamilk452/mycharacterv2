@@ -1,5 +1,5 @@
-import { PersistentPermissionDialog } from "@/components/PersistentPermissionDialog";
-import { WelcomeMenu } from "@/components/WelcomeMenu";
+import { PersistentPermissionDialog } from "@/components/home/PersistentPermissionDialog";
+import { WelcomeMenu } from "@/components/home/WelcomeMenu";
 
 export default function Index() {
   return (

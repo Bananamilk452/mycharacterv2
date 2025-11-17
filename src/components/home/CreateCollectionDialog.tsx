@@ -1,8 +1,4 @@
-import React, { useState } from "react";
-import { z } from "zod";
-import { useForm } from "react-hook-form";
-import { zodResolver } from "@hookform/resolvers/zod";
-
+import { Button } from "@/components/ui/button";
 import {
   Dialog,
   DialogContent,
@@ -21,10 +17,14 @@ import {
   FormMessage,
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
-import { Button } from "@/components/ui/button";
-import errorMessages from "@/utils/errorMessages";
 import { createCollection } from "@/lib/db";
-import { Message } from "./ui/message";
+import errorMessages from "@/utils/errorMessages";
+import { zodResolver } from "@hookform/resolvers/zod";
+import React, { useState } from "react";
+import { useForm } from "react-hook-form";
+import { z } from "zod";
+
+import { Message } from "../ui/message";
 
 const formSchema = z.object({
   collectionName: z.string().min(1, errorMessages.MIN_1_CHAR),

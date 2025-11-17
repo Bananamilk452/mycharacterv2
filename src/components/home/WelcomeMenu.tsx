@@ -1,6 +1,6 @@
-import { Folder, Plus } from "lucide-react";
-import { CreateCollectionDialog } from "@/components/CreateCollectionDialog";
+import { CreateCollectionDialog } from "@/components/home/CreateCollectionDialog";
 import { useRecentCollections } from "@/hooks/useRecentCollections";
+import { Folder, Plus } from "lucide-react";
 
 export function WelcomeMenu() {
   const { recentCollections } = useRecentCollections();
