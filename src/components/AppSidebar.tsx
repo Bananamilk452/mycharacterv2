@@ -8,7 +8,7 @@ import {
   SidebarMenu,
   SidebarMenuButton,
   SidebarMenuItem,
-} from "@/components/ui/Sidebar";
+} from "@/components/ui/sidebar";
 import { Character, Collection, CollectionInfo } from "@/lib/db";
 import { Earth, UserPlus } from "lucide-react";
 import { useEffect, useState } from "react";

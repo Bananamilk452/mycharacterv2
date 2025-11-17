@@ -1,8 +1,8 @@
 import { AppSidebar } from "@/components/AppSidebar";
 import { CharacterCard } from "@/components/CharacterCard";
-import { Dimmer } from "@/components/ui/Dimmer";
-import { SidebarProvider } from "@/components/ui/Sidebar";
-import { Spinner } from "@/components/ui/Spinner";
+import { Dimmer } from "@/components/ui/dimmer";
+import { SidebarProvider } from "@/components/ui/sidebar";
+import { Spinner } from "@/components/Spinner";
 import { useCollection } from "@/hooks/useCollection";
 import { useParams } from "crossroad";
 

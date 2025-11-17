@@ -5,12 +5,12 @@ import {
   DialogFooter,
   DialogHeader,
   DialogTitle,
-} from "@/components/ui/Dialog";
-import { Button } from "@/components/ui/Button";
+} from "@/components/ui/dialog";
+import { Button } from "@/components/ui/button";
 import { usePersistentStorage } from "@/hooks/usePersistentStorage";
 import { useEffect, useState } from "react";
-import { Note } from "@/components/ui/Note";
-import { Message } from "@/components/ui/Message";
+import { Note } from "@/components/ui/note";
+import { Message } from "@/components/ui/message";
 
 export function PersistentPermissionDialog() {
   const { ready, isPersistent, persist } = usePersistentStorage();

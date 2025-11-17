@@ -1,6 +1,7 @@
-import { Dexie, type EntityTable } from "dexie";
+import { Dexie } from "dexie";
 import { z } from "zod";
-import { v4 as uuidv4 } from "uuid";
+
+import type { EntityTable } from "dexie";
 
 interface Character {
   id: number;
@@ -61,7 +62,7 @@ async function isCollectionExists(uuid: string): Promise<boolean> {
 }
 
 async function createCollection(collectionName: string) {
-  const uuid = uuidv4();
+  const uuid = crypto.randomUUID();
 
   const db = await initCollection(uuid);
   await db.collectionInfo.add({

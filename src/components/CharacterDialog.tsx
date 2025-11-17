@@ -12,7 +12,7 @@ import {
   DialogHeader,
   DialogTitle,
   DialogTrigger,
-} from "@/components/ui/Dialog";
+} from "@/components/ui/dialog";
 import {
   Form,
   FormControl,
@@ -20,12 +20,12 @@ import {
   FormItem,
   FormLabel,
   FormMessage,
-} from "@/components/ui/Form";
-import { Input } from "@/components/ui/Input";
-import { Button } from "@/components/ui/Button";
-import { Message } from "@/components/ui/Message";
-import { Label } from "@/components/ui/Label";
-import { Textarea } from "@/components/ui/Textarea";
+} from "@/components/ui/form";
+import { Input } from "@/components/ui/input";
+import { Button } from "@/components/ui/button";
+import { Message } from "@/components/ui/message";
+import { Label } from "@/components/ui/label";
+import { Textarea } from "@/components/ui/textarea";
 import errorMessages from "@/utils/errorMessages";
 import { Collection } from "@/lib/db";
 
@@ -34,12 +34,12 @@ const formSchema = z.object({
   name: z.string().min(1, errorMessages.MIN_1_CHAR),
   propertyKeys: z.array(
     z
-      .string({ required_error: errorMessages.MIN_1_CHAR })
+      .string({ error: errorMessages.MIN_1_CHAR })
       .min(1, errorMessages.MIN_1_CHAR),
   ),
   propertyValues: z.array(
     z
-      .string({ required_error: errorMessages.MIN_1_CHAR })
+      .string({ error: errorMessages.MIN_1_CHAR })
       .min(1, errorMessages.MIN_1_CHAR),
   ),
   tags: z.array(z.string()),
@@ -139,7 +139,7 @@ export function CharacterDialog({ children, collection }: Props) {
               </section>
             </main>
 
-            <hr className="mb-4 mt-6" />
+            <hr className="mt-6 mb-4" />
 
             <main id="bottom">
               <NoteBox form={form} />
@@ -265,7 +265,7 @@ function TagBox({ form }: FormProps) {
         {tags.map((tag, i) => (
           <span
             key={i}
-            className="flex min-w-0 items-center gap-1 break-all rounded-full bg-primary/10 px-2 py-0.5 text-sm"
+            className="bg-primary/10 flex min-w-0 items-center gap-1 rounded-full px-2 py-0.5 text-sm break-all"
           >
             {tag}
             <button type="button" onClick={() => handleRemove(i)}>

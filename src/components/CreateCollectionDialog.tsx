@@ -11,7 +11,7 @@ import {
   DialogHeader,
   DialogTitle,
   DialogTrigger,
-} from "@/components/ui/Dialog";
+} from "@/components/ui/dialog";
 import {
   Form,
   FormControl,
@@ -19,12 +19,12 @@ import {
   FormItem,
   FormLabel,
   FormMessage,
-} from "@/components/ui/Form";
-import { Input } from "@/components/ui/Input";
-import { Button } from "@/components/ui/Button";
+} from "@/components/ui/form";
+import { Input } from "@/components/ui/input";
+import { Button } from "@/components/ui/button";
 import errorMessages from "@/utils/errorMessages";
 import { createCollection } from "@/lib/db";
-import { Message } from "./ui/Message";
+import { Message } from "./ui/message";
 
 const formSchema = z.object({
   collectionName: z.string().min(1, errorMessages.MIN_1_CHAR),
