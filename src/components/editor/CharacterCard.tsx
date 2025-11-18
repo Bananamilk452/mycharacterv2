@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useMemo } from "react";
 
 import { Character } from "@/lib/db";
 
@@ -7,18 +7,12 @@ interface Props {
 }
 
 export function CharacterCard({ character }: Props) {
-  const [avatarUrl, setAvatarUrl] = useState<string | undefined>(undefined);
-
-  useEffect(() => {
+  const avatarUrl = useMemo(() => {
     if (character.avatar) {
-      const url = URL.createObjectURL(character.avatar);
-      setAvatarUrl(url);
-
-      return () => {
-        URL.revokeObjectURL(url);
-      };
+      return URL.createObjectURL(character.avatar);
     }
-  }, []);
+    return "/default-avatar.png";
+  }, [character.avatar]);
 
   return (
     <button className="flex flex-col items-start gap-2 rounded-md border bg-gray-50 p-4 shadow">
