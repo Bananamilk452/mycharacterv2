@@ -1,17 +1,23 @@
-import { useParams } from "crossroad";
-
 import { AppSidebar } from "@/components/editor/AppSidebar";
 import { CharacterCard } from "@/components/editor/CharacterCard";
 import { Spinner } from "@/components/Spinner";
 import { Dimmer } from "@/components/ui/dimmer";
 import { SidebarProvider } from "@/components/ui/sidebar";
 import { useCollection } from "@/hooks/useCollection";
+import { useParams } from "crossroad";
+import { useEffect } from "react";
 
 function Editor() {
   const { collectionUuid } = useParams();
   const { ready, collection, collectionInfo, characters } = useCollection(
     collectionUuid as string,
   );
+
+  useEffect(() => {
+    if (collectionInfo) {
+      document.title = `${collectionInfo.name} - 마이자캐v2`;
+    }
+  }, [collectionInfo]);
 
   return (
     <main>
