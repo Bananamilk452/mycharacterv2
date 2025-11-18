@@ -29,6 +29,8 @@ import { Textarea } from "@/components/ui/textarea";
 import { Collection } from "@/lib/db";
 import errorMessages from "@/utils/errorMessages";
 
+import { ImageCropModal } from "./ImageCropModal";
+
 const formSchema = z.object({
   avatar: z.instanceof(Blob).optional(),
   name: z.string().min(1, errorMessages.MIN_1_CHAR),
@@ -164,6 +166,8 @@ export function CharacterDialog({ children, collection }: Props) {
 function AvatarBox({ form }: FormProps) {
   const avatar = form.watch("avatar");
 
+  const [isImageCropModalOpen, setIsImageCropModalOpen] = useState(false);
+  const [file, setFile] = useState<Blob | undefined>(undefined);
   const fileRef = useRef<HTMLInputElement>(null);
   const blobUrl = useMemo(() => {
     if (avatar) {
@@ -176,7 +180,8 @@ function AvatarBox({ form }: FormProps) {
     const files = event.target.files;
 
     if (files && files.length > 0) {
-      form.setValue("avatar", files[0]);
+      setFile(files[0]);
+      setIsImageCropModalOpen(true);
       fileRef.current!.value = "";
     }
   }
@@ -218,6 +223,13 @@ function AvatarBox({ form }: FormProps) {
           <Trash2 />
         </Button>
       </div>
+
+      <ImageCropModal
+        open={isImageCropModalOpen}
+        setOpen={setIsImageCropModalOpen}
+        image={file}
+        onComplete={(blob) => form.setValue("avatar", blob)}
+      />
     </div>
   );
 }
