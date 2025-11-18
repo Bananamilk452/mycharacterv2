@@ -1,6 +1,6 @@
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Plus, Trash2, Upload, X } from "lucide-react";
-import React, { useEffect, useRef, useState } from "react";
+import React, { useEffect, useMemo, useRef, useState } from "react";
 import { useForm, UseFormReturn } from "react-hook-form";
 import { z } from "zod";
 
@@ -28,6 +28,8 @@ import { Message } from "@/components/ui/message";
 import { Textarea } from "@/components/ui/textarea";
 import { Collection } from "@/lib/db";
 import errorMessages from "@/utils/errorMessages";
+
+import { ImageCropModal } from "./ImageCropModal";
 
 const formSchema = z.object({
   avatar: z.instanceof(Blob).optional(),
@@ -162,34 +164,30 @@ export function CharacterDialog({ children, collection }: Props) {
 }
 
 function AvatarBox({ form }: FormProps) {
+  const avatar = form.watch("avatar");
+
+  const [isImageCropModalOpen, setIsImageCropModalOpen] = useState(false);
+  const [file, setFile] = useState<Blob | undefined>(undefined);
   const fileRef = useRef<HTMLInputElement>(null);
-  const [blobUrl, setBlobUrl] = useState<string | undefined>(undefined);
+  const blobUrl = useMemo(() => {
+    if (avatar) {
+      return URL.createObjectURL(avatar);
+    }
+    return undefined;
+  }, [avatar]);
 
   function handleFileChange(event: React.ChangeEvent<HTMLInputElement>) {
     const files = event.target.files;
 
     if (files && files.length > 0) {
-      form.setValue("avatar", files[0]);
+      setFile(files[0]);
+      setIsImageCropModalOpen(true);
+      fileRef.current!.value = "";
     }
   }
 
-  const avatar = form.watch("avatar");
-
-  useEffect(() => {
-    if (avatar) {
-      const url = URL.createObjectURL(avatar);
-
-      setBlobUrl(url);
-
-      return () => {
-        URL.revokeObjectURL(url);
-      };
-    }
-  }, [avatar]);
-
   function handleRemoveAvatar() {
     form.setValue("avatar", undefined);
-    setBlobUrl(undefined);
   }
 
   return (
@@ -225,6 +223,13 @@ function AvatarBox({ form }: FormProps) {
           <Trash2 />
         </Button>
       </div>
+
+      <ImageCropModal
+        open={isImageCropModalOpen}
+        setOpen={setIsImageCropModalOpen}
+        image={file}
+        onComplete={(blob) => form.setValue("avatar", blob)}
+      />
     </div>
   );
 }
@@ -261,7 +266,7 @@ function TagBox({ form }: FormProps) {
   return (
     <div className="flex flex-col gap-4">
       <Label>태그</Label>
-      <div className="flex max-h-[106px] min-h-9 flex-wrap items-center gap-2 overflow-y-auto rounded-md border px-3 py-2 shadow-sm ring-black has-[:focus-visible]:ring-1">
+      <div className="flex max-h-[106px] min-h-9 flex-wrap items-center gap-2 overflow-y-auto rounded-md border px-3 py-2 shadow-sm ring-black has-focus-visible:ring-1">
         {tags.map((tag, i) => (
           <span
             key={i}
@@ -274,7 +279,7 @@ function TagBox({ form }: FormProps) {
           </span>
         ))}
         <input
-          className="min-w-0 flex-grow basis-32 text-sm outline-none"
+          className="min-w-0 grow basis-32 text-sm outline-none"
           onKeyUp={handleKeyUp}
         />
       </div>
@@ -322,7 +327,7 @@ function PropertyBox({ form }: FormProps) {
       <div
         ref={propertyContainerRef}
         tabIndex={-1}
-        className="mt-3.5 flex h-36 flex-grow flex-col gap-3 overflow-auto rounded-md border p-3"
+        className="mt-3.5 flex h-36 grow flex-col gap-3 overflow-auto rounded-md border p-3"
       >
         {new Array(propertyCount).fill(null).map((_, index) => (
           <div key={index} className="grid grid-cols-[1fr_1fr_auto] gap-2">

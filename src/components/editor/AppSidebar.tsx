@@ -1,7 +1,7 @@
 import { Earth, UserPlus } from "lucide-react";
-import { useEffect, useState } from "react";
+import { useMemo } from "react";
 
-import { CharacterDialog } from "@/components/CharacterDialog";
+import { CharacterDialog } from "@/components/editor/CharacterModal";
 import {
   Sidebar,
   SidebarContent,
@@ -22,17 +22,11 @@ interface Props {
 }
 
 export function AppSidebar({ collection, collectionInfo, characters }: Props) {
-  const [iconUrl, setIconUrl] = useState<string | undefined>(undefined);
-
-  useEffect(() => {
+  const iconUrl = useMemo(() => {
     if (collectionInfo.icon) {
-      const url = URL.createObjectURL(collectionInfo.icon);
-      setIconUrl(url);
-
-      return () => {
-        URL.revokeObjectURL(url);
-      };
+      return URL.createObjectURL(collectionInfo.icon);
     }
+    return undefined;
   }, [collectionInfo.icon]);
 
   return (

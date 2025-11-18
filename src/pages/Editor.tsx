@@ -1,7 +1,7 @@
 import { useParams } from "crossroad";
 
-import { AppSidebar } from "@/components/AppSidebar";
-import { CharacterCard } from "@/components/CharacterCard";
+import { AppSidebar } from "@/components/editor/AppSidebar";
+import { CharacterCard } from "@/components/editor/CharacterCard";
 import { Spinner } from "@/components/Spinner";
 import { Dimmer } from "@/components/ui/dimmer";
 import { SidebarProvider } from "@/components/ui/sidebar";
