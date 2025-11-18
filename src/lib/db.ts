@@ -1,6 +1,7 @@
-import { DB_PREFIX } from "@/constant";
 import { Dexie } from "dexie";
 import { z } from "zod";
+
+import { DB_PREFIX } from "@/constant";
 
 import type { EntityTable } from "dexie";
 

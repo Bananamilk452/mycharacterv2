@@ -1,8 +1,9 @@
-import { cn } from "@/lib/utils";
 import { cva, VariantProps } from "class-variance-authority";
 import React from "react";
 
-const noteVariants = cva("flex flex-col p-4 gap-2 rounded-md border", {
+import { cn } from "@/lib/utils";
+
+const noteVariants = cva("flex flex-col gap-2 rounded-md border p-4", {
   variants: {
     variant: {
       default: "border-gray-400 bg-gray-100/50",

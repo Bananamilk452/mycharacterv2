@@ -1,7 +1,8 @@
-import { DB_PREFIX } from "@/constant";
-import { Collection, connectCollection } from "@/lib/db";
 import { useLiveQuery } from "dexie-react-hooks";
 import { useEffect, useState } from "react";
+
+import { DB_PREFIX } from "@/constant";
+import { Collection, connectCollection } from "@/lib/db";
 
 export function useCollection(uuid: string) {
   const [collection, setCollection] = useState<Collection | undefined>(

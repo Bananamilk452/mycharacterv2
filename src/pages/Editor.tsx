@@ -1,10 +1,11 @@
+import { useParams } from "crossroad";
+
 import { AppSidebar } from "@/components/AppSidebar";
 import { CharacterCard } from "@/components/CharacterCard";
 import { Spinner } from "@/components/Spinner";
 import { Dimmer } from "@/components/ui/dimmer";
 import { SidebarProvider } from "@/components/ui/sidebar";
 import { useCollection } from "@/hooks/useCollection";
-import { useParams } from "crossroad";
 
 function Editor() {
   const { collectionUuid } = useParams();

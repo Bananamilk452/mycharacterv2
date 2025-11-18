@@ -1,7 +1,8 @@
-import { DB_PREFIX } from "@/constant";
-import { CollectionInfo, connectCollection, isCollectionInfo } from "@/lib/db";
 import Dexie from "dexie";
 import { useEffect, useState } from "react";
+
+import { DB_PREFIX } from "@/constant";
+import { CollectionInfo, connectCollection, isCollectionInfo } from "@/lib/db";
 
 async function getRecentCollections() {
   const databaseNames = await Dexie.getDatabaseNames();

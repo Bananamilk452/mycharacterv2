@@ -7,7 +7,7 @@ export default {
   importOrder: [
     "<THIRD_PARTY_MODULES>",
     "",
-    "^~/(.*)$",
+    "^@/(.*)$",
     "",
     "^[./]",
     "",

@@ -1,8 +1,9 @@
 import { cva, VariantProps } from "class-variance-authority";
-import { HTMLAttributes } from "react";
-import { cn } from "@/lib/utils";
-import { Spinner } from "@/components/Spinner";
 import { Check, CircleAlert } from "lucide-react";
+import { HTMLAttributes } from "react";
+
+import { Spinner } from "@/components/Spinner";
+import { cn } from "@/lib/utils";
 
 const messageVariants = cva("flex items-center gap-2", {
   variants: {

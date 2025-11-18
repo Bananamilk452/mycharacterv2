@@ -1,3 +1,7 @@
+import { Earth, UserPlus } from "lucide-react";
+import { useEffect, useState } from "react";
+
+import { CharacterDialog } from "@/components/CharacterDialog";
 import {
   Sidebar,
   SidebarContent,
@@ -10,9 +14,6 @@ import {
   SidebarMenuItem,
 } from "@/components/ui/sidebar";
 import { Character, Collection, CollectionInfo } from "@/lib/db";
-import { Earth, UserPlus } from "lucide-react";
-import { useEffect, useState } from "react";
-import { CharacterDialog } from "@/components/CharacterDialog";
 
 interface Props {
   collection: Collection;

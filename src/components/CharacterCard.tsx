@@ -1,5 +1,6 @@
-import { Character } from "@/lib/db";
 import { useEffect, useState } from "react";
+
+import { Character } from "@/lib/db";
 
 interface Props {
   character: Character;

@@ -1,9 +1,10 @@
-import React, { useEffect, useRef, useState } from "react";
-import { z } from "zod";
-import { useForm, UseFormReturn } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Plus, Trash2, Upload, X } from "lucide-react";
+import React, { useEffect, useRef, useState } from "react";
+import { useForm, UseFormReturn } from "react-hook-form";
+import { z } from "zod";
 
+import { Button } from "@/components/ui/button";
 import {
   Dialog,
   DialogContent,
@@ -22,12 +23,11 @@ import {
   FormMessage,
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
-import { Button } from "@/components/ui/button";
-import { Message } from "@/components/ui/message";
 import { Label } from "@/components/ui/label";
+import { Message } from "@/components/ui/message";
 import { Textarea } from "@/components/ui/textarea";
-import errorMessages from "@/utils/errorMessages";
 import { Collection } from "@/lib/db";
+import errorMessages from "@/utils/errorMessages";
 
 const formSchema = z.object({
   avatar: z.instanceof(Blob).optional(),
