@@ -40,7 +40,8 @@ export function PersistentPermissionDialog() {
         <DialogHeader>
           <DialogTitle>영구 스토리지 권한 요청</DialogTitle>
           <DialogDescription>
-            안전한 데이터의 저장을 위해 영구 스토리지 권한이 필요합니다.
+            안전한 데이터의 저장을 위해 영구 스토리지 권한이 필요합니다. (크롬의
+            경우에는 알림 권한도 함께 요청될 수 있습니다.)
           </DialogDescription>
         </DialogHeader>
         <Note variant="danger">
@@ -53,8 +54,9 @@ export function PersistentPermissionDialog() {
               영구 스토리지 권한이 허용되었습니다.
             </Message>
           ) : (
-            <Message variant="loading">
-              영구 스토리지 권한을 요청 중입니다...
+            <Message variant="error">
+              영구 스토리지 권한 요청에 실패했습니다. 페이지를 새로고침 하거나
+              사이트를 북마크 한 후 다시 시도해보세요.
             </Message>
           ))}
         <DialogFooter>
