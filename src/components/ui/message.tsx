@@ -30,7 +30,9 @@ export function Message({ className, variant, ...props }: MessageProps) {
 
   return (
     <div className={cn(messageVariants({ variant, className }))} {...props}>
-      <IconComponent className={cn("size-5", messageVariants({ variant }))} />
+      <IconComponent
+        className={cn("size-5 shrink-0", messageVariants({ variant }))}
+      />
       <span className={cn("text-sm", messageVariants({ variant }))}>
         {props.children}
       </span>
