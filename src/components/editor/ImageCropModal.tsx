@@ -27,6 +27,7 @@ export function ImageCropModal({
   onComplete,
 }: ImageCropModalProps) {
   const [crop, setCrop] = useState<Crop>();
+  const [aspect, setAspect] = useState<number | undefined>(1);
   const [previousState, setPreviousState] = useState(open);
   const [imgElement, setImgElement] = useState<HTMLImageElement | null>(null);
 
@@ -80,7 +81,11 @@ export function ImageCropModal({
           <DialogTitle>이미지 자르기</DialogTitle>
         </DialogHeader>
 
-        <ReactCrop crop={crop} onChange={(newCrop) => setCrop(newCrop)}>
+        <ReactCrop
+          crop={crop}
+          aspect={aspect}
+          onChange={(newCrop) => setCrop(newCrop)}
+        >
           {imageUrl && (
             <img
               src={imageUrl}
@@ -91,6 +96,12 @@ export function ImageCropModal({
         </ReactCrop>
 
         <DialogFooter>
+          <Button variant="outline" onClick={() => setAspect(undefined)}>
+            자유 비율
+          </Button>
+          <Button variant="outline" onClick={() => setAspect(1)}>
+            1:1 비율
+          </Button>
           <Button onClick={onSave}>저장</Button>
         </DialogFooter>
       </DialogContent>
