@@ -1,9 +1,20 @@
 import { Editor } from "@tinymce/tinymce-react";
+import { useEffect, useState } from "react";
+import { Editor as TinyMCEEditor } from "tinymce";
 
 import { Label } from "../ui/label";
 import { EditorFormProps } from "./CharacterModal";
 
 export function NoteBox({ form }: EditorFormProps) {
+  const [editorRef, setEditorRef] = useState<TinyMCEEditor | null>(null);
+  const note = form.watch("note");
+
+  useEffect(() => {
+    if (editorRef) {
+      editorRef.setContent(note || "");
+    }
+  }, [editorRef, note]);
+
   return (
     <div className="flex flex-col">
       <div className="flex h-8 items-center justify-between">
@@ -43,6 +54,9 @@ export function NoteBox({ form }: EditorFormProps) {
               toolbar_mode: "floating",
               menubar: "file edit insert format table",
             },
+          }}
+          onInit={(e, editor) => {
+            setEditorRef(editor);
           }}
           onChange={(e) => {
             const content = e.target.getContent();
