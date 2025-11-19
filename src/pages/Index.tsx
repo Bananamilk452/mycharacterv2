@@ -1,6 +1,7 @@
+import { useEffect } from "react";
+
 import { PersistentPermissionDialog } from "@/components/home/PersistentPermissionDialog";
 import { WelcomeMenu } from "@/components/home/WelcomeMenu";
-import { useEffect } from "react";
 
 export default function Index() {
   useEffect(() => {
@@ -8,7 +9,7 @@ export default function Index() {
   }, []);
 
   return (
-    <main className="size-full">
+    <main className="h-dvh w-dvh">
       <div className="flex size-full items-center justify-center">
         <WelcomeMenu />
       </div>
