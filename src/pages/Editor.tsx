@@ -40,6 +40,8 @@ function Editor() {
         if (index !== -1) {
           const value = character.propertyValues[index];
           description = description.replace(template, value);
+        } else {
+          description = description.replace(template, "-");
         }
       });
     }
