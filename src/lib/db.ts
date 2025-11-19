@@ -95,5 +95,32 @@ async function connectCollection(name: string) {
   return await initCollection(name);
 }
 
+async function listCollections() {
+  const collections = await Dexie.getDatabaseNames();
+  const onlyCollections = collections.filter((name) =>
+    name.startsWith(DB_PREFIX),
+  );
+
+  const result = await Promise.all(
+    onlyCollections.map(async (name) => {
+      const db = await connectCollection(name);
+      const info = await db.collectionInfo.get(1);
+
+      if (!info) {
+        throw new Error("콜렉션 정보를 불러올 수 없습니다.");
+      }
+
+      return info;
+    }),
+  );
+
+  return result;
+}
+
 export type { Character, CollectionInfo, Collection };
-export { isCollectionExists, createCollection, connectCollection };
+export {
+  isCollectionExists,
+  createCollection,
+  connectCollection,
+  listCollections,
+};
