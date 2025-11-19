@@ -23,6 +23,7 @@ import {
 } from "@/components/ui/form";
 import { Message } from "@/components/ui/message";
 import { useCollection } from "@/hooks/useCollection";
+import { updateCollectionUpdatedAt } from "@/lib/utils";
 import errorMessages from "@/utils/errorMessages";
 
 import { Input } from "../ui/input";
@@ -91,6 +92,7 @@ export function UpdateCollectionModal({
         ...values,
       })
       .then(() => {
+        updateCollectionUpdatedAt(collectionUuid);
         toast.success("콜렉션이 수정되었습니다.");
         setOpen(false);
       })

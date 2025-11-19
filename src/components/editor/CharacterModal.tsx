@@ -24,6 +24,7 @@ import { Input } from "@/components/ui/input";
 import { Message } from "@/components/ui/message";
 import { useCollection } from "@/hooks/useCollection";
 import { Character } from "@/lib/db";
+import { updateCollectionUpdatedAt } from "@/lib/utils";
 import errorMessages from "@/utils/errorMessages";
 
 import { ImageUpload } from "./ImageUpload";
@@ -126,6 +127,7 @@ export function CharacterModal({
           updatedAt: new Date(),
         })
         .then(() => {
+          updateCollectionUpdatedAt(collectionUuid);
           setOpen(false);
           form.reset();
         })
@@ -142,6 +144,7 @@ export function CharacterModal({
       collection.characters
         .update(character.id, { ...values, updatedAt: new Date() })
         .then(() => {
+          updateCollectionUpdatedAt(collectionUuid);
           setOpen(false);
           form.reset();
         })
