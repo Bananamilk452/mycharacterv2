@@ -93,6 +93,7 @@ export function CharacterModal({
     },
   });
 
+  // 캐릭터 정보가 있을 때 폼 초기화
   useEffect(() => {
     if (character) {
       form.reset({
@@ -100,6 +101,13 @@ export function CharacterModal({
       });
     }
   }, [character, form]);
+
+  // 모달 닫힐 때 폼 초기화
+  useEffect(() => {
+    if (!open) {
+      form.reset();
+    }
+  }, [open, form]);
 
   function onSubmit(values: FormSchema) {
     if (!collection) {
@@ -129,7 +137,18 @@ export function CharacterModal({
     }
     // 캐릭터 수정
     else {
-      // collection.characters.update
+      collection.characters
+        .update(character.id, { ...values, updatedAt: new Date() })
+        .then(() => {
+          setOpen(false);
+          form.reset();
+        })
+        .catch((error) => {
+          console.error(error);
+        })
+        .finally(() => {
+          setIsLoading(false);
+        });
     }
   }
 
