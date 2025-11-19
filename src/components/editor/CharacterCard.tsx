@@ -5,7 +5,7 @@ import { Character } from "@/lib/db";
 import { cn } from "@/lib/utils";
 
 const cardVariants = cva(
-  "flex flex-col items-start gap-2 rounded-md border bg-gray-50 shadow",
+  "flex h-fit flex-col items-start gap-2 rounded-md border bg-gray-50 shadow",
   {
     variants: {
       size: {

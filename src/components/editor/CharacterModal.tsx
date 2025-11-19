@@ -1,4 +1,5 @@
 import { zodResolver } from "@hookform/resolvers/zod";
+import { Editor } from "@tinymce/tinymce-react";
 import { Plus, Trash2, Upload, X } from "lucide-react";
 import React, { useEffect, useMemo, useRef, useState } from "react";
 import { useForm, UseFormReturn, useWatch } from "react-hook-form";
@@ -8,7 +9,6 @@ import { Button } from "@/components/ui/button";
 import {
   Dialog,
   DialogContent,
-  DialogDescription,
   DialogFooter,
   DialogHeader,
   DialogTitle,
@@ -24,7 +24,6 @@ import {
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Message } from "@/components/ui/message";
-import { Textarea } from "@/components/ui/textarea";
 import { useCollection } from "@/hooks/useCollection";
 import { Character } from "@/lib/db";
 import errorMessages from "@/utils/errorMessages";
@@ -123,10 +122,9 @@ export function CharacterModal({
 
   return (
     <Dialog open={open} onOpenChange={setOpen}>
-      <DialogContent className="max-w-4xl!">
+      <DialogContent className="max-w-5xl!">
         <DialogHeader>
           <DialogTitle>캐릭터 생성</DialogTitle>
-          <DialogDescription>캐릭터를 생성합니다.</DialogDescription>
         </DialogHeader>
 
         <Form {...form}>
@@ -402,22 +400,52 @@ function PropertyBox({ form }: FormProps) {
 
 function NoteBox({ form }: FormProps) {
   return (
-    <FormItem className="block">
-      <FormLabel className="h-8">노트</FormLabel>
-      <FormControl>
-        <FormField
-          control={form.control}
-          name="note"
-          render={({ field }) => (
-            <Textarea
-              {...field}
-              className="mt-3.5 h-48 resize-none"
-              placeholder="캐릭터에 대한 노트를 입력하세요."
-            />
-          )}
+    <div className="flex flex-col">
+      <div className="flex h-8 items-center justify-between">
+        <Label className="shrink-0">노트</Label>
+      </div>
+      <div className="mt-3.5 h-48">
+        <Editor
+          tinymceScriptSrc="/tinymce/tinymce.min.js"
+          licenseKey="gpl"
+          init={{
+            height: 256,
+            menubar: "file edit insert format table",
+            plugins: [
+              "autosave",
+              "autolink",
+              "lists",
+              "link",
+              "image",
+              "preview",
+              "anchor",
+              "searchreplace",
+              "visualblocks",
+              "fullscreen",
+              "table",
+              "code",
+            ],
+            toolbar:
+              "undo redo | blocks | bold italic forecolor | alignleft aligncenter alignright alignjustify | bullist numlist outdent indent | removeformat | help",
+            content_style:
+              "body { font-family: -apple-system, BlinkMacSystemFont, San Francisco, Segoe UI, Roboto, Helvetica Neue, sans-serif; font-size: 14px }",
+            branding: false,
+            resize: false,
+            elementpath: false,
+            statusbar: false,
+            language: "ko_KR",
+            mobile: {
+              toolbar_mode: "floating",
+              menubar: "file edit insert format table",
+            },
+          }}
+          onChange={(e) => {
+            const content = e.target.getContent();
+            form.setValue("note", content);
+          }}
         />
-      </FormControl>
-    </FormItem>
+      </div>
+    </div>
   );
 }
 
@@ -466,7 +494,7 @@ function RelationBox({
           관계 추가
         </Button>
       </div>
-      <div className="border-input mt-3.5 flex h-48 flex-wrap gap-4 overflow-scroll rounded-md border p-4 shadow-xs">
+      <div className="border-input mt-3.5 flex h-64 flex-wrap gap-4 overflow-scroll rounded-md border p-4 shadow-xs">
         {relationCharacters.map((r) => (
           <CharacterCard
             key={crypto.randomUUID()}
