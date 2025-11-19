@@ -12,7 +12,7 @@ import { Character } from "@/lib/db";
 
 function Editor() {
   const { collectionUuid } = useParams();
-  const { ready, collectionInfo, characters } = useCollection(
+  const { collectionInfo, characters } = useCollection(
     collectionUuid as string,
   );
   const [isCharacterModalOpen, setIsCharacterModalOpen] = useState(false);
@@ -25,18 +25,40 @@ function Editor() {
     }
   }, [collectionInfo]);
 
+  const templates =
+    collectionInfo?.characterDescription.match(/\{\{(.+)\}\}/gm);
+  function getCharacterDescription(character: Character) {
+    const fields = templates?.map((template) => {
+      const fieldName = template.replace("{{", "").replace("}}", "").trim();
+      return { template, fieldName };
+    });
+
+    let description = collectionInfo?.characterDescription || "";
+    if (fields) {
+      fields.forEach(({ template, fieldName }) => {
+        const index = character.propertyKeys.indexOf(fieldName);
+        if (index !== -1) {
+          const value = character.propertyValues[index];
+          description = description.replace(template, value);
+        }
+      });
+    }
+    return description;
+  }
+
   return (
     <main>
-      {ready ? (
+      {characters && collectionInfo ? (
         <>
           <SidebarProvider>
             <AppSidebar uuid={collectionUuid as string} />
             <section id="characters" className="p-4">
               <ul className="flex flex-wrap gap-4">
-                {characters?.map((character) => (
+                {characters.map((character) => (
                   <CharacterCard
                     key={character.id}
                     character={character}
+                    description={getCharacterDescription(character)}
                     className="cursor-pointer"
                     onClick={() => {
                       setSelectedCharacter(character);
