@@ -25,10 +25,23 @@ export function useCollection(uuid: string) {
       return undefined;
     }
 
-    const characters = await collection.character.toArray();
+    const characters = await collection.characters.toArray();
 
     return characters;
   }, [collection]);
+
+  async function getCharacterByUuid(uuid: string) {
+    if (!collection) {
+      throw new Error("콜렉션이 연결되지 않았습니다.");
+    }
+
+    const characters = await collection.characters
+      .where("uuid")
+      .equals(uuid)
+      .toArray();
+
+    return characters[0];
+  }
 
   useEffect(() => {
     connectCollection(`${DB_PREFIX}${uuid}`)
@@ -51,5 +64,6 @@ export function useCollection(uuid: string) {
     collection,
     collectionInfo,
     characters,
+    getCharacterByUuid,
   };
 }

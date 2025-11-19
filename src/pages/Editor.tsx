@@ -1,15 +1,16 @@
+import { useParams } from "crossroad";
+import { useEffect } from "react";
+
 import { AppSidebar } from "@/components/editor/AppSidebar";
 import { CharacterCard } from "@/components/editor/CharacterCard";
 import { Spinner } from "@/components/Spinner";
 import { Dimmer } from "@/components/ui/dimmer";
 import { SidebarProvider } from "@/components/ui/sidebar";
 import { useCollection } from "@/hooks/useCollection";
-import { useParams } from "crossroad";
-import { useEffect } from "react";
 
 function Editor() {
   const { collectionUuid } = useParams();
-  const { ready, collection, collectionInfo, characters } = useCollection(
+  const { ready, collectionInfo, characters } = useCollection(
     collectionUuid as string,
   );
 
@@ -24,15 +25,11 @@ function Editor() {
       {ready ? (
         <>
           <SidebarProvider>
-            <AppSidebar
-              collection={collection!}
-              collectionInfo={collectionInfo!}
-              characters={characters!}
-            />
+            <AppSidebar uuid={collectionUuid as string} />
             <section id="characters" className="p-4">
               <ul className="flex flex-wrap gap-4">
                 {characters?.map((character) => (
-                  <CharacterCard key={character.id} character={character} />
+                  <CharacterCard key={character.uuid} character={character} />
                 ))}
               </ul>
             </section>
