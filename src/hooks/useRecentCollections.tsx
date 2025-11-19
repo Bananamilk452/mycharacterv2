@@ -43,7 +43,7 @@ export function useRecentCollections() {
     getRecentCollections()
       .then((recentCollections) => {
         if (recentCollections) {
-          setRecentCollections(recentCollections);
+          setRecentCollections(recentCollections.slice(0, 5));
         }
       })
       .catch((err) => {
