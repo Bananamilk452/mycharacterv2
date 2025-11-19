@@ -25,6 +25,8 @@ interface CollectionInfo {
   uuid: string;
   name: string;
   icon?: Blob;
+  description: string;
+  characterDescription: string;
   createdAt: Date;
   updatedAt: Date;
 }
@@ -56,7 +58,8 @@ async function initCollection(uuid: string) {
       "$$id, name, *propertyKeys, *propertyValues, *tags, createdAt, updatedAt",
     relations:
       "$$id, characterId1, characterId2, [characterId1+characterId2], relation",
-    collectionInfo: "++id, uuid, name, createdAt, updatedAt",
+    collectionInfo:
+      "++id, uuid, name, description, characterDescription, createdAt, updatedAt",
   });
 
   return db;
@@ -75,6 +78,8 @@ async function createCollection(collectionName: string) {
   await db.collectionInfo.add({
     uuid,
     name: collectionName,
+    description: "",
+    characterDescription: "",
     createdAt: new Date(),
     updatedAt: new Date(),
   });
