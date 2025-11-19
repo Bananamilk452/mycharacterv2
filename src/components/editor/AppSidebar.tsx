@@ -68,7 +68,7 @@ export function AppSidebar({ uuid }: AppSidebarProps) {
                       캐릭터 추가
                     </SidebarMenuButton>
                     <CharacterModal
-                      uuid={uuid}
+                      collectionUuid={uuid}
                       open={isCharacterDialogOpen}
                       setOpen={setIsCharacterDialogOpen}
                     />

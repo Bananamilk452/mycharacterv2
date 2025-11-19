@@ -1,7 +1,7 @@
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Plus, Trash2, Upload, X } from "lucide-react";
 import React, { useEffect, useMemo, useRef, useState } from "react";
-import { useForm, UseFormReturn } from "react-hook-form";
+import { useForm, UseFormReturn, useWatch } from "react-hook-form";
 import { z } from "zod";
 
 import { Button } from "@/components/ui/button";
@@ -26,8 +26,11 @@ import { Label } from "@/components/ui/label";
 import { Message } from "@/components/ui/message";
 import { Textarea } from "@/components/ui/textarea";
 import { useCollection } from "@/hooks/useCollection";
+import { Character } from "@/lib/db";
 import errorMessages from "@/utils/errorMessages";
 
+import { AddRelationModal } from "./AddRelationModal";
+import { CharacterCard } from "./CharacterCard";
 import { ImageCropModal } from "./ImageCropModal";
 
 const formSchema = z.object({
@@ -45,23 +48,41 @@ const formSchema = z.object({
   ),
   tags: z.array(z.string()),
   note: z.string(),
+  relationKeys: z.array(
+    z
+      .string({ error: errorMessages.MIN_1_CHAR })
+      .min(1, errorMessages.MIN_1_CHAR),
+  ),
+  relationValues: z.array(
+    z
+      .string({ error: errorMessages.MIN_1_CHAR })
+      .min(1, errorMessages.MIN_1_CHAR),
+  ),
 });
+
+type FormSchema = z.infer<typeof formSchema>;
 
 interface Props {
   open: boolean;
   setOpen: (open: boolean) => void;
-  uuid: string;
+  collectionUuid: string;
+  characterUuid?: string;
 }
 
 interface FormProps {
-  form: UseFormReturn<z.infer<typeof formSchema>>;
+  form: UseFormReturn<FormSchema>;
 }
 
-export function CharacterModal({ open, setOpen, uuid }: Props) {
-  const { collection } = useCollection(uuid);
+export function CharacterModal({
+  open,
+  setOpen,
+  collectionUuid,
+  characterUuid,
+}: Props) {
+  const { collection } = useCollection(collectionUuid);
   const [isLoading, setIsLoading] = useState(false);
 
-  const form = useForm<z.infer<typeof formSchema>>({
+  const form = useForm<FormSchema>({
     resolver: zodResolver(formSchema),
     defaultValues: {
       name: "",
@@ -69,10 +90,12 @@ export function CharacterModal({ open, setOpen, uuid }: Props) {
       propertyValues: [],
       tags: [],
       note: "",
+      relationKeys: [],
+      relationValues: [],
     },
   });
 
-  function onSubmit(values: z.infer<typeof formSchema>) {
+  function onSubmit(values: FormSchema) {
     if (!collection) {
       return;
     }
@@ -100,7 +123,7 @@ export function CharacterModal({ open, setOpen, uuid }: Props) {
 
   return (
     <Dialog open={open} onOpenChange={setOpen}>
-      <DialogContent className="max-w-3xl">
+      <DialogContent className="max-w-4xl!">
         <DialogHeader>
           <DialogTitle>캐릭터 생성</DialogTitle>
           <DialogDescription>캐릭터를 생성합니다.</DialogDescription>
@@ -147,8 +170,9 @@ export function CharacterModal({ open, setOpen, uuid }: Props) {
 
             <hr className="mt-6 mb-4" />
 
-            <main id="bottom">
+            <main id="bottom" className="grid grid-cols-2 gap-4">
               <NoteBox form={form} />
+              <RelationBox form={form} collectionUuid={collectionUuid} />
             </main>
           </form>
         </Form>
@@ -270,7 +294,7 @@ function TagBox({ form }: FormProps) {
   return (
     <div className="flex flex-col gap-4">
       <Label>태그</Label>
-      <div className="flex max-h-[106px] min-h-9 flex-wrap items-center gap-2 overflow-y-auto rounded-md border px-3 py-2 shadow-sm ring-black has-focus-visible:ring-1">
+      <div className="border-input flex max-h-[106px] min-h-9 flex-wrap items-center gap-2 overflow-y-auto rounded-md border px-3 py-2 shadow-xs ring-black has-focus-visible:ring-1">
         {tags.map((tag, i) => (
           <span
             key={i}
@@ -331,7 +355,7 @@ function PropertyBox({ form }: FormProps) {
       <div
         ref={propertyContainerRef}
         tabIndex={-1}
-        className="mt-3.5 flex h-36 grow flex-col gap-3 overflow-auto rounded-md border p-3"
+        className="border-input mt-3.5 flex h-36 grow flex-col gap-3 overflow-auto rounded-md border p-3 shadow-xs"
       >
         {new Array(propertyCount).fill(null).map((_, index) => (
           <div key={index} className="grid grid-cols-[1fr_1fr_auto] gap-2">
@@ -378,23 +402,91 @@ function PropertyBox({ form }: FormProps) {
 
 function NoteBox({ form }: FormProps) {
   return (
-    <div className="flex flex-col gap-2">
-      <FormItem>
-        <FormLabel>노트</FormLabel>
-        <FormControl>
-          <FormField
-            control={form.control}
-            name="note"
-            render={({ field }) => (
-              <Textarea
-                {...field}
-                className="h-32 resize-none"
-                placeholder="캐릭터에 대한 노트를 입력하세요."
-              />
-            )}
+    <FormItem className="block">
+      <FormLabel className="h-8">노트</FormLabel>
+      <FormControl>
+        <FormField
+          control={form.control}
+          name="note"
+          render={({ field }) => (
+            <Textarea
+              {...field}
+              className="mt-3.5 h-48 resize-none"
+              placeholder="캐릭터에 대한 노트를 입력하세요."
+            />
+          )}
+        />
+      </FormControl>
+    </FormItem>
+  );
+}
+
+function RelationBox({
+  form,
+  collectionUuid,
+}: FormProps & { collectionUuid: string }) {
+  const { relationKeys, relationValues } = useWatch<FormSchema>();
+  const { collection } = useCollection(collectionUuid);
+  const [isAddRelationModalOpen, setIsAddRelationModalOpen] = useState(false);
+  const [relationCharacters, setRelationCharacters] = useState<
+    { character: Character; relationName: string }[]
+  >([]);
+
+  useEffect(() => {
+    if (!collection || !relationKeys || !relationValues) {
+      return;
+    }
+
+    collection.characters
+      .where("uuid")
+      .anyOf(relationKeys)
+      .toArray()
+      .then((chars) => {
+        setRelationCharacters(
+          relationKeys.map((key, i) => {
+            return {
+              character: chars.find((c) => c.uuid === key)!,
+              relationName: relationValues[i],
+            };
+          }),
+        );
+      });
+  }, [collection, relationKeys, relationValues]);
+
+  return (
+    <div className="flex flex-col">
+      <div className="flex items-center justify-between">
+        <Label className="shrink-0">관계</Label>
+        <Button
+          type="button"
+          size="sm"
+          onClick={() => setIsAddRelationModalOpen(true)}
+        >
+          <Plus />
+          관계 추가
+        </Button>
+      </div>
+      <div className="border-input mt-3.5 flex h-48 flex-wrap gap-4 overflow-scroll rounded-md border p-4 shadow-xs">
+        {relationCharacters.map((r) => (
+          <CharacterCard
+            key={crypto.randomUUID()}
+            size="sm"
+            character={r.character}
+            description={r.relationName}
           />
-        </FormControl>
-      </FormItem>
+        ))}
+      </div>
+
+      <AddRelationModal
+        open={isAddRelationModalOpen}
+        setOpen={setIsAddRelationModalOpen}
+        uuid={collectionUuid}
+        onComplete={(r) => {
+          const length = form.getValues("relationKeys").length;
+          form.setValue(`relationKeys.${length}`, r.characterUuid);
+          form.setValue(`relationValues.${length}`, r.relationName);
+        }}
+      />
     </div>
   );
 }
