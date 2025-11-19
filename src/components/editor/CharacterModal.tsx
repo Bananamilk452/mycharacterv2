@@ -1,6 +1,7 @@
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useEffect, useState } from "react";
 import { useForm, UseFormReturn } from "react-hook-form";
+import { toast } from "sonner";
 import { z } from "zod";
 
 import { Button } from "@/components/ui/button";
@@ -130,6 +131,7 @@ export function CharacterModal({
         })
         .catch((error) => {
           console.error(error);
+          toast.error("캐릭터 생성에 실패했습니다.");
         })
         .finally(() => {
           setIsLoading(false);
@@ -145,6 +147,7 @@ export function CharacterModal({
         })
         .catch((error) => {
           console.error(error);
+          toast.error("캐릭터 수정에 실패했습니다.");
         })
         .finally(() => {
           setIsLoading(false);
