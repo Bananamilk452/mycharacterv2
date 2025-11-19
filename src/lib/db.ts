@@ -2,11 +2,12 @@ import { Dexie } from "dexie";
 import { z } from "zod";
 
 import { DB_PREFIX } from "@/constant";
+import dexieUuid from "@/lib/db/uuid";
 
 import type { EntityTable } from "dexie";
 
 interface Character {
-  uuid: string;
+  id: string;
   name: string;
   avatar?: Blob;
   propertyKeys: string[];
@@ -29,7 +30,7 @@ interface CollectionInfo {
 }
 
 type Collection = Dexie & {
-  characters: EntityTable<Character>;
+  characters: EntityTable<Character, "id">;
   collectionInfo: EntityTable<CollectionInfo, "id">;
 };
 
@@ -48,13 +49,13 @@ export function isCollectionInfo(obj: unknown): obj is CollectionInfo {
 
 // new Dexie는 생성/연결을 둘 다 하므로 아래 함수는 내부 함수로만만 사용
 async function initCollection(uuid: string) {
-  const db = new Dexie(uuid) as Collection;
+  const db = new Dexie(uuid, { addons: [dexieUuid] }) as Collection;
 
   db.version(1).stores({
     characters:
-      "++, uuid, name, *propertyKeys, *propertyValues, *tags, createdAt, updatedAt",
+      "$$id, name, *propertyKeys, *propertyValues, *tags, createdAt, updatedAt",
     relations:
-      "++, uuid, characterId1, characterId2, [characterId1+characterId2], relation",
+      "$$id, characterId1, characterId2, [characterId1+characterId2], relation",
     collectionInfo: "++id, uuid, name, createdAt, updatedAt",
   });
 

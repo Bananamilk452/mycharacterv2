@@ -55,11 +55,11 @@ export function AddRelationModal({
           {characters && characters.length > 0 ? (
             characters.map((character) => (
               <CharacterCard
-                key={character.uuid}
+                key={character.id}
                 character={character}
-                onClick={() => setSelectedCharacter(character.uuid)}
+                onClick={() => setSelectedCharacter(character.id)}
                 className={
-                  selectedCharacter === character.uuid
+                  selectedCharacter === character.id
                     ? "border-primary border-2"
                     : ""
                 }
