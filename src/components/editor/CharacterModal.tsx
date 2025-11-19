@@ -26,7 +26,7 @@ import { useCollection } from "@/hooks/useCollection";
 import { Character } from "@/lib/db";
 import errorMessages from "@/utils/errorMessages";
 
-import { AvatarBox } from "./AvatarBox";
+import { ImageUpload } from "./ImageUpload";
 import { NoteBox } from "./NoteBox";
 import { PropertyBox } from "./PropertyBox";
 import { RelationBox } from "./RelationBox";
@@ -170,7 +170,10 @@ export function CharacterModal({
             >
               <section id="left" className="flex shrink-0 flex-col">
                 {/* 아바타 이미지 */}
-                <AvatarBox form={form} />
+                <ImageUpload
+                  blob={form.watch("avatar")}
+                  setBlob={(blob) => form.setValue("avatar", blob)}
+                />
               </section>
 
               <section id="right" className="flex flex-col gap-4">
@@ -211,7 +214,9 @@ export function CharacterModal({
         </Form>
 
         {isLoading && (
-          <Message variant="loading">콜렉션을 생성 중입니다...</Message>
+          <Message variant="loading">
+            캐릭터를 {character ? "수정" : "생성"} 중입니다...
+          </Message>
         )}
 
         <DialogFooter>

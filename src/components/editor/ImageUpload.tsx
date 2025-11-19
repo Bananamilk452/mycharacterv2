@@ -2,21 +2,24 @@ import { Trash2Icon, UploadIcon } from "lucide-react";
 import { useMemo, useRef, useState } from "react";
 
 import { Button } from "../ui/button";
-import { EditorFormProps } from "./CharacterModal";
 import { ImageCropModal } from "./ImageCropModal";
 
-export function AvatarBox({ form }: EditorFormProps) {
-  const avatar = form.watch("avatar");
-
+export function ImageUpload({
+  blob,
+  setBlob,
+}: {
+  blob: Blob | undefined;
+  setBlob: (blob: Blob | undefined) => void;
+}) {
   const [isImageCropModalOpen, setIsImageCropModalOpen] = useState(false);
   const [file, setFile] = useState<Blob | undefined>(undefined);
   const fileRef = useRef<HTMLInputElement>(null);
   const blobUrl = useMemo(() => {
-    if (avatar) {
-      return URL.createObjectURL(avatar);
+    if (blob) {
+      return URL.createObjectURL(blob);
     }
     return undefined;
-  }, [avatar]);
+  }, [blob]);
 
   function handleFileChange(event: React.ChangeEvent<HTMLInputElement>) {
     const files = event.target.files;
@@ -29,7 +32,7 @@ export function AvatarBox({ form }: EditorFormProps) {
   }
 
   function handleRemoveAvatar() {
-    form.setValue("avatar", undefined);
+    setBlob(undefined);
   }
 
   return (
@@ -70,7 +73,7 @@ export function AvatarBox({ form }: EditorFormProps) {
         open={isImageCropModalOpen}
         setOpen={setIsImageCropModalOpen}
         image={file}
-        onComplete={(blob) => form.setValue("avatar", blob)}
+        onComplete={(blob) => setBlob(blob)}
       />
     </div>
   );
