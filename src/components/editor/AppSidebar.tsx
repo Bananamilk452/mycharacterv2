@@ -1,4 +1,4 @@
-import { Earth, UserPlus } from "lucide-react";
+import { CogIcon, Earth, UserPlus } from "lucide-react";
 import { useMemo, useState } from "react";
 
 import { CharacterModal } from "@/components/editor/CharacterModal";
@@ -16,6 +16,7 @@ import {
 import { useCollection } from "@/hooks/useCollection";
 
 import { Spinner } from "../Spinner";
+import { UpdateCollectionModal } from "./UpdateCollectionModal";
 
 interface AppSidebarProps {
   uuid: string;
@@ -24,6 +25,8 @@ interface AppSidebarProps {
 export function AppSidebar({ uuid }: AppSidebarProps) {
   const { collectionInfo, characters } = useCollection(uuid);
   const [isCharacterDialogOpen, setIsCharacterDialogOpen] = useState(false);
+  const [isUpdateCollectionDialogOpen, setIsUpdateCollectionDialogOpen] =
+    useState(false);
 
   const iconUrl = useMemo(() => {
     if (collectionInfo && collectionInfo.icon) {
@@ -71,6 +74,19 @@ export function AppSidebar({ uuid }: AppSidebarProps) {
                       collectionUuid={uuid}
                       open={isCharacterDialogOpen}
                       setOpen={setIsCharacterDialogOpen}
+                    />
+                  </SidebarMenuItem>
+                  <SidebarMenuItem>
+                    <SidebarMenuButton
+                      onClick={() => setIsUpdateCollectionDialogOpen(true)}
+                    >
+                      <CogIcon />
+                      콜렉션 설정
+                    </SidebarMenuButton>
+                    <UpdateCollectionModal
+                      collectionUuid={uuid}
+                      open={isUpdateCollectionDialogOpen}
+                      setOpen={setIsUpdateCollectionDialogOpen}
                     />
                   </SidebarMenuItem>
                 </SidebarMenu>
