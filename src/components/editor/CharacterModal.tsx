@@ -216,7 +216,7 @@ export function CharacterModal({
 
         <DialogFooter>
           <Button disabled={isLoading} onClick={form.handleSubmit(onSubmit)}>
-            생성
+            {character ? "수정" : "생성"}
           </Button>
         </DialogFooter>
       </DialogContent>
