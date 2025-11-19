@@ -8,6 +8,11 @@
     "Pretendard JP Variable", "Pretendard Variable", sans-serif;
 }
 
+/* TinyMCE */
+.tox-promotion-link {
+  display: none !important;
+}
+
 :root {
   --background: oklch(0.985 0.002 247.839);
   --foreground: oklch(0.129 0.042 264.695);
