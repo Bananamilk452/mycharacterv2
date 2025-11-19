@@ -55,7 +55,7 @@ export function NoteBox({ form }: EditorFormProps) {
               menubar: "file edit insert format table",
             },
           }}
-          onInit={(e, editor) => {
+          onInit={(_, editor) => {
             setEditorRef(editor);
           }}
           onChange={(e) => {
