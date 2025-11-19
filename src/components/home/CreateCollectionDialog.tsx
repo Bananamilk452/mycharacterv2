@@ -1,4 +1,5 @@
 import { zodResolver } from "@hookform/resolvers/zod";
+import { usePath } from "crossroad";
 import React, { useState } from "react";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
@@ -36,6 +37,7 @@ interface Props {
 }
 
 export function CreateCollectionDialog({ children }: Props) {
+  const [, setPath] = usePath();
   const [isOpen, setIsOpen] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
 
@@ -51,9 +53,11 @@ export function CreateCollectionDialog({ children }: Props) {
 
     createCollection(values.collectionName)
       .then((db) => {
-        console.log(db);
-        setIsOpen(false);
-        form.reset();
+        db.collectionInfo.get(1).then((col) => {
+          setPath(`/editor/${col!.uuid}`);
+          setIsOpen(false);
+          form.reset();
+        });
       })
       .catch((err) => {
         console.error(err);
