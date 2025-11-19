@@ -25,7 +25,7 @@ export function RelationBox({
   useEffect(() => {
     if (collection) {
       collection.characters
-        .where("uuid")
+        .where("id")
         .anyOf(relationKeys)
         .toArray()
         .then((chars) => {
@@ -39,7 +39,8 @@ export function RelationBox({
           );
         });
     }
-  }, [collection, relationKeys, relationValues]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [collection, relationKeys.join(","), relationValues.join(",")]);
 
   return (
     <div className="flex flex-col">
@@ -55,14 +56,18 @@ export function RelationBox({
         </Button>
       </div>
       <div className="border-input mt-3.5 flex h-64 flex-wrap gap-4 overflow-scroll rounded-md border p-4 shadow-xs">
-        {relationCharacters.map((r) => (
-          <CharacterCard
-            key={crypto.randomUUID()}
-            size="sm"
-            character={r.character}
-            description={r.relationName}
-          />
-        ))}
+        {relationCharacters.length > 0 ? (
+          relationCharacters.map((r) => (
+            <CharacterCard
+              key={crypto.randomUUID()}
+              size="sm"
+              character={r.character}
+              description={r.relationName}
+            />
+          ))
+        ) : (
+          <p className="text-sm text-gray-600">캐릭터 관계가 없습니다.</p>
+        )}
       </div>
 
       <AddRelationModal
