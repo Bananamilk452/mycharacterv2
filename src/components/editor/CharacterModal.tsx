@@ -2,7 +2,7 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { Editor } from "@tinymce/tinymce-react";
 import { Plus, Trash2, Upload, X } from "lucide-react";
 import React, { useEffect, useMemo, useRef, useState } from "react";
-import { useForm, UseFormReturn, useWatch } from "react-hook-form";
+import { useForm, UseFormReturn } from "react-hook-form";
 import { z } from "zod";
 
 import { Button } from "@/components/ui/button";
@@ -65,10 +65,10 @@ interface Props {
   open: boolean;
   setOpen: (open: boolean) => void;
   collectionUuid: string;
-  characterUuid?: string;
+  character?: Character;
 }
 
-interface FormProps {
+export interface FormProps {
   form: UseFormReturn<FormSchema>;
 }
 
@@ -76,7 +76,7 @@ export function CharacterModal({
   open,
   setOpen,
   collectionUuid,
-  characterUuid,
+  character,
 }: Props) {
   const { collection } = useCollection(collectionUuid);
   const [isLoading, setIsLoading] = useState(false);
@@ -94,6 +94,14 @@ export function CharacterModal({
     },
   });
 
+  useEffect(() => {
+    if (character) {
+      form.reset({
+        ...character,
+      });
+    }
+  }, [character, form]);
+
   function onSubmit(values: FormSchema) {
     if (!collection) {
       return;
@@ -101,23 +109,29 @@ export function CharacterModal({
 
     setIsLoading(true);
 
-    collection.characters
-      .add({
-        ...values,
-        uuid: crypto.randomUUID(),
-        createdAt: new Date(),
-        updatedAt: new Date(),
-      })
-      .then(() => {
-        setOpen(false);
-        form.reset();
-      })
-      .catch((error) => {
-        console.error(error);
-      })
-      .finally(() => {
-        setIsLoading(false);
-      });
+    // 캐릭터 추가
+    if (!character) {
+      collection.characters
+        .add({
+          ...values,
+          createdAt: new Date(),
+          updatedAt: new Date(),
+        })
+        .then(() => {
+          setOpen(false);
+          form.reset();
+        })
+        .catch((error) => {
+          console.error(error);
+        })
+        .finally(() => {
+          setIsLoading(false);
+        });
+    }
+    // 캐릭터 수정
+    else {
+      // collection.characters.update
+    }
   }
 
   return (
@@ -261,7 +275,7 @@ function AvatarBox({ form }: FormProps) {
 }
 
 function TagBox({ form }: FormProps) {
-  const [tags, setTags] = useState<string[]>([]);
+  const tags = form.watch("tags");
 
   function handleKeyUp(event: React.KeyboardEvent<HTMLInputElement>) {
     // 엔터나 스페이스
@@ -274,7 +288,6 @@ function TagBox({ form }: FormProps) {
           return;
         }
 
-        setTags((prevTags) => [...prevTags, value]);
         form.setValue("tags", [...tags, value]);
         event.currentTarget.value = "";
       }
@@ -282,7 +295,6 @@ function TagBox({ form }: FormProps) {
   }
 
   function handleRemove(index: number) {
-    setTags((prevTags) => prevTags.filter((_, i) => i !== index));
     form.setValue(
       "tags",
       tags.filter((_, i) => i !== index),
@@ -315,11 +327,8 @@ function TagBox({ form }: FormProps) {
 
 function PropertyBox({ form }: FormProps) {
   const propertyContainerRef = useRef<HTMLDivElement>(null);
-  const [propertyCount, setPropertyCount] = useState(0);
-
-  function handleAddProperty() {
-    setPropertyCount((count) => count + 1);
-  }
+  const propertyKeys = form.watch("propertyKeys");
+  const propertyValues = form.watch("propertyValues");
 
   // 속성 추가 시 스크롤을 아래로 내림
   useEffect(() => {
@@ -327,10 +336,14 @@ function PropertyBox({ form }: FormProps) {
       propertyContainerRef.current.scrollTop =
         propertyContainerRef.current.scrollHeight;
     }
-  }, [propertyCount]);
+  }, [propertyKeys, propertyValues]);
+
+  function handleAddProperty() {
+    form.setValue("propertyKeys", [...form.getValues("propertyKeys"), ""]);
+    form.setValue("propertyValues", [...form.getValues("propertyValues"), ""]);
+  }
 
   function handleRemoveProperty(index: number) {
-    setPropertyCount((count) => count - 1);
     form.setValue(
       "propertyKeys",
       form.getValues("propertyKeys").filter((_, i) => i !== index),
@@ -355,7 +368,7 @@ function PropertyBox({ form }: FormProps) {
         tabIndex={-1}
         className="border-input mt-3.5 flex h-36 grow flex-col gap-3 overflow-auto rounded-md border p-3 shadow-xs"
       >
-        {new Array(propertyCount).fill(null).map((_, index) => (
+        {propertyKeys.map((_, index) => (
           <div key={index} className="grid grid-cols-[1fr_1fr_auto] gap-2">
             <FormField
               control={form.control}
@@ -453,7 +466,8 @@ function RelationBox({
   form,
   collectionUuid,
 }: FormProps & { collectionUuid: string }) {
-  const { relationKeys, relationValues } = useWatch<FormSchema>();
+  const relationKeys = form.watch("relationKeys");
+  const relationValues = form.watch("relationValues");
   const { collection } = useCollection(collectionUuid);
   const [isAddRelationModalOpen, setIsAddRelationModalOpen] = useState(false);
   const [relationCharacters, setRelationCharacters] = useState<
@@ -461,24 +475,22 @@ function RelationBox({
   >([]);
 
   useEffect(() => {
-    if (!collection || !relationKeys || !relationValues) {
-      return;
+    if (collection) {
+      collection.characters
+        .where("uuid")
+        .anyOf(relationKeys)
+        .toArray()
+        .then((chars) => {
+          setRelationCharacters(
+            relationKeys.map((key, i) => {
+              return {
+                character: chars.find((c) => c.id === key)!,
+                relationName: relationValues[i],
+              };
+            }),
+          );
+        });
     }
-
-    collection.characters
-      .where("uuid")
-      .anyOf(relationKeys)
-      .toArray()
-      .then((chars) => {
-        setRelationCharacters(
-          relationKeys.map((key, i) => {
-            return {
-              character: chars.find((c) => c.uuid === key)!,
-              relationName: relationValues[i],
-            };
-          }),
-        );
-      });
   }, [collection, relationKeys, relationValues]);
 
   return (
