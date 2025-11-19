@@ -25,7 +25,7 @@ export function useCollection(uuid: string) {
       return undefined;
     }
 
-    const characters = await collection.character.toArray();
+    const characters = await collection.characters.toArray();
 
     return characters;
   }, [collection]);

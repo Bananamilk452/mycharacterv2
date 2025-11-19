@@ -6,13 +6,15 @@ import { DB_PREFIX } from "@/constant";
 import type { EntityTable } from "dexie";
 
 interface Character {
-  id: number;
-  avatar?: Blob;
+  uuid: string;
   name: string;
+  avatar?: Blob;
   propertyKeys: string[];
   propertyValues: string[];
   tags: string[];
   note: string;
+  relationKeys: string[];
+  relationValues: string[];
   createdAt: Date;
   updatedAt: Date;
 }
@@ -27,7 +29,7 @@ interface CollectionInfo {
 }
 
 type Collection = Dexie & {
-  character: EntityTable<Character, "id">;
+  characters: EntityTable<Character>;
   collectionInfo: EntityTable<CollectionInfo, "id">;
 };
 
@@ -49,9 +51,11 @@ async function initCollection(uuid: string) {
   const db = new Dexie(uuid) as Collection;
 
   db.version(1).stores({
-    character:
-      "++id, name, *propertyKeys, *propertyValues, *tags, createdAt, updatedAt",
-    collectionInfo: "++id, name, uuid, createdAt, updatedAt",
+    characters:
+      "++, uuid, name, *propertyKeys, *propertyValues, *tags, createdAt, updatedAt",
+    relations:
+      "++, uuid, characterId1, characterId2, [characterId1+characterId2], relation",
+    collectionInfo: "++id, uuid, name, createdAt, updatedAt",
   });
 
   return db;

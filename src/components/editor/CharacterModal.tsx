@@ -12,7 +12,6 @@ import {
   DialogFooter,
   DialogHeader,
   DialogTitle,
-  DialogTrigger,
 } from "@/components/ui/dialog";
 import {
   Form,
@@ -26,7 +25,7 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Message } from "@/components/ui/message";
 import { Textarea } from "@/components/ui/textarea";
-import { Collection } from "@/lib/db";
+import { useCollection } from "@/hooks/useCollection";
 import errorMessages from "@/utils/errorMessages";
 
 import { ImageCropModal } from "./ImageCropModal";
@@ -49,16 +48,17 @@ const formSchema = z.object({
 });
 
 interface Props {
-  children?: React.ReactNode;
-  collection: Collection;
+  open: boolean;
+  setOpen: (open: boolean) => void;
+  uuid: string;
 }
 
 interface FormProps {
   form: UseFormReturn<z.infer<typeof formSchema>>;
 }
 
-export function CharacterDialog({ children, collection }: Props) {
-  const [isOpen, setIsOpen] = useState(false);
+export function CharacterModal({ open, setOpen, uuid }: Props) {
+  const { collection } = useCollection(uuid);
   const [isLoading, setIsLoading] = useState(false);
 
   const form = useForm<z.infer<typeof formSchema>>({
@@ -73,16 +73,21 @@ export function CharacterDialog({ children, collection }: Props) {
   });
 
   function onSubmit(values: z.infer<typeof formSchema>) {
+    if (!collection) {
+      return;
+    }
+
     setIsLoading(true);
 
-    collection.character
+    collection.characters
       .add({
         ...values,
+        uuid: crypto.randomUUID(),
         createdAt: new Date(),
         updatedAt: new Date(),
       })
       .then(() => {
-        setIsOpen(false);
+        setOpen(false);
         form.reset();
       })
       .catch((error) => {
@@ -94,8 +99,7 @@ export function CharacterDialog({ children, collection }: Props) {
   }
 
   return (
-    <Dialog open={isOpen} onOpenChange={(open) => setIsOpen(open)}>
-      <DialogTrigger asChild>{children}</DialogTrigger>
+    <Dialog open={open} onOpenChange={setOpen}>
       <DialogContent className="max-w-3xl">
         <DialogHeader>
           <DialogTitle>캐릭터 생성</DialogTitle>
