@@ -1,23 +1,33 @@
-import { useParams } from "crossroad";
+import { useParams, usePath } from "crossroad";
 import { useEffect, useState } from "react";
 
 import { AppSidebar } from "@/components/editor/AppSidebar";
-import { CharacterCard } from "@/components/editor/CharacterCard";
-import { CharacterModal } from "@/components/editor/CharacterModal";
+import { Characters } from "@/components/editor/Characters";
+import { CreateCollectionDialog } from "@/components/home/CreateCollectionDialog";
+import { OpenCollectionDialog } from "@/components/home/OpenCollectionModal";
 import { Spinner } from "@/components/Spinner";
 import { Dimmer } from "@/components/ui/dimmer";
+import {
+  Menubar,
+  MenubarContent,
+  MenubarItem,
+  MenubarMenu,
+  MenubarTrigger,
+} from "@/components/ui/menubar";
 import { SidebarProvider } from "@/components/ui/sidebar";
 import { useCollection } from "@/hooks/useCollection";
-import { Character } from "@/lib/db";
 
 function Editor() {
+  const [, setPath] = usePath();
   const { collectionUuid } = useParams();
   const { collectionInfo, characters } = useCollection(
     collectionUuid as string,
   );
-  const [isCharacterModalOpen, setIsCharacterModalOpen] = useState(false);
-  const [selectedCharacter, setSelectedCharacter] =
-    useState<Character | null>();
+
+  const [isCreateCollectionDialogOpen, setIsCreateCollectionDialogOpen] =
+    useState(false);
+  const [isOpenCollectionDialogOpen, setIsOpenCollectionDialogOpen] =
+    useState(false);
 
   useEffect(() => {
     if (collectionInfo) {
@@ -25,57 +35,39 @@ function Editor() {
     }
   }, [collectionInfo]);
 
-  const templates =
-    collectionInfo?.characterDescription.match(/\{\{(.+)\}\}/gm);
-  function getCharacterDescription(character: Character) {
-    const fields = templates?.map((template) => {
-      const fieldName = template.replace("{{", "").replace("}}", "").trim();
-      return { template, fieldName };
-    });
-
-    let description = collectionInfo?.characterDescription || "";
-    if (fields) {
-      fields.forEach(({ template, fieldName }) => {
-        const index = character.propertyKeys.indexOf(fieldName);
-        if (index !== -1) {
-          const value = character.propertyValues[index];
-          description = description.replace(template, value);
-        } else {
-          description = description.replace(template, "-");
-        }
-      });
-    }
-    return description;
-  }
-
   return (
     <main>
       {characters && collectionInfo ? (
         <>
+          <Menubar>
+            <MenubarMenu>
+              <MenubarTrigger>파일</MenubarTrigger>
+              <MenubarContent>
+                <MenubarItem onClick={() => setPath("/")}>홈</MenubarItem>
+                <MenubarItem
+                  onClick={() => setIsCreateCollectionDialogOpen(true)}
+                >
+                  콜렉션 추가
+                </MenubarItem>
+                <MenubarItem
+                  onClick={() => setIsOpenCollectionDialogOpen(true)}
+                >
+                  콜렉션 열기
+                </MenubarItem>
+              </MenubarContent>
+            </MenubarMenu>
+          </Menubar>
+          <CreateCollectionDialog
+            open={isCreateCollectionDialogOpen}
+            setOpen={setIsCreateCollectionDialogOpen}
+          />
+          <OpenCollectionDialog
+            open={isOpenCollectionDialogOpen}
+            setOpen={setIsOpenCollectionDialogOpen}
+          />
           <SidebarProvider>
             <AppSidebar uuid={collectionUuid as string} />
-            <section id="characters" className="p-4">
-              <ul className="flex flex-wrap gap-4">
-                {characters.map((character) => (
-                  <CharacterCard
-                    key={character.id}
-                    character={character}
-                    description={getCharacterDescription(character)}
-                    className="cursor-pointer"
-                    onClick={() => {
-                      setSelectedCharacter(character);
-                      setIsCharacterModalOpen(true);
-                    }}
-                  />
-                ))}
-              </ul>
-              <CharacterModal
-                open={isCharacterModalOpen}
-                setOpen={setIsCharacterModalOpen}
-                collectionUuid={collectionUuid as string}
-                character={selectedCharacter!}
-              />
-            </section>
+            <Characters collectionUuid={collectionUuid as string} />
           </SidebarProvider>
         </>
       ) : (

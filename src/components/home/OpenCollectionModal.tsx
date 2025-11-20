@@ -6,18 +6,17 @@ import {
   DialogContent,
   DialogHeader,
   DialogTitle,
-  DialogTrigger,
 } from "@/components/ui/dialog";
 import { CollectionInfo, listCollections } from "@/lib/db";
 
 import { Spinner } from "../Spinner";
 
 interface Props {
-  children?: React.ReactNode;
+  open: boolean;
+  setOpen: (open: boolean) => void;
 }
 
-export function OpenCollectionDialog({ children }: Props) {
-  const [isOpen, setIsOpen] = useState(false);
+export function OpenCollectionDialog({ open, setOpen }: Props) {
   const [isLoading, setIsLoading] = useState(false);
   const [collections, setCollections] = useState<CollectionInfo[]>([]);
 
@@ -34,8 +33,7 @@ export function OpenCollectionDialog({ children }: Props) {
   }, []);
 
   return (
-    <Dialog open={isOpen} onOpenChange={(open) => setIsOpen(open)}>
-      <DialogTrigger asChild>{children}</DialogTrigger>
+    <Dialog open={open} onOpenChange={(open) => setOpen(open)}>
       <DialogContent>
         <DialogHeader>
           <DialogTitle>콜렉션 열기</DialogTitle>
