@@ -9,7 +9,7 @@ export default function Index() {
   }, []);
 
   return (
-    <main className="h-dvh w-dvh">
+    <main className="h-dvh w-dvw">
       <div className="flex size-full items-center justify-center">
         <WelcomeMenu />
       </div>
