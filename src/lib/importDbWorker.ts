@@ -1,7 +1,6 @@
 import JSZip from "jszip";
 
-import { DB_PREFIX } from "@/constant";
-
+import { DB_PREFIX } from "../constant";
 import {
   Character,
   CollectionInfo,
