@@ -56,8 +56,6 @@ async function initCollection(uuid: string) {
   db.version(1).stores({
     characters:
       "$$id, name, *propertyKeys, *propertyValues, *tags, createdAt, updatedAt",
-    relations:
-      "$$id, characterId1, characterId2, [characterId1+characterId2], relation",
     collectionInfo:
       "++id, uuid, name, description, characterDescription, createdAt, updatedAt",
   });
