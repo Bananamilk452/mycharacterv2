@@ -3,6 +3,7 @@ import { useEffect, useState } from "react";
 
 import { AppSidebar } from "@/components/editor/AppSidebar";
 import { Characters } from "@/components/editor/Characters";
+import { ExportCollectionModal } from "@/components/editor/ExportCollectionModal";
 import { CreateCollectionDialog } from "@/components/home/CreateCollectionDialog";
 import { OpenCollectionDialog } from "@/components/home/OpenCollectionModal";
 import { Spinner } from "@/components/Spinner";
@@ -27,6 +28,8 @@ function Editor() {
   const [isCreateCollectionDialogOpen, setIsCreateCollectionDialogOpen] =
     useState(false);
   const [isOpenCollectionDialogOpen, setIsOpenCollectionDialogOpen] =
+    useState(false);
+  const [isExportCollectionDialogOpen, setIsExportCollectionDialogOpen] =
     useState(false);
 
   useEffect(() => {
@@ -54,6 +57,11 @@ function Editor() {
                 >
                   콜렉션 열기
                 </MenubarItem>
+                <MenubarItem
+                  onClick={() => setIsExportCollectionDialogOpen(true)}
+                >
+                  내보내기
+                </MenubarItem>
               </MenubarContent>
             </MenubarMenu>
           </Menubar>
@@ -64,6 +72,11 @@ function Editor() {
           <OpenCollectionDialog
             open={isOpenCollectionDialogOpen}
             setOpen={setIsOpenCollectionDialogOpen}
+          />
+          <ExportCollectionModal
+            open={isExportCollectionDialogOpen}
+            setOpen={setIsExportCollectionDialogOpen}
+            collectionUuid={collectionUuid as string}
           />
           <SidebarProvider>
             <AppSidebar uuid={collectionUuid as string} />
