@@ -3,7 +3,6 @@ import { useEffect, useRef } from "react";
 
 import { Button } from "../ui/button";
 import { FormControl, FormField, FormItem, FormMessage } from "../ui/form";
-import { Input } from "../ui/input";
 import { Label } from "../ui/label";
 import { Textarea } from "../ui/textarea";
 import { EditorFormProps } from "./CharacterModal";
