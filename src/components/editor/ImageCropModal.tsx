@@ -88,18 +88,20 @@ export function ImageCropModal({
   }
   return (
     <Dialog open={open} onOpenChange={setOpen}>
-      <DialogContent className="max-w-xl!">
+      <DialogContent className="flex max-h-dvh max-w-xl! flex-col">
         <DialogHeader>
           <DialogTitle>이미지 자르기</DialogTitle>
         </DialogHeader>
 
         <ReactCrop
+          className="max-h-[80vh]"
           crop={crop}
           aspect={aspect}
           onChange={(newCrop) => setCrop(newCrop)}
         >
           {imageUrl && (
             <img
+              className="h-fit"
               src={imageUrl}
               alt="To be cropped"
               onLoad={(e) => setImgElement(e.currentTarget)}
