@@ -5,7 +5,7 @@ import { AppSidebar } from "@/components/editor/AppSidebar";
 import { Characters } from "@/components/editor/Characters";
 import { ExportCollectionModal } from "@/components/editor/ExportCollectionModal";
 import { CreateCollectionDialog } from "@/components/home/CreateCollectionDialog";
-import { OpenCollectionDialog } from "@/components/home/OpenCollectionModal";
+import { OpenCollectionModal } from "@/components/home/OpenCollectionModal";
 import { Spinner } from "@/components/Spinner";
 import { Dimmer } from "@/components/ui/dimmer";
 import {
@@ -69,7 +69,7 @@ function Editor() {
             open={isCreateCollectionDialogOpen}
             setOpen={setIsCreateCollectionDialogOpen}
           />
-          <OpenCollectionDialog
+          <OpenCollectionModal
             open={isOpenCollectionDialogOpen}
             setOpen={setIsOpenCollectionDialogOpen}
           />

@@ -4,7 +4,7 @@ import { useState } from "react";
 import { CreateCollectionDialog } from "@/components/home/CreateCollectionDialog";
 import { useRecentCollections } from "@/hooks/useRecentCollections";
 
-import { OpenCollectionDialog } from "./OpenCollectionModal";
+import { OpenCollectionModal } from "./OpenCollectionModal";
 
 export function WelcomeMenu() {
   const { recentCollections } = useRecentCollections();
@@ -45,7 +45,7 @@ export function WelcomeMenu() {
             <FolderIcon className="size-5" />
             <span className="text-sm">콜렉션 열기</span>
           </button>
-          <OpenCollectionDialog
+          <OpenCollectionModal
             open={isOpenCollectionDialogOpen}
             setOpen={setIsOpenCollectionDialogOpen}
           />
