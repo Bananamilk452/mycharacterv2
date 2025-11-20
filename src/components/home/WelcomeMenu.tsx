@@ -23,6 +23,9 @@ export function WelcomeMenu() {
         알파 버전입니다. 데이터의 소실이 있을 수도 있습니다.
         <br />
         피드백은 언제나 환영입니다! 😊
+        <br />
+        <br />
+        모든 데이터는 브라우저 (로컬)에 저장됩니다.
       </p>
 
       <h3 className="mt-8 font-medium">시작하기</h3>
@@ -68,7 +71,7 @@ export function WelcomeMenu() {
         </li>
       </ul>
 
-      <h3 className="mt-24 font-medium">최근 콜렉션</h3>
+      <h3 className="mt-20 font-medium">최근 콜렉션</h3>
       <ul className="mt-2 space-y-3">
         {recentCollections.length === 0 && (
           <li>
