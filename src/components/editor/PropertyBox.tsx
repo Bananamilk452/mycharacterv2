@@ -3,8 +3,8 @@ import { useEffect, useRef } from "react";
 
 import { Button } from "../ui/button";
 import { FormControl, FormField, FormItem, FormMessage } from "../ui/form";
-import { Input } from "../ui/input";
 import { Label } from "../ui/label";
+import { Textarea } from "../ui/textarea";
 import { EditorFormProps } from "./CharacterModal";
 
 export function PropertyBox({ form }: EditorFormProps) {
@@ -59,7 +59,7 @@ export function PropertyBox({ form }: EditorFormProps) {
               render={({ field }) => (
                 <FormItem>
                   <FormControl>
-                    <Input {...field} type="text" placeholder="속성 이름" />
+                    <Textarea {...field} placeholder="속성 이름" />
                   </FormControl>
                   <FormMessage />
                 </FormItem>
@@ -72,7 +72,7 @@ export function PropertyBox({ form }: EditorFormProps) {
               render={({ field }) => (
                 <FormItem>
                   <FormControl>
-                    <Input {...field} type="text" placeholder="속성 값" />
+                    <Textarea {...field} placeholder="속성 값" />
                   </FormControl>
                   <FormMessage />
                 </FormItem>
