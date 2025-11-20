@@ -41,7 +41,7 @@ export function ImageUpload({
         <img
           src={blobUrl}
           alt="이미지가 없습니다."
-          className="flex size-full items-center justify-center object-cover text-sm"
+          className="flex size-full items-center justify-center object-contain text-sm"
         />
       </div>
       <div className="flex justify-end gap-2">

@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import ReactCrop, { Crop } from "react-image-crop";
 
 import "react-image-crop/dist/ReactCrop.css";
@@ -32,6 +32,18 @@ export function ImageCropModal({
   const [imgElement, setImgElement] = useState<HTMLImageElement | null>(null);
 
   const imageUrl = image ? URL.createObjectURL(image) : undefined;
+
+  useEffect(() => {
+    if (imgElement) {
+      setCrop({
+        width: imgElement.width,
+        height: imgElement.height,
+        x: 0,
+        y: 0,
+        unit: "px",
+      });
+    }
+  }, [imgElement]);
 
   if (open !== previousState) {
     setPreviousState(open);
