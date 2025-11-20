@@ -1,8 +1,8 @@
 import { Dexie } from "dexie";
 import { z } from "zod";
 
-import { DB_PREFIX } from "@/constant";
-import dexieUuid from "@/lib/db/uuid";
+import { DB_PREFIX } from "../constant";
+import dexieUuid from "./db/uuid";
 
 import type { EntityTable } from "dexie";
 
@@ -50,8 +50,8 @@ export function isCollectionInfo(obj: unknown): obj is CollectionInfo {
 }
 
 // new Dexie는 생성/연결을 둘 다 하므로 아래 함수는 내부 함수로만만 사용
-async function initCollection(uuid: string) {
-  const db = new Dexie(uuid, { addons: [dexieUuid] }) as Collection;
+export async function initCollection(name: string) {
+  const db = new Dexie(name, { addons: [dexieUuid] }) as Collection;
 
   db.version(1).stores({
     characters:

@@ -1,16 +1,19 @@
-import { FolderIcon, PlusIcon } from "lucide-react";
+import { FolderIcon, ImportIcon, PlusIcon } from "lucide-react";
 import { useState } from "react";
 
 import { CreateCollectionDialog } from "@/components/home/CreateCollectionDialog";
 import { useRecentCollections } from "@/hooks/useRecentCollections";
 
-import { OpenCollectionDialog } from "./OpenCollectionModal";
+import { ImportCollectionModal } from "../editor/ImportCollectionModal";
+import { OpenCollectionModal } from "./OpenCollectionModal";
 
 export function WelcomeMenu() {
   const { recentCollections } = useRecentCollections();
   const [isCreateCollectionDialogOpen, setIsCreateCollectionDialogOpen] =
     useState(false);
   const [isOpenCollectionDialogOpen, setIsOpenCollectionDialogOpen] =
+    useState(false);
+  const [isImportCollectionDialogOpen, setIsImportCollectionDialogOpen] =
     useState(false);
 
   return (
@@ -45,9 +48,22 @@ export function WelcomeMenu() {
             <FolderIcon className="size-5" />
             <span className="text-sm">콜렉션 열기</span>
           </button>
-          <OpenCollectionDialog
+          <OpenCollectionModal
             open={isOpenCollectionDialogOpen}
             setOpen={setIsOpenCollectionDialogOpen}
+          />
+        </li>
+        <li>
+          <button
+            onClick={() => setIsImportCollectionDialogOpen(true)}
+            className="flex items-center gap-2 text-violet-600 hover:underline"
+          >
+            <ImportIcon className="size-5" />
+            <span className="text-sm">가져오기</span>
+          </button>
+          <ImportCollectionModal
+            open={isImportCollectionDialogOpen}
+            setOpen={setIsImportCollectionDialogOpen}
           />
         </li>
       </ul>

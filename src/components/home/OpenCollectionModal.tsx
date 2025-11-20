@@ -11,12 +11,15 @@ import { CollectionInfo, listCollections } from "@/lib/db";
 
 import { Spinner } from "../Spinner";
 
-interface Props {
+interface OpenCollectionModalProps {
   open: boolean;
   setOpen: (open: boolean) => void;
 }
 
-export function OpenCollectionDialog({ open, setOpen }: Props) {
+export function OpenCollectionModal({
+  open,
+  setOpen,
+}: OpenCollectionModalProps) {
   const [isLoading, setIsLoading] = useState(false);
   const [collections, setCollections] = useState<CollectionInfo[]>([]);
 
@@ -46,6 +49,7 @@ export function OpenCollectionDialog({ open, setOpen }: Props) {
               <li key={c.uuid}>
                 <a
                   href={`/editor/${c.uuid}`}
+                  onClick={() => setOpen(false)}
                   className="flex items-center gap-2 px-3 py-2 text-sm text-violet-600 hover:bg-gray-100 hover:underline"
                 >
                   <FolderIcon className="size-4" />

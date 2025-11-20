@@ -3,8 +3,10 @@ import { useEffect, useState } from "react";
 
 import { AppSidebar } from "@/components/editor/AppSidebar";
 import { Characters } from "@/components/editor/Characters";
+import { ExportCollectionModal } from "@/components/editor/ExportCollectionModal";
+import { ImportCollectionModal } from "@/components/editor/ImportCollectionModal";
 import { CreateCollectionDialog } from "@/components/home/CreateCollectionDialog";
-import { OpenCollectionDialog } from "@/components/home/OpenCollectionModal";
+import { OpenCollectionModal } from "@/components/home/OpenCollectionModal";
 import { Spinner } from "@/components/Spinner";
 import { Dimmer } from "@/components/ui/dimmer";
 import {
@@ -27,6 +29,10 @@ function Editor() {
   const [isCreateCollectionDialogOpen, setIsCreateCollectionDialogOpen] =
     useState(false);
   const [isOpenCollectionDialogOpen, setIsOpenCollectionDialogOpen] =
+    useState(false);
+  const [isExportCollectionDialogOpen, setIsExportCollectionDialogOpen] =
+    useState(false);
+  const [isImportCollectionDialogOpen, setIsImportCollectionDialogOpen] =
     useState(false);
 
   useEffect(() => {
@@ -54,6 +60,16 @@ function Editor() {
                 >
                   콜렉션 열기
                 </MenubarItem>
+                <MenubarItem
+                  onClick={() => setIsExportCollectionDialogOpen(true)}
+                >
+                  내보내기
+                </MenubarItem>
+                <MenubarItem
+                  onClick={() => setIsImportCollectionDialogOpen(true)}
+                >
+                  가져오기
+                </MenubarItem>
               </MenubarContent>
             </MenubarMenu>
           </Menubar>
@@ -61,9 +77,18 @@ function Editor() {
             open={isCreateCollectionDialogOpen}
             setOpen={setIsCreateCollectionDialogOpen}
           />
-          <OpenCollectionDialog
+          <OpenCollectionModal
             open={isOpenCollectionDialogOpen}
             setOpen={setIsOpenCollectionDialogOpen}
+          />
+          <ExportCollectionModal
+            open={isExportCollectionDialogOpen}
+            setOpen={setIsExportCollectionDialogOpen}
+            collectionUuid={collectionUuid as string}
+          />
+          <ImportCollectionModal
+            open={isImportCollectionDialogOpen}
+            setOpen={setIsImportCollectionDialogOpen}
           />
           <SidebarProvider>
             <AppSidebar uuid={collectionUuid as string} />
