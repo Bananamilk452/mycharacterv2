@@ -58,11 +58,10 @@ export function ImageCropModal({
     const canvas = document.createElement("canvas");
     const scaleX = imgElement.naturalWidth / imgElement.width;
     const scaleY = imgElement.naturalHeight / imgElement.height;
-
-    canvas.width = crop.width;
-    canvas.height = crop.height;
-
+    canvas.width = Math.ceil(crop.width * scaleX);
+    canvas.height = Math.ceil(crop.height * scaleY);
     const ctx = canvas.getContext("2d");
+
     if (!ctx) {
       return;
     }
@@ -75,20 +74,24 @@ export function ImageCropModal({
       crop.height * scaleY,
       0,
       0,
-      crop.width,
-      crop.height,
+      crop.width * scaleX,
+      crop.height * scaleY,
     );
 
-    canvas.toBlob((blob) => {
-      if (blob) {
-        onComplete(blob);
-        setOpen(false);
-      }
-    }, "image/webp");
+    canvas.toBlob(
+      (blob) => {
+        if (blob) {
+          onComplete(blob);
+          setOpen(false);
+        }
+      },
+      "image/webp",
+      0.9,
+    );
   }
   return (
     <Dialog open={open} onOpenChange={setOpen}>
-      <DialogContent className="flex max-h-dvh max-w-xl! flex-col">
+      <DialogContent className="flex max-h-dvh! max-w-dvw! flex-col">
         <DialogHeader>
           <DialogTitle>이미지 자르기</DialogTitle>
         </DialogHeader>
