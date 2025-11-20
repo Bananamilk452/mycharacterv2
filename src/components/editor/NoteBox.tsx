@@ -20,12 +20,12 @@ export function NoteBox({ form }: EditorFormProps) {
       <div className="flex h-8 items-center justify-between">
         <Label className="shrink-0">노트</Label>
       </div>
-      <div className="mt-3.5 h-48">
+      <div className="mt-3.5 h-84">
         <Editor
           tinymceScriptSrc="/tinymce/tinymce.min.js"
           licenseKey="gpl"
           init={{
-            height: 256,
+            height: 336,
             menubar: "file edit insert format table",
             plugins: [
               "autosave",

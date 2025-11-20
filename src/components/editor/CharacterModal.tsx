@@ -8,6 +8,7 @@ import { Button } from "@/components/ui/button";
 import {
   Dialog,
   DialogContent,
+  DialogDescription,
   DialogFooter,
   DialogHeader,
   DialogTitle,
@@ -160,59 +161,64 @@ export function CharacterModal({
 
   return (
     <Dialog open={open} onOpenChange={setOpen}>
-      <DialogContent className="max-w-5xl!">
-        <DialogHeader>
+      <DialogContent className="flex h-fit max-h-[calc(100dvh-48px)]! max-w-5xl! flex-col gap-0">
+        <DialogHeader className="pb-2">
           <DialogTitle>캐릭터 생성</DialogTitle>
+          <DialogDescription>
+            제발 스크롤 내려주세요 스크롤 내리면 더 많은 옵션이 있어요
+          </DialogDescription>
         </DialogHeader>
 
         <Form {...form}>
-          <form onSubmit={form.handleSubmit(onSubmit)}>
-            <main
-              id="top"
-              className="grid grid-cols-[minmax(0,3fr)_minmax(0,7fr)] gap-6"
-            >
-              <section id="left" className="flex shrink-0 flex-col">
-                {/* 아바타 이미지 */}
-                <ImageUpload
-                  blob={form.watch("avatar")}
-                  setBlob={(blob) => form.setValue("avatar", blob)}
-                />
-              </section>
+          <form
+            className="min-h-0 overflow-y-auto"
+            onSubmit={form.handleSubmit(onSubmit)}
+          >
+            <div className="flex flex-col">
+              <div className="grid grid-cols-[minmax(0,3fr)_minmax(0,7fr)] gap-6">
+                <section id="left" className="flex shrink-0 flex-col">
+                  {/* 아바타 이미지 */}
+                  <ImageUpload
+                    blob={form.watch("avatar")}
+                    setBlob={(blob) => form.setValue("avatar", blob)}
+                  />
+                </section>
 
-              <section id="right" className="flex flex-col gap-4">
-                {/* 캐릭터 이름 */}
-                <FormField
-                  control={form.control}
-                  name="name"
-                  render={({ field }) => (
-                    <FormItem>
-                      <FormLabel>캐릭터 이름</FormLabel>
-                      <FormControl>
-                        <Input
-                          {...field}
-                          type="text"
-                          placeholder="캐릭터 이름"
-                        />
-                      </FormControl>
-                      <FormMessage />
-                    </FormItem>
-                  )}
-                />
+                <section id="right" className="flex flex-col gap-4">
+                  {/* 캐릭터 이름 */}
+                  <FormField
+                    control={form.control}
+                    name="name"
+                    render={({ field }) => (
+                      <FormItem>
+                        <FormLabel>캐릭터 이름</FormLabel>
+                        <FormControl>
+                          <Input
+                            {...field}
+                            type="text"
+                            placeholder="캐릭터 이름"
+                          />
+                        </FormControl>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
 
-                {/* 태그 */}
-                <TagBox form={form} />
+                  {/* 태그 */}
+                  <TagBox form={form} />
 
-                {/* 캐릭터 속성 */}
-                <PropertyBox form={form} />
-              </section>
-            </main>
+                  {/* 캐릭터 속성 */}
+                  <PropertyBox form={form} />
+                </section>
+              </div>
 
-            <hr className="mt-6 mb-4" />
+              <hr className="mt-6 mb-4" />
 
-            <main id="bottom" className="grid grid-cols-2 gap-4">
-              <NoteBox form={form} />
-              <RelationBox form={form} collectionUuid={collectionUuid} />
-            </main>
+              <div className="grid grid-cols-2 gap-4">
+                <NoteBox form={form} />
+                <RelationBox form={form} collectionUuid={collectionUuid} />
+              </div>
+            </div>
           </form>
         </Form>
 
@@ -222,7 +228,7 @@ export function CharacterModal({
           </Message>
         )}
 
-        <DialogFooter>
+        <DialogFooter className="pt-2">
           <Button disabled={isLoading} onClick={form.handleSubmit(onSubmit)}>
             {character ? "수정" : "생성"}
           </Button>

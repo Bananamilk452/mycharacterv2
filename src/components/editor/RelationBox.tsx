@@ -72,7 +72,7 @@ export function RelationBox({
           관계 추가
         </Button>
       </div>
-      <div className="border-input mt-3.5 flex h-64 flex-wrap gap-4 overflow-scroll rounded-md border p-4 shadow-xs">
+      <div className="border-input mt-3.5 flex h-84 flex-wrap gap-4 overflow-scroll rounded-md border p-4 shadow-xs">
         {relationCharacters.length > 0 ? (
           relationCharacters.map((r, i) => (
             <ContextMenu>

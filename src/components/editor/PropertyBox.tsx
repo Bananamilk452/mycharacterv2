@@ -48,7 +48,7 @@ export function PropertyBox({ form }: EditorFormProps) {
       <div
         ref={propertyContainerRef}
         tabIndex={-1}
-        className="border-input mt-3.5 flex h-36 grow flex-col gap-3 overflow-auto rounded-md border p-3 shadow-xs"
+        className="border-input mt-3.5 flex h-48 grow flex-col gap-3 overflow-auto rounded-md border p-3 shadow-xs"
       >
         {propertyKeys.map((_, index) => (
           <div key={index} className="grid grid-cols-[1fr_1fr_auto] gap-2">
