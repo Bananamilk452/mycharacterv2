@@ -57,6 +57,14 @@ export function NoteBox({ form }: EditorFormProps) {
           }}
           onInit={(_, editor) => {
             setEditorRef(editor);
+
+            // Fix for TinyMCE menu being outside of dialog
+            const menu = document.querySelector(
+              ".tox.tox-silver-sink.tox-tinymce-aux",
+            );
+            if (menu) {
+              document.querySelector('[role="dialog"]')?.appendChild(menu);
+            }
           }}
           onChange={(e) => {
             const content = e.target.getContent();
