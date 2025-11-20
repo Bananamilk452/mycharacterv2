@@ -1,10 +1,16 @@
-import { PlusIcon } from "lucide-react";
+import { PlusIcon, TrashIcon } from "lucide-react";
 import { useEffect, useState } from "react";
 
 import { useCollection } from "@/hooks/useCollection";
 import { Character } from "@/lib/db";
 
 import { Button } from "../ui/button";
+import {
+  ContextMenu,
+  ContextMenuContent,
+  ContextMenuItem,
+  ContextMenuTrigger,
+} from "../ui/context-menu";
 import { Label } from "../ui/label";
 import { AddRelationModal } from "./AddRelationModal";
 import { CharacterCard } from "./CharacterCard";
@@ -42,6 +48,17 @@ export function RelationBox({
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [collection, relationKeys.join(","), relationValues.join(",")]);
 
+  function onDeleteRelation(index: number) {
+    form.setValue(
+      "relationKeys",
+      relationKeys.filter((_, i) => i !== index),
+    );
+    form.setValue(
+      "relationValues",
+      relationValues.filter((_, i) => i !== index),
+    );
+  }
+
   return (
     <div className="flex flex-col">
       <div className="flex items-center justify-between">
@@ -57,13 +74,24 @@ export function RelationBox({
       </div>
       <div className="border-input mt-3.5 flex h-64 flex-wrap gap-4 overflow-scroll rounded-md border p-4 shadow-xs">
         {relationCharacters.length > 0 ? (
-          relationCharacters.map((r) => (
-            <CharacterCard
-              key={crypto.randomUUID()}
-              size="sm"
-              character={r.character}
-              description={r.relationName}
-            />
+          relationCharacters.map((r, i) => (
+            <ContextMenu>
+              <ContextMenuTrigger>
+                <CharacterCard
+                  key={crypto.randomUUID()}
+                  size="sm"
+                  character={r.character}
+                  description={r.relationName}
+                />
+              </ContextMenuTrigger>
+
+              <ContextMenuContent>
+                <ContextMenuItem onClick={() => onDeleteRelation(i)}>
+                  <TrashIcon className="text-red-600" />
+                  <span className="text-red-600 hover:text-red-600">삭제</span>
+                </ContextMenuItem>
+              </ContextMenuContent>
+            </ContextMenu>
           ))
         ) : (
           <p className="text-sm text-gray-600">캐릭터 관계가 없습니다.</p>
