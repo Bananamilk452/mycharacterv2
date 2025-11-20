@@ -186,10 +186,9 @@ function CharacterCards({
   return (
     <>
       {characters.map((character) => (
-        <ContextMenu>
+        <ContextMenu key={character.id}>
           <ContextMenuTrigger>
             <CharacterCard
-              key={character.id}
               character={character}
               description={getCharacterDescription(character)}
               className="cursor-pointer"
