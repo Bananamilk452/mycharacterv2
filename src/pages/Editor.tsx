@@ -1,18 +1,33 @@
-import { useParams } from "crossroad";
-import { useEffect } from "react";
+import { useParams, usePath } from "crossroad";
+import { useEffect, useState } from "react";
 
 import { AppSidebar } from "@/components/editor/AppSidebar";
 import { Characters } from "@/components/editor/Characters";
+import { CreateCollectionDialog } from "@/components/home/CreateCollectionDialog";
+import { OpenCollectionDialog } from "@/components/home/OpenCollectionModal";
 import { Spinner } from "@/components/Spinner";
 import { Dimmer } from "@/components/ui/dimmer";
+import {
+  Menubar,
+  MenubarContent,
+  MenubarItem,
+  MenubarMenu,
+  MenubarTrigger,
+} from "@/components/ui/menubar";
 import { SidebarProvider } from "@/components/ui/sidebar";
 import { useCollection } from "@/hooks/useCollection";
 
 function Editor() {
+  const [, setPath] = usePath();
   const { collectionUuid } = useParams();
   const { collectionInfo, characters } = useCollection(
     collectionUuid as string,
   );
+
+  const [isCreateCollectionDialogOpen, setIsCreateCollectionDialogOpen] =
+    useState(false);
+  const [isOpenCollectionDialogOpen, setIsOpenCollectionDialogOpen] =
+    useState(false);
 
   useEffect(() => {
     if (collectionInfo) {
@@ -24,6 +39,32 @@ function Editor() {
     <main>
       {characters && collectionInfo ? (
         <>
+          <Menubar>
+            <MenubarMenu>
+              <MenubarTrigger>파일</MenubarTrigger>
+              <MenubarContent>
+                <MenubarItem onClick={() => setPath("/")}>홈</MenubarItem>
+                <MenubarItem
+                  onClick={() => setIsCreateCollectionDialogOpen(true)}
+                >
+                  콜렉션 추가
+                </MenubarItem>
+                <MenubarItem
+                  onClick={() => setIsOpenCollectionDialogOpen(true)}
+                >
+                  콜렉션 열기
+                </MenubarItem>
+              </MenubarContent>
+            </MenubarMenu>
+          </Menubar>
+          <CreateCollectionDialog
+            open={isCreateCollectionDialogOpen}
+            setOpen={setIsCreateCollectionDialogOpen}
+          />
+          <OpenCollectionDialog
+            open={isOpenCollectionDialogOpen}
+            setOpen={setIsOpenCollectionDialogOpen}
+          />
           <SidebarProvider>
             <AppSidebar uuid={collectionUuid as string} />
             <Characters collectionUuid={collectionUuid as string} />
