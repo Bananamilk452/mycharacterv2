@@ -91,7 +91,7 @@ export function ImageCropModal({
   }
   return (
     <Dialog open={open} onOpenChange={setOpen}>
-      <DialogContent className="flex max-h-dvh! max-w-dvw! flex-col">
+      <DialogContent className="flex max-h-dvh! w-fit max-w-dvw! flex-col">
         <DialogHeader>
           <DialogTitle>이미지 자르기</DialogTitle>
         </DialogHeader>
