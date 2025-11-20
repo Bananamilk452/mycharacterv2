@@ -13,7 +13,7 @@ import { Button } from "../ui/button";
 import { Input } from "../ui/input";
 import { CharacterCard } from "./CharacterCard";
 
-interface ImageCropModalProps {
+interface AddRelationModalProps {
   open: boolean;
   setOpen: (open: boolean) => void;
   uuid: string;
@@ -25,7 +25,7 @@ export function AddRelationModal({
   setOpen,
   uuid,
   onComplete,
-}: ImageCropModalProps) {
+}: AddRelationModalProps) {
   const { characters } = useCollection(uuid);
   const [selectedCharacter, setSelectedCharacter] = useState<string | null>(
     null,
