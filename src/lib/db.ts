@@ -1,8 +1,8 @@
 import { Dexie } from "dexie";
 import { z } from "zod";
 
-import { DB_PREFIX } from "@/constant";
-import dexieUuid from "@/lib/db/uuid";
+import { DB_PREFIX } from "../constant";
+import dexieUuid from "./db/uuid";
 
 import type { EntityTable } from "dexie";
 
@@ -115,46 +115,10 @@ async function listCollections() {
   return result;
 }
 
-async function exportCollection(name: string) {
-  const worker = new Worker(new URL("./exportDbWorker.ts", import.meta.url), {
-    type: "module",
-  });
-
-  worker.postMessage({ dbName: name });
-
-  return new Promise<{ file: Blob; name: string }>((resolve) => {
-    worker.onmessage = (event) => {
-      resolve(event.data as { file: Blob; name: string });
-    };
-  });
-}
-
-async function importCollection(file: File) {
-  const worker = new Worker(new URL("./importDbWorker.ts", import.meta.url), {
-    type: "module",
-  });
-
-  worker.postMessage({ file });
-
-  return new Promise<{ uuid: string }>((resolve, reject) => {
-    worker.onmessage = (event: {
-      data: { success: true; uuid: string } | { success: false; error: string };
-    }) => {
-      if (event.data.success) {
-        resolve({ uuid: event.data.uuid });
-      } else {
-        reject(new Error(event.data.error));
-      }
-    };
-  });
-}
-
 export type { Character, CollectionInfo, Collection };
 export {
   isCollectionExists,
   createCollection,
   connectCollection,
   listCollections,
-  exportCollection,
-  importCollection,
 };

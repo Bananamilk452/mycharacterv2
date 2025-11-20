@@ -1,12 +1,12 @@
 import JSZip from "jszip";
 
-import { DB_PREFIX } from "../constant";
+import { DB_PREFIX } from "../../constant";
 import {
   Character,
   CollectionInfo,
   initCollection,
   isCollectionExists,
-} from "./db";
+} from "../db";
 
 onmessage = async (event) => {
   try {

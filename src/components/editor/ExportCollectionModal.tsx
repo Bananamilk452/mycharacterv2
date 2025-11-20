@@ -10,7 +10,7 @@ import {
   DialogTitle,
 } from "@/components/ui/dialog";
 import { DB_PREFIX } from "@/constant";
-import { exportCollection } from "@/lib/db";
+import { exportCollection } from "@/lib/db/export";
 
 import { Button } from "../ui/button";
 import { Message } from "../ui/message";

@@ -1,6 +1,6 @@
 import JSZip from "jszip";
 
-import { connectCollection } from "./db";
+import { connectCollection } from "../db";
 
 onmessage = async (event) => {
   const { dbName } = event.data;
