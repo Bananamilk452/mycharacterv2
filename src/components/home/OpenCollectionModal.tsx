@@ -56,7 +56,7 @@ export function OpenCollectionDialog({ children }: Props) {
               </li>
             ))
           ) : (
-            <p className="text-sm text-gray-600">콜렉션이 없습니다.</p>
+            <p className="p-4 text-sm text-gray-600">콜렉션이 없습니다.</p>
           )}
         </ul>
       </DialogContent>
