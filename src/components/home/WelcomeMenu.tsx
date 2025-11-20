@@ -20,7 +20,10 @@ export function WelcomeMenu() {
       <h3 className="mt-8 font-medium">시작하기</h3>
       <ul className="mt-2 space-y-4">
         <li>
-          <button className="flex items-center gap-2 text-violet-600 hover:underline">
+          <button
+            onClick={() => setIsCreateCollectionDialogOpen(true)}
+            className="flex items-center gap-2 text-violet-600 hover:underline"
+          >
             <PlusIcon className="size-5" />
             <span className="text-sm">콜렉션 추가</span>
           </button>
@@ -30,7 +33,10 @@ export function WelcomeMenu() {
           />
         </li>
         <li>
-          <button className="flex items-center gap-2 text-violet-600 hover:underline">
+          <button
+            onClick={() => setIsOpenCollectionDialogOpen(true)}
+            className="flex items-center gap-2 text-violet-600 hover:underline"
+          >
             <FolderIcon className="size-5" />
             <span className="text-sm">콜렉션 열기</span>
           </button>
