@@ -1,11 +1,19 @@
+import { SquarePenIcon, TrashIcon } from "lucide-react";
 import { useEffect, useState } from "react";
 
 import { useCollection } from "@/hooks/useCollection";
 import { Character, CollectionInfo } from "@/lib/db";
 
+import {
+  ContextMenu,
+  ContextMenuContent,
+  ContextMenuItem,
+  ContextMenuTrigger,
+} from "../ui/context-menu";
 import { CharacterCard } from "./CharacterCard";
 import { CharacterFilter } from "./CharacterFilter";
 import { CharacterModal } from "./CharacterModal";
+import { DeleteCharacterModal } from "./DeleteCharacterModal";
 
 export interface SearchParam {
   type: "relation" | "property" | "text";
@@ -149,6 +157,8 @@ function CharacterCards({
   const [selectedCharacter, setSelectedCharacter] = useState<Character | null>(
     null,
   );
+  const [isDeleteCharacterModalOpen, setIsDeleteCharacterModalOpen] =
+    useState(false);
 
   const templates =
     collectionInfo?.characterDescription.match(/\{\{(.+)\}\}/gm);
@@ -176,20 +186,50 @@ function CharacterCards({
   return (
     <>
       {characters.map((character) => (
-        <CharacterCard
-          key={character.id}
-          character={character}
-          description={getCharacterDescription(character)}
-          className="cursor-pointer"
-          onClick={() => {
-            setSelectedCharacter(character);
-            setIsCharacterModalOpen(true);
-          }}
-        />
+        <ContextMenu>
+          <ContextMenuTrigger>
+            <CharacterCard
+              key={character.id}
+              character={character}
+              description={getCharacterDescription(character)}
+              className="cursor-pointer"
+              onClick={() => {
+                setSelectedCharacter(character);
+                setIsCharacterModalOpen(true);
+              }}
+            />
+          </ContextMenuTrigger>
+          <ContextMenuContent>
+            <ContextMenuItem
+              onClick={() => {
+                setSelectedCharacter(character);
+                setIsCharacterModalOpen(true);
+              }}
+            >
+              <SquarePenIcon />
+              수정
+            </ContextMenuItem>
+            <ContextMenuItem
+              onClick={() => {
+                setSelectedCharacter(character);
+                setIsDeleteCharacterModalOpen(true);
+              }}
+            >
+              <TrashIcon className="text-red-600" />
+              <span className="text-red-600 hover:text-red-600">삭제</span>
+            </ContextMenuItem>
+          </ContextMenuContent>
+        </ContextMenu>
       ))}
       <CharacterModal
         open={isCharacterModalOpen}
         setOpen={setIsCharacterModalOpen}
+        collectionUuid={collectionUuid}
+        character={selectedCharacter!}
+      />
+      <DeleteCharacterModal
+        open={isDeleteCharacterModalOpen}
+        setOpen={setIsDeleteCharacterModalOpen}
         collectionUuid={collectionUuid}
         character={selectedCharacter!}
       />
