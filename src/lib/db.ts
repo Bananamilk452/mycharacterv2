@@ -50,7 +50,7 @@ export function isCollectionInfo(obj: unknown): obj is CollectionInfo {
 }
 
 // new Dexie는 생성/연결을 둘 다 하므로 아래 함수는 내부 함수로만만 사용
-async function initCollection(name: string) {
+export async function initCollection(name: string) {
   const db = new Dexie(name, { addons: [dexieUuid] }) as Collection;
 
   db.version(1).stores({
@@ -129,6 +129,26 @@ async function exportCollection(name: string) {
   });
 }
 
+async function importCollection(file: File) {
+  const worker = new Worker(new URL("./importDbWorker.ts", import.meta.url), {
+    type: "module",
+  });
+
+  worker.postMessage({ file });
+
+  return new Promise<{ uuid: string }>((resolve, reject) => {
+    worker.onmessage = (event: {
+      data: { success: true; uuid: string } | { success: false; error: string };
+    }) => {
+      if (event.data.success) {
+        resolve({ uuid: event.data.uuid });
+      } else {
+        reject(new Error(event.data.error));
+      }
+    };
+  });
+}
+
 export type { Character, CollectionInfo, Collection };
 export {
   isCollectionExists,
@@ -136,4 +156,5 @@ export {
   connectCollection,
   listCollections,
   exportCollection,
+  importCollection,
 };
