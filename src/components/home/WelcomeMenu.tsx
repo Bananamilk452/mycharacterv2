@@ -16,6 +16,11 @@ export function WelcomeMenu() {
   return (
     <div className="flex flex-col">
       <h1 className="text-3xl font-bold">마이자캐</h1>
+      <p className="text-sm text-gray-600">
+        알파 버전입니다. 데이터의 소실이 있을 수도 있습니다.
+        <br />
+        피드백은 언제나 환영입니다! 😊
+      </p>
 
       <h3 className="mt-8 font-medium">시작하기</h3>
       <ul className="mt-2 space-y-4">
