@@ -1,6 +1,6 @@
 import { zodResolver } from "@hookform/resolvers/zod";
 import { usePath } from "crossroad";
-import React, { useState } from "react";
+import { useState } from "react";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
 
@@ -12,7 +12,6 @@ import {
   DialogFooter,
   DialogHeader,
   DialogTitle,
-  DialogTrigger,
 } from "@/components/ui/dialog";
 import {
   Form,
@@ -33,12 +32,12 @@ const formSchema = z.object({
 });
 
 interface Props {
-  children?: React.ReactNode;
+  open: boolean;
+  setOpen: (open: boolean) => void;
 }
 
-export function CreateCollectionDialog({ children }: Props) {
+export function CreateCollectionDialog({ open, setOpen }: Props) {
   const [, setPath] = usePath();
-  const [isOpen, setIsOpen] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
 
   const form = useForm<z.infer<typeof formSchema>>({
@@ -55,7 +54,7 @@ export function CreateCollectionDialog({ children }: Props) {
       .then((db) => {
         db.collectionInfo.get(1).then((col) => {
           setPath(`/editor/${col!.uuid}`);
-          setIsOpen(false);
+          setOpen(false);
           form.reset();
         });
       })
@@ -71,8 +70,7 @@ export function CreateCollectionDialog({ children }: Props) {
   }
 
   return (
-    <Dialog open={isOpen} onOpenChange={(open) => setIsOpen(open)}>
-      <DialogTrigger asChild>{children}</DialogTrigger>
+    <Dialog open={open} onOpenChange={(open) => setOpen(open)}>
       <DialogContent>
         <DialogHeader>
           <DialogTitle>콜렉션 생성</DialogTitle>
