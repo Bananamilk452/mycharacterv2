@@ -13,6 +13,11 @@ onmessage = async (event) => {
   zip.file("collectionInfo.json", JSON.stringify(collectionInfo, null, 2));
   zip.file("characters.json", JSON.stringify(allCharacters, null, 2));
 
+  if (collectionInfo?.icon) {
+    const iconBlob = await collectionInfo.icon.arrayBuffer();
+    zip.file("icon.webp", iconBlob);
+  }
+
   zip.folder("avatars");
   for (const character of allCharacters) {
     if (character.avatar) {
