@@ -1,6 +1,8 @@
 import { expect, Page } from "@playwright/test";
 
 import {
+  EDITED_CHARACTER_NAME,
+  EDITED_MEMO,
   TEST_AVATAR_PATH,
   TEST_CHARACTER_NAME,
   TEST_COLLECTION_NAME,
@@ -10,7 +12,7 @@ import {
 export class Helper {
   constructor(public readonly page: Page) {}
 
-  async closePersistentPermissionDialog() {
+  async closeDialog() {
     await this.page.locator("[data-slot='dialog-close']").click();
   }
 
@@ -159,5 +161,92 @@ export class Helper {
     const frame2 = await frameHandle2!.contentFrame();
     const memoContent = await frame2!.$eval("body", (el) => el.innerHTML);
     await expect(memoContent).toContain(TEST_MEMO);
+
+    // 닫기
+    await this.closeDialog();
+  }
+
+  async editCharacter() {
+    // 캐릭터 모달 열기
+    await this.page.getByTestId("character-card-0").click();
+
+    // 캐릭터 이름 수정
+    await this.page
+      .getByTestId("character-modal-name-input")
+      .fill(EDITED_CHARACTER_NAME);
+
+    // 태그 제거
+    await this.page.getByTestId("tagbox-tag-remove-0").click();
+
+    // 새 태그
+    await this.page.getByTestId("tagbox-input").fill("수정된태그");
+    await this.page.getByTestId("tagbox-input").press("Enter");
+    await expect(this.page.getByTestId("tagbox-tag-0")).toHaveText(
+      "수정된태그",
+    );
+
+    // 속성 수정
+    await this.page.getByTestId("propertybox-key-0").fill("수정된속성키");
+    await this.page.getByTestId("propertybox-value-0").fill("수정된 속성값");
+    await expect(this.page.getByTestId("propertybox-key-0")).toHaveValue(
+      "수정된속성키",
+    );
+    await expect(this.page.getByTestId("propertybox-value-0")).toHaveValue(
+      "수정된 속성값",
+    );
+
+    // 메모 수정
+    const frameHandle = await this.page.$("iframe.tox-edit-area__iframe");
+    const frame = await frameHandle!.contentFrame();
+    await frame!.fill("body", EDITED_MEMO);
+
+    // 관계 추가
+    await this.page.getByTestId("relationbox-add-button").click();
+    await this.page.getByTestId("add-relation-modal-character-card-0").click();
+    await this.page
+      .getByTestId("add-relation-modal-relation-name-input")
+      .fill("친구");
+    await this.page.getByTestId("add-relation-modal-submit-button").click();
+
+    // 캐릭터 수정 저장
+    await this.page.getByTestId("character-modal-submit-button").click();
+
+    // 수정된 캐릭터 확인
+    await this.page.getByTestId("character-card-0").waitFor();
+    await expect(this.page.getByTestId("character-card-0")).toHaveText(
+      EDITED_CHARACTER_NAME,
+    );
+
+    // 다시 캐릭터 모달 열어서 수정된 내용 확인
+    await this.page.getByTestId("character-card-0").click();
+
+    // 수정된 캐릭터 이름 확인
+    await expect(
+      this.page.getByTestId("character-modal-name-input"),
+    ).toHaveValue(EDITED_CHARACTER_NAME);
+
+    // 수정된 태그 확인
+    await expect(this.page.getByTestId("tagbox-tag-0")).toHaveText(
+      "수정된태그",
+    );
+
+    // 수정된 속성 확인
+    await expect(this.page.getByTestId("propertybox-key-0")).toHaveValue(
+      "수정된속성키",
+    );
+    await expect(this.page.getByTestId("propertybox-value-0")).toHaveValue(
+      "수정된 속성값",
+    );
+
+    // 수정된 메모 확인
+    const frameHandle2 = await this.page.$("iframe.tox-edit-area__iframe");
+    const frame2 = await frameHandle2!.contentFrame();
+    const memoContent = await frame2!.$eval("body", (el) => el.innerHTML);
+    await expect(memoContent).toContain(EDITED_MEMO);
+
+    // 추가된 관계 확인
+    await expect(
+      this.page.getByTestId("relationbox-character-card-0"),
+    ).toHaveText(`${EDITED_CHARACTER_NAME}친구`);
   }
 }

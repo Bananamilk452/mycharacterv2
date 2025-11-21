@@ -9,7 +9,7 @@ test.describe.serial("메인 플로우", async () => {
     page = await browser.newPage();
     const helper = new Helper(page);
     await page.goto("/");
-    await helper.closePersistentPermissionDialog();
+    await helper.closeDialog();
   });
 
   test.afterAll(async () => {
@@ -26,5 +26,11 @@ test.describe.serial("메인 플로우", async () => {
     const helper = new Helper(page);
 
     await helper.createCharacter();
+  });
+
+  test("3. 캐릭터 수정", async () => {
+    const helper = new Helper(page);
+
+    await helper.editCharacter();
   });
 });

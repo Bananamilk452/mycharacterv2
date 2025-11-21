@@ -67,6 +67,7 @@ export function RelationBox({
           type="button"
           size="sm"
           onClick={() => setIsAddRelationModalOpen(true)}
+          data-testid="relationbox-add-button"
         >
           <PlusIcon />
           관계 추가
@@ -82,6 +83,7 @@ export function RelationBox({
                   size="sm"
                   character={r.character}
                   description={r.relationName}
+                  data-testid={`relationbox-character-card-${i}`}
                 />
               </ContextMenuTrigger>
 
