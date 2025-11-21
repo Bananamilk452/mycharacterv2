@@ -197,6 +197,7 @@ export function CharacterModal({
                             {...field}
                             type="text"
                             placeholder="캐릭터 이름"
+                            data-testid="character-modal-name-input"
                           />
                         </FormControl>
                         <FormMessage />
@@ -229,7 +230,11 @@ export function CharacterModal({
         )}
 
         <DialogFooter className="pt-2">
-          <Button disabled={isLoading} onClick={form.handleSubmit(onSubmit)}>
+          <Button
+            disabled={isLoading}
+            onClick={form.handleSubmit(onSubmit)}
+            data-testid="character-modal-submit-button"
+          >
             {character ? "수정" : "생성"}
           </Button>
         </DialogFooter>

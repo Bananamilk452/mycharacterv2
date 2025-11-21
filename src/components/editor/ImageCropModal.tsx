@@ -119,7 +119,9 @@ export function ImageCropModal({
           <Button variant="outline" onClick={() => setAspect(1)}>
             1:1 비율
           </Button>
-          <Button onClick={onSave}>저장</Button>
+          <Button onClick={onSave} data-testid="image-crop-modal-save-button">
+            저장
+          </Button>
         </DialogFooter>
       </DialogContent>
     </Dialog>

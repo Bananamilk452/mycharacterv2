@@ -40,7 +40,12 @@ export function PropertyBox({ form }: EditorFormProps) {
     <div className="flex flex-col">
       <div className="flex items-center justify-between">
         <Label className="shrink-0">속성</Label>
-        <Button type="button" size="sm" onClick={handleAddProperty}>
+        <Button
+          type="button"
+          size="sm"
+          onClick={handleAddProperty}
+          data-testid="propertybox-add-button"
+        >
           <PlusIcon />
           속성 추가
         </Button>
@@ -59,7 +64,11 @@ export function PropertyBox({ form }: EditorFormProps) {
               render={({ field }) => (
                 <FormItem>
                   <FormControl>
-                    <Textarea {...field} placeholder="속성 이름" />
+                    <Textarea
+                      {...field}
+                      placeholder="속성 이름"
+                      data-testid={`propertybox-key-${index}`}
+                    />
                   </FormControl>
                   <FormMessage />
                 </FormItem>
@@ -72,7 +81,11 @@ export function PropertyBox({ form }: EditorFormProps) {
               render={({ field }) => (
                 <FormItem>
                   <FormControl>
-                    <Textarea {...field} placeholder="속성 값" />
+                    <Textarea
+                      {...field}
+                      placeholder="속성 값"
+                      data-testid={`propertybox-value-${index}`}
+                    />
                   </FormControl>
                   <FormMessage />
                 </FormItem>
@@ -83,6 +96,7 @@ export function PropertyBox({ form }: EditorFormProps) {
               type="button"
               onClick={() => handleRemoveProperty(index)}
               className="h-9"
+              data-testid={`propertybox-remove-button-${index}`}
             >
               <XIcon className="size-5" />
             </button>

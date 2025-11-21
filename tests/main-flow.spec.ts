@@ -21,4 +21,10 @@ test.describe.serial("메인 플로우", async () => {
 
     await helper.createCollection();
   });
+
+  test("2. 캐릭터 생성", async () => {
+    const helper = new Helper(page);
+
+    await helper.createCharacter();
+  });
 });

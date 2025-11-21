@@ -185,7 +185,7 @@ function CharacterCards({
 
   return (
     <>
-      {characters.map((character) => (
+      {characters.map((character, i) => (
         <ContextMenu key={character.id}>
           <ContextMenuTrigger>
             <CharacterCard
@@ -196,6 +196,7 @@ function CharacterCards({
                 setSelectedCharacter(character);
                 setIsCharacterModalOpen(true);
               }}
+              data-testid={`character-card-${i}`}
             />
           </ContextMenuTrigger>
           <ContextMenuContent>

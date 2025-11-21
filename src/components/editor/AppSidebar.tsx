@@ -69,6 +69,7 @@ export function AppSidebar({ uuid }: AppSidebarProps) {
                   <SidebarMenuItem>
                     <SidebarMenuButton
                       onClick={() => setIsCharacterDialogOpen(true)}
+                      data-testid="sidebar-add-character-button"
                     >
                       <UserPlus />
                       캐릭터 추가
