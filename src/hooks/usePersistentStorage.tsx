@@ -15,7 +15,7 @@ export function usePersistentStorage() {
     const isPersisted = await navigator.storage.persist();
     setIsPersistent(isPersisted);
 
-    if (!isPersisted) {
+    if (!isPersisted && Notification && Notification.requestPermission) {
       // 크롬의 경우에는 알림 권한이 허가되면 영구 스토리지도 허가됨
       const isNotificationGranted = await Notification.requestPermission();
 
