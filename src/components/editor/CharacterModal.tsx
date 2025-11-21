@@ -163,7 +163,7 @@ export function CharacterModal({
     <Dialog open={open} onOpenChange={setOpen}>
       <DialogContent className="flex h-fit max-h-[calc(100dvh-48px)]! max-w-5xl! flex-col gap-0">
         <DialogHeader className="pb-2">
-          <DialogTitle>캐릭터 생성</DialogTitle>
+          <DialogTitle>캐릭터 {character ? "수정" : "생성"}</DialogTitle>
           <DialogDescription>
             제발 스크롤 내려주세요 스크롤 내리면 더 많은 옵션이 있어요
           </DialogDescription>
