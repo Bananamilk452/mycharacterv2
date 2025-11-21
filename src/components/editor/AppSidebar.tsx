@@ -48,7 +48,10 @@ export function AppSidebar({ uuid }: AppSidebarProps) {
                 )}
               </div>
               <div className="flex min-w-0 flex-col gap-0.5">
-                <h1 className="truncate text-sm font-semibold">
+                <h1
+                  className="truncate text-sm font-semibold"
+                  data-testid="sidebar-collection-name"
+                >
                   {collectionInfo.name}
                 </h1>
                 <p className="text-xs text-gray-500">

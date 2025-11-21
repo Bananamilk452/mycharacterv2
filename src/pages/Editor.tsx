@@ -52,6 +52,7 @@ function Editor() {
                 <MenubarItem onClick={() => setPath("/")}>홈</MenubarItem>
                 <MenubarItem
                   onClick={() => setIsCreateCollectionDialogOpen(true)}
+                  data-testid="menubar-create-collection"
                 >
                   콜렉션 추가
                 </MenubarItem>

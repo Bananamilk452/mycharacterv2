@@ -35,6 +35,7 @@ export function WelcomeMenu() {
             <button
               onClick={() => setIsCreateCollectionDialogOpen(true)}
               className="flex items-center gap-2 text-violet-600 hover:underline"
+              data-testid="welcomemenu-create-collection"
             >
               <PlusIcon className="size-5" />
               <span className="text-sm">콜렉션 추가</span>
