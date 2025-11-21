@@ -60,7 +60,12 @@ export function PersistentPermissionDialog() {
             </Message>
           ))}
         <DialogFooter>
-          <Button onClick={handlePersist}>영구 스토리지 권한 요청</Button>
+          <Button
+            data-testid="request-persistent-storage"
+            onClick={handlePersist}
+          >
+            영구 스토리지 권한 요청
+          </Button>
           {isPersistent && (
             <Button onClick={() => handleOpen(false)}>
               마이자캐 시작하기!
