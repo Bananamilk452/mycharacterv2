@@ -35,6 +35,8 @@ export function Characters({ collectionUuid }: CharactersProps) {
     characters || [],
   );
 
+  const [characterSize, setCharacterSize] = useState(1);
+
   useEffect(() => {
     async function filterCharacters(searchParam: SearchParam) {
       if (!collection) return [];
@@ -122,18 +124,22 @@ export function Characters({ collectionUuid }: CharactersProps) {
       <CharacterFilter
         searchParams={searchParams}
         setSearchParams={setSearchParams}
+        characterSize={characterSize}
+        setCharacterSize={setCharacterSize}
       />
       <section id="characters" className="size-full overflow-y-auto p-4">
         <ul className="flex flex-wrap gap-4">
           {searchParams.length > 0 ? (
             <CharacterCards
               characters={filteredCharacters}
+              characterSize={characterSize}
               collectionInfo={collectionInfo!}
               collectionUuid={collectionUuid}
             />
           ) : (
             <CharacterCards
               characters={characters || []}
+              characterSize={characterSize}
               collectionInfo={collectionInfo!}
               collectionUuid={collectionUuid}
             />
@@ -146,10 +152,12 @@ export function Characters({ collectionUuid }: CharactersProps) {
 
 function CharacterCards({
   characters,
+  characterSize,
   collectionInfo,
   collectionUuid,
 }: {
   characters: Character[];
+  characterSize: number;
   collectionInfo: CollectionInfo;
   collectionUuid: string;
 }) {
@@ -159,6 +167,15 @@ function CharacterCards({
   );
   const [isDeleteCharacterModalOpen, setIsDeleteCharacterModalOpen] =
     useState(false);
+
+  const size =
+    characterSize === 0
+      ? "sm"
+      : characterSize === 1
+        ? "md"
+        : characterSize === 2
+          ? "lg"
+          : "xl";
 
   const templates =
     collectionInfo?.characterDescription.match(/\{\{(.+)\}\}/gm);
@@ -192,6 +209,7 @@ function CharacterCards({
               character={character}
               description={getCharacterDescription(character)}
               className="cursor-pointer"
+              size={size}
               onClick={() => {
                 setSelectedCharacter(character);
                 setIsCharacterModalOpen(true);
