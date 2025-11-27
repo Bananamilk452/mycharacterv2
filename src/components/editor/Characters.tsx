@@ -21,6 +21,13 @@ export interface SearchParam {
   key?: string;
   value: string;
 }
+
+export interface SortParam {
+  type: "name" | "createdAt" | "updatedAt" | "property";
+  order: "asc" | "desc";
+  value: string;
+}
+
 interface CharactersProps {
   collectionUuid: string;
 }
@@ -31,7 +38,12 @@ export function Characters({ collectionUuid }: CharactersProps) {
   );
 
   const [searchParams, setSearchParams] = useState<SearchParam[]>([]);
-  const [filteredCharacters, setFilteredCharacters] = useState<Character[]>(
+  const [sortParams, setSortParams] = useState<SortParam>({
+    type: "createdAt",
+    order: "asc",
+    value: "",
+  });
+  const [refinedCharacters, setRefinedCharacters] = useState<Character[]>(
     characters || [],
   );
 
@@ -111,13 +123,76 @@ export function Characters({ collectionUuid }: CharactersProps) {
 
       const filteredChars = filteredIds.map((id) => characterMap.get(id)!);
 
-      setFilteredCharacters(filteredChars);
+      return filteredChars;
     }
 
-    if (searchParams.length > 0) {
-      applyFilters();
+    function applySorting(characters: Character[]) {
+      const sortedCharacters = [...characters];
+      sortedCharacters.sort((a, b) => {
+        let aValue: string | Date = "";
+        let bValue: string | Date = "";
+
+        if (sortParams.type === "name") {
+          aValue = a.name;
+          bValue = b.name;
+        } else if (sortParams.type === "createdAt") {
+          aValue = a.createdAt;
+          bValue = b.createdAt;
+        } else if (sortParams.type === "updatedAt") {
+          aValue = a.updatedAt;
+          bValue = b.updatedAt;
+        } else if (sortParams.type === "property") {
+          const aIndex = a.propertyKeys.indexOf(sortParams.value);
+          const bIndex = b.propertyKeys.indexOf(sortParams.value);
+          aValue = aIndex !== -1 ? a.propertyValues[aIndex] : "";
+          bValue = bIndex !== -1 ? b.propertyValues[bIndex] : "";
+        }
+
+        if (typeof aValue === "string" && typeof bValue === "string") {
+          // 결측값이면 무조건 뒤로 보내기
+          if (aValue === "" && bValue !== "") return 1;
+          if (aValue !== "" && bValue === "") return -1;
+
+          if (sortParams.order === "asc") {
+            return aValue.localeCompare(bValue);
+          } else {
+            return bValue.localeCompare(aValue);
+          }
+        } else if (aValue instanceof Date && bValue instanceof Date) {
+          if (sortParams.order === "asc") {
+            return aValue.getTime() - bValue.getTime();
+          } else {
+            return bValue.getTime() - aValue.getTime();
+          }
+        } else {
+          return 0;
+        }
+      });
+
+      return sortedCharacters;
     }
-  }, [searchParams, collection]);
+
+    async function getRefinedCharacters() {
+      let result: Character[] = characters || [];
+
+      if (searchParams.length > 0) {
+        result = await applyFilters();
+      }
+
+      result = applySorting(result);
+
+      setRefinedCharacters(result);
+    }
+
+    getRefinedCharacters();
+  }, [
+    searchParams,
+    collection,
+    sortParams.type,
+    sortParams.value,
+    sortParams.order,
+    characters,
+  ]);
 
   return (
     <div className="flex size-full flex-col">
@@ -126,24 +201,16 @@ export function Characters({ collectionUuid }: CharactersProps) {
         setSearchParams={setSearchParams}
         characterSize={characterSize}
         setCharacterSize={setCharacterSize}
+        setSortParams={setSortParams}
       />
       <section id="characters" className="size-full overflow-y-auto p-4">
         <ul className="flex flex-wrap gap-4">
-          {searchParams.length > 0 ? (
-            <CharacterCards
-              characters={filteredCharacters}
-              characterSize={characterSize}
-              collectionInfo={collectionInfo!}
-              collectionUuid={collectionUuid}
-            />
-          ) : (
-            <CharacterCards
-              characters={characters || []}
-              characterSize={characterSize}
-              collectionInfo={collectionInfo!}
-              collectionUuid={collectionUuid}
-            />
-          )}
+          <CharacterCards
+            characters={refinedCharacters}
+            characterSize={characterSize}
+            collectionInfo={collectionInfo!}
+            collectionUuid={collectionUuid}
+          />
         </ul>
       </section>
     </div>
