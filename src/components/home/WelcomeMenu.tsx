@@ -155,6 +155,7 @@ export function WelcomeMenu() {
         <p className="text-sm break-keep text-gray-600">
           패치노트
           <br />- 캐릭터 크기 조절 기능 추가 (11.25)
+          <br />- 캐릭터 정렬 기능 추가 (11.27)
         </p>
       </div>
     </div>

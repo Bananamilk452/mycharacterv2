@@ -1,17 +1,19 @@
-import { SearchIcon } from "lucide-react";
+import { ArrowUpDownIcon, SearchIcon } from "lucide-react";
 import { useState } from "react";
 
 import { Button } from "../ui/button";
 import { Label } from "../ui/label";
 import { Slider } from "../ui/slider";
 import { AdvancedSearchModal } from "./AdvancedSearchModal";
-import { SearchParam } from "./Characters";
+import { SearchParam, SortParam } from "./Characters";
+import { SortModal } from "./SortModal";
 
 interface CharacterFilterProps {
   searchParams: SearchParam[];
   setSearchParams: (searchParams: SearchParam[]) => void;
   characterSize: number;
   setCharacterSize: (size: number) => void;
+  setSortParams: (sortParams: SortParam) => void;
 }
 
 export function CharacterFilter({
@@ -19,9 +21,11 @@ export function CharacterFilter({
   setSearchParams,
   characterSize,
   setCharacterSize,
+  setSortParams,
 }: CharacterFilterProps) {
   const [isAdvancedSearchModalOpen, setIsAdvancedSearchModalOpen] =
     useState(false);
+  const [isSortModalOpen, setIsSortModalOpen] = useState(false);
 
   return (
     <div className="flex h-fit w-full items-center justify-end gap-4 border-b px-4 py-2">
@@ -46,10 +50,19 @@ export function CharacterFilter({
           고급 검색
         </div>
       </Button>
+      <Button onClick={() => setIsSortModalOpen(true)}>
+        <ArrowUpDownIcon className="size-4" />
+        정렬
+      </Button>
       <AdvancedSearchModal
         open={isAdvancedSearchModalOpen}
         setOpen={setIsAdvancedSearchModalOpen}
         onComplete={setSearchParams}
+      />
+      <SortModal
+        open={isSortModalOpen}
+        setOpen={setIsSortModalOpen}
+        onComplete={setSortParams}
       />
     </div>
   );
