@@ -38,12 +38,12 @@ export function AddRelationModal({ open, setOpen, uuid, onComplete }: AddRelatio
 
   return (
     <Dialog open={open} onOpenChange={setOpen}>
-      <DialogContent className="max-w-xl!">
+      <DialogContent className="flex h-fit max-h-[calc(100dvh-48px)]! max-w-3xl! flex-col">
         <DialogHeader>
           <DialogTitle>관계 추가</DialogTitle>
         </DialogHeader>
 
-        <div className="flex flex-wrap gap-4 rounded-md border border-input p-4">
+        <div className="flex min-h-0 flex-1 flex-wrap content-start gap-4 overflow-y-auto rounded-md border border-input p-4">
           {characters && characters.length > 0 ? (
             characters.map((character) => (
               <CharacterCard
@@ -59,12 +59,13 @@ export function AddRelationModal({ open, setOpen, uuid, onComplete }: AddRelatio
         </div>
 
         <Input
+          className="shrink-0"
           placeholder="관계 이름"
           value={relationName}
           onChange={(e) => setRelationName(e.target.value)}
         />
 
-        <DialogFooter>
+        <DialogFooter className="shrink-0">
           <Button disabled={!selectedCharacter || !relationName} onClick={onAdd}>
             추가
           </Button>
