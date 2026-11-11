@@ -1,3 +1,6 @@
+// Adapted from an untyped JS plugin (dexie-observable), so type checking is
+// intentionally disabled for this file.
+// eslint-disable-next-line typescript/ban-ts-comment
 // @ts-nocheck
 /**
  * This class allows you to use UUID primary keys in Dexie by defining them in the store using two dollar signs ($$), eg:
@@ -72,12 +75,12 @@ function initCreatingHook(table) {
  */
 function prepareOverrideOpen(db) {
   return function overrideOpen(origOpen) {
-    return function () {
+    return function (...args) {
       Object.keys(db._allTables).forEach((tableName) => {
         const table = db._allTables[tableName];
         table.hook("creating").subscribe(initCreatingHook(table));
       });
-      return origOpen.apply(this, arguments);
+      return origOpen.apply(this, args);
     };
   };
 }

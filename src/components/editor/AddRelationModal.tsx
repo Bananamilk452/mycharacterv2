@@ -1,5 +1,8 @@
 import { useState } from "react";
 
+import { Button } from "../ui/button";
+import { Input } from "../ui/input";
+import { CharacterCard } from "./CharacterCard";
 import {
   Dialog,
   DialogContent,
@@ -9,10 +12,6 @@ import {
 } from "@/components/ui/dialog";
 import { useCollection } from "@/hooks/useCollection";
 
-import { Button } from "../ui/button";
-import { Input } from "../ui/input";
-import { CharacterCard } from "./CharacterCard";
-
 interface AddRelationModalProps {
   open: boolean;
   setOpen: (open: boolean) => void;
@@ -20,16 +19,9 @@ interface AddRelationModalProps {
   onComplete: (option: { characterUuid: string; relationName: string }) => void;
 }
 
-export function AddRelationModal({
-  open,
-  setOpen,
-  uuid,
-  onComplete,
-}: AddRelationModalProps) {
+export function AddRelationModal({ open, setOpen, uuid, onComplete }: AddRelationModalProps) {
   const { characters } = useCollection(uuid);
-  const [selectedCharacter, setSelectedCharacter] = useState<string | null>(
-    null,
-  );
+  const [selectedCharacter, setSelectedCharacter] = useState<string | null>(null);
   const [relationName, setRelationName] = useState("");
 
   function onAdd() {
@@ -51,18 +43,14 @@ export function AddRelationModal({
           <DialogTitle>관계 추가</DialogTitle>
         </DialogHeader>
 
-        <div className="border-input flex flex-wrap gap-4 rounded-md border p-4">
+        <div className="flex flex-wrap gap-4 rounded-md border border-input p-4">
           {characters && characters.length > 0 ? (
             characters.map((character) => (
               <CharacterCard
                 key={character.id}
                 character={character}
                 onClick={() => setSelectedCharacter(character.id)}
-                className={
-                  selectedCharacter === character.id
-                    ? "border-primary border-2"
-                    : ""
-                }
+                className={selectedCharacter === character.id ? "border-2 border-primary" : ""}
               />
             ))
           ) : (
@@ -77,10 +65,7 @@ export function AddRelationModal({
         />
 
         <DialogFooter>
-          <Button
-            disabled={!selectedCharacter || !relationName}
-            onClick={onAdd}
-          >
+          <Button disabled={!selectedCharacter || !relationName} onClick={onAdd}>
             추가
           </Button>
         </DialogFooter>

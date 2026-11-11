@@ -4,6 +4,7 @@ import { useState } from "react";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
 
+import { Message } from "../ui/message";
 import { Button } from "@/components/ui/button";
 import {
   Dialog,
@@ -24,8 +25,6 @@ import {
 import { Input } from "@/components/ui/input";
 import { createCollection } from "@/lib/db";
 import errorMessages from "@/utils/errorMessages";
-
-import { Message } from "../ui/message";
 
 const formSchema = z.object({
   collectionName: z.string().min(1, errorMessages.MIN_1_CHAR),
@@ -95,9 +94,7 @@ export function CreateCollectionDialog({ open, setOpen }: Props) {
           </form>
         </Form>
 
-        {isLoading && (
-          <Message variant="loading">콜렉션을 생성 중입니다...</Message>
-        )}
+        {isLoading && <Message variant="loading">콜렉션을 생성 중입니다...</Message>}
 
         <DialogFooter>
           <Button disabled={isLoading} onClick={form.handleSubmit(onSubmit)}>

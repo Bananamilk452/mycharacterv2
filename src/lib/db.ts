@@ -54,10 +54,8 @@ export async function initCollection(name: string) {
   const db = new Dexie(name, { addons: [dexieUuid] }) as Collection;
 
   db.version(1).stores({
-    characters:
-      "$$id, name, *propertyKeys, *propertyValues, *tags, createdAt, updatedAt",
-    collectionInfo:
-      "++id, uuid, name, description, characterDescription, createdAt, updatedAt",
+    characters: "$$id, name, *propertyKeys, *propertyValues, *tags, createdAt, updatedAt",
+    collectionInfo: "++id, uuid, name, description, characterDescription, createdAt, updatedAt",
   });
 
   return db;
@@ -95,9 +93,7 @@ async function connectCollection(name: string) {
 
 async function listCollections() {
   const collections = await Dexie.getDatabaseNames();
-  const onlyCollections = collections.filter((name) =>
-    name.startsWith(DB_PREFIX),
-  );
+  const onlyCollections = collections.filter((name) => name.startsWith(DB_PREFIX));
 
   const result = await Promise.all(
     onlyCollections.map(async (name) => {
@@ -116,9 +112,4 @@ async function listCollections() {
 }
 
 export type { Character, CollectionInfo, Collection };
-export {
-  isCollectionExists,
-  createCollection,
-  connectCollection,
-  listCollections,
-};
+export { isCollectionExists, createCollection, connectCollection, listCollections };

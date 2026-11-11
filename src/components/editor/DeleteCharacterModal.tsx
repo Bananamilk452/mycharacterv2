@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { toast } from "sonner";
 
+import { CharacterCard } from "./CharacterCard";
 import { Button } from "@/components/ui/button";
 import {
   Dialog,
@@ -14,8 +15,6 @@ import { Message } from "@/components/ui/message";
 import { useCollection } from "@/hooks/useCollection";
 import { Character } from "@/lib/db";
 import { updateCollectionUpdatedAt } from "@/lib/utils";
-
-import { CharacterCard } from "./CharacterCard";
 
 interface DeleteCharacterModalProps {
   open: boolean;
@@ -70,9 +69,7 @@ export function DeleteCharacterModal({
           <CharacterCard character={character} />
         </div>
 
-        {isLoading && (
-          <Message variant="loading">캐릭터 삭제 중입니다...</Message>
-        )}
+        {isLoading && <Message variant="loading">캐릭터 삭제 중입니다...</Message>}
 
         <DialogFooter>
           <Button variant="destructive" disabled={isLoading} onClick={onDelete}>

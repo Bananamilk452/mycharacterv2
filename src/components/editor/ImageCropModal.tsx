@@ -1,8 +1,8 @@
 import { useEffect, useState } from "react";
 import ReactCrop, { Crop } from "react-image-crop";
-
 import "react-image-crop/dist/ReactCrop.css";
 
+import { Button } from "../ui/button";
 import {
   Dialog,
   DialogContent,
@@ -11,8 +11,6 @@ import {
   DialogTitle,
 } from "@/components/ui/dialog";
 
-import { Button } from "../ui/button";
-
 interface ImageCropModalProps {
   open: boolean;
   setOpen: (open: boolean) => void;
@@ -20,12 +18,7 @@ interface ImageCropModalProps {
   onComplete: (croppedImage: Blob) => void;
 }
 
-export function ImageCropModal({
-  open,
-  setOpen,
-  image,
-  onComplete,
-}: ImageCropModalProps) {
+export function ImageCropModal({ open, setOpen, image, onComplete }: ImageCropModalProps) {
   const [crop, setCrop] = useState<Crop>();
   const [aspect, setAspect] = useState<number | undefined>(1);
   const [previousState, setPreviousState] = useState(open);

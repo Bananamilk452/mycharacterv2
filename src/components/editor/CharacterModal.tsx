@@ -4,6 +4,11 @@ import { useForm, UseFormReturn } from "react-hook-form";
 import { toast } from "sonner";
 import { z } from "zod";
 
+import { ImageUpload } from "./ImageUpload";
+import { NoteBox } from "./NoteBox";
+import { PropertyBox } from "./PropertyBox";
+import { RelationBox } from "./RelationBox";
+import { TagBox } from "./TagBox";
 import { Button } from "@/components/ui/button";
 import {
   Dialog,
@@ -28,36 +33,22 @@ import { Character } from "@/lib/db";
 import { updateCollectionUpdatedAt } from "@/lib/utils";
 import errorMessages from "@/utils/errorMessages";
 
-import { ImageUpload } from "./ImageUpload";
-import { NoteBox } from "./NoteBox";
-import { PropertyBox } from "./PropertyBox";
-import { RelationBox } from "./RelationBox";
-import { TagBox } from "./TagBox";
-
 const formSchema = z.object({
   avatar: z.instanceof(Blob).optional(),
   name: z.string().min(1, errorMessages.MIN_1_CHAR),
   propertyKeys: z.array(
-    z
-      .string({ error: errorMessages.MIN_1_CHAR })
-      .min(1, errorMessages.MIN_1_CHAR),
+    z.string({ error: errorMessages.MIN_1_CHAR }).min(1, errorMessages.MIN_1_CHAR),
   ),
   propertyValues: z.array(
-    z
-      .string({ error: errorMessages.MIN_1_CHAR })
-      .min(1, errorMessages.MIN_1_CHAR),
+    z.string({ error: errorMessages.MIN_1_CHAR }).min(1, errorMessages.MIN_1_CHAR),
   ),
   tags: z.array(z.string()),
   note: z.string(),
   relationKeys: z.array(
-    z
-      .string({ error: errorMessages.MIN_1_CHAR })
-      .min(1, errorMessages.MIN_1_CHAR),
+    z.string({ error: errorMessages.MIN_1_CHAR }).min(1, errorMessages.MIN_1_CHAR),
   ),
   relationValues: z.array(
-    z
-      .string({ error: errorMessages.MIN_1_CHAR })
-      .min(1, errorMessages.MIN_1_CHAR),
+    z.string({ error: errorMessages.MIN_1_CHAR }).min(1, errorMessages.MIN_1_CHAR),
   ),
 });
 
@@ -74,12 +65,7 @@ export interface EditorFormProps {
   form: UseFormReturn<FormSchema>;
 }
 
-export function CharacterModal({
-  open,
-  setOpen,
-  collectionUuid,
-  character,
-}: Props) {
+export function CharacterModal({ open, setOpen, collectionUuid, character }: Props) {
   const { collection } = useCollection(collectionUuid);
   const [isLoading, setIsLoading] = useState(false);
 
@@ -170,10 +156,7 @@ export function CharacterModal({
         </DialogHeader>
 
         <Form {...form}>
-          <form
-            className="min-h-0 overflow-y-auto"
-            onSubmit={form.handleSubmit(onSubmit)}
-          >
+          <form className="min-h-0 overflow-y-auto" onSubmit={form.handleSubmit(onSubmit)}>
             <div className="flex flex-col">
               <div className="grid grid-cols-[minmax(0,3fr)_minmax(0,7fr)] gap-6">
                 <section id="left" className="flex shrink-0 flex-col">
@@ -193,11 +176,7 @@ export function CharacterModal({
                       <FormItem>
                         <FormLabel>캐릭터 이름</FormLabel>
                         <FormControl>
-                          <Input
-                            {...field}
-                            type="text"
-                            placeholder="캐릭터 이름"
-                          />
+                          <Input {...field} type="text" placeholder="캐릭터 이름" />
                         </FormControl>
                         <FormMessage />
                       </FormItem>
@@ -223,9 +202,7 @@ export function CharacterModal({
         </Form>
 
         {isLoading && (
-          <Message variant="loading">
-            캐릭터를 {character ? "수정" : "생성"} 중입니다...
-          </Message>
+          <Message variant="loading">캐릭터를 {character ? "수정" : "생성"} 중입니다...</Message>
         )}
 
         <DialogFooter className="pt-2">

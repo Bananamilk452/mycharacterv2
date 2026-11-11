@@ -1,9 +1,6 @@
 import { SquarePenIcon, TrashIcon } from "lucide-react";
 import { useEffect, useState } from "react";
 
-import { useCollection } from "@/hooks/useCollection";
-import { Character, CollectionInfo } from "@/lib/db";
-
 import {
   ContextMenu,
   ContextMenuContent,
@@ -14,6 +11,8 @@ import { CharacterCard } from "./CharacterCard";
 import { CharacterFilter } from "./CharacterFilter";
 import { CharacterModal } from "./CharacterModal";
 import { DeleteCharacterModal } from "./DeleteCharacterModal";
+import { useCollection } from "@/hooks/useCollection";
+import { Character, CollectionInfo } from "@/lib/db";
 
 export interface SearchParam {
   type: "relation" | "property" | "text";
@@ -33,9 +32,7 @@ interface CharactersProps {
 }
 
 export function Characters({ collectionUuid }: CharactersProps) {
-  const { collection, collectionInfo, characters } = useCollection(
-    collectionUuid as string,
-  );
+  const { collection, collectionInfo, characters } = useCollection(collectionUuid as string);
 
   const [searchParams, setSearchParams] = useState<SearchParam[]>([]);
   const [sortParams, setSortParams] = useState<SortParam>({
@@ -43,9 +40,7 @@ export function Characters({ collectionUuid }: CharactersProps) {
     order: "asc",
     value: "",
   });
-  const [refinedCharacters, setRefinedCharacters] = useState<Character[]>(
-    characters || [],
-  );
+  const [refinedCharacters, setRefinedCharacters] = useState<Character[]>(characters || []);
 
   const [characterSize, setCharacterSize] = useState(1);
 
@@ -69,10 +64,7 @@ export function Characters({ collectionUuid }: CharactersProps) {
           const value = char.propertyValues[index];
 
           if ([">", "<", ">=", "<="].includes(searchParam.operation)) {
-            if (
-              isNaN(parseFloat(value)) ||
-              isNaN(parseFloat(searchParam.value))
-            ) {
+            if (isNaN(parseFloat(value)) || isNaN(parseFloat(searchParam.value))) {
               return false;
             }
           }
@@ -103,13 +95,9 @@ export function Characters({ collectionUuid }: CharactersProps) {
     }
 
     async function applyFilters() {
-      const characters = await Promise.all(
-        searchParams.map((param) => filterCharacters(param)),
-      );
+      const characters = await Promise.all(searchParams.map((param) => filterCharacters(param)));
 
-      const characterIds = characters.map((chars) =>
-        chars.map((char) => char.id),
-      );
+      const characterIds = characters.map((chars) => chars.map((char) => char.id));
 
       const characterMap = new Map<string, Character>();
       characters.flat().forEach((char) => {
@@ -117,9 +105,7 @@ export function Characters({ collectionUuid }: CharactersProps) {
       });
 
       // Intersection of character IDs
-      const filteredIds = characterIds.reduce((a, b) =>
-        a.filter((c) => b.includes(c)),
-      );
+      const filteredIds = characterIds.reduce((a, b) => a.filter((c) => b.includes(c)));
 
       const filteredChars = filteredIds.map((id) => characterMap.get(id)!);
 
@@ -185,14 +171,7 @@ export function Characters({ collectionUuid }: CharactersProps) {
     }
 
     getRefinedCharacters();
-  }, [
-    searchParams,
-    collection,
-    sortParams.type,
-    sortParams.value,
-    sortParams.order,
-    characters,
-  ]);
+  }, [searchParams, collection, sortParams.type, sortParams.value, sortParams.order, characters]);
 
   return (
     <div className="flex size-full flex-col">
@@ -229,23 +208,13 @@ function CharacterCards({
   collectionUuid: string;
 }) {
   const [isCharacterModalOpen, setIsCharacterModalOpen] = useState(false);
-  const [selectedCharacter, setSelectedCharacter] = useState<Character | null>(
-    null,
-  );
-  const [isDeleteCharacterModalOpen, setIsDeleteCharacterModalOpen] =
-    useState(false);
+  const [selectedCharacter, setSelectedCharacter] = useState<Character | null>(null);
+  const [isDeleteCharacterModalOpen, setIsDeleteCharacterModalOpen] = useState(false);
 
   const size =
-    characterSize === 0
-      ? "sm"
-      : characterSize === 1
-        ? "md"
-        : characterSize === 2
-          ? "lg"
-          : "xl";
+    characterSize === 0 ? "sm" : characterSize === 1 ? "md" : characterSize === 2 ? "lg" : "xl";
 
-  const templates =
-    collectionInfo?.characterDescription.match(/\{\{(.+)\}\}/gm);
+  const templates = collectionInfo?.characterDescription.match(/\{\{(.+)\}\}/gm);
   function getCharacterDescription(character: Character) {
     const fields = templates?.map((template) => {
       const fieldName = template.replace("{{", "").replace("}}", "").trim();

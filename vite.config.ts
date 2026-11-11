@@ -6,12 +6,17 @@ import tsconfigPath from "vite-tsconfig-paths";
 
 // https://vite.dev/config/
 export default defineConfig({
-  plugins: [react(), tsconfigPath(), tailwindcss(), sentryVitePlugin({
-    org: "project-nessus",
-    project: "mycharacterv2"
-  })],
+  plugins: [
+    react(),
+    tsconfigPath(),
+    tailwindcss(),
+    sentryVitePlugin({
+      org: "project-nessus",
+      project: "mycharacterv2",
+    }),
+  ],
 
   build: {
-    sourcemap: true
-  }
+    sourcemap: true,
+  },
 });

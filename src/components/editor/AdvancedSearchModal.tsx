@@ -1,5 +1,10 @@
 import { useMemo, useState } from "react";
 
+import { Button } from "../ui/button";
+import { Input } from "../ui/input";
+import { Label } from "../ui/label";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "../ui/select";
+import { SearchParam } from "./Characters";
 import {
   Dialog,
   DialogContent,
@@ -9,40 +14,19 @@ import {
 } from "@/components/ui/dialog";
 import { getSearchParamDescription } from "@/lib/utils";
 
-import { Button } from "../ui/button";
-import { Input } from "../ui/input";
-import { Label } from "../ui/label";
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "../ui/select";
-import { SearchParam } from "./Characters";
-
 interface AdvancedSearchModalProps {
   open: boolean;
   setOpen: (open: boolean) => void;
   onComplete: (searchParams: SearchParam[]) => void;
 }
 
-export function AdvancedSearchModal({
-  open,
-  setOpen,
-  onComplete,
-}: AdvancedSearchModalProps) {
+export function AdvancedSearchModal({ open, setOpen, onComplete }: AdvancedSearchModalProps) {
   const [searchParams, setSearchParams] = useState<SearchParam[]>([]);
 
   const searchParamDescription = useMemo(() => {
     return searchParams
       .map((param) =>
-        getSearchParamDescription(
-          param.type,
-          param.operation,
-          param.key,
-          param.value,
-        ),
+        getSearchParamDescription(param.type, param.operation, param.key, param.value),
       )
       .join("\n그리고\n");
   }, [searchParams]);
@@ -96,9 +80,7 @@ function AddSearchParam({
   setSearchParams: React.Dispatch<React.SetStateAction<SearchParam[]>>;
 }) {
   const [type, setType] = useState<SearchParam["type"] | undefined>();
-  const [operation, setOperation] = useState<
-    SearchParam["operation"] | undefined
-  >();
+  const [operation, setOperation] = useState<SearchParam["operation"] | undefined>();
   const [input1, setInput1] = useState("");
   const [input2, setInput2] = useState("");
 
@@ -123,10 +105,7 @@ function AddSearchParam({
       return;
     }
 
-    if (
-      Number.isNaN(Number(input2)) &&
-      ["<", ">", "<=", ">="].includes(operation)
-    ) {
+    if (Number.isNaN(Number(input2)) && ["<", ">", "<=", ">="].includes(operation)) {
       alert("숫자 연산자는 숫자 값에만 사용할 수 있습니다.");
       return;
     }
@@ -150,9 +129,7 @@ function AddSearchParam({
           value={type}
           onValueChange={(value) => {
             setType(value as SearchParam["type"]);
-            setOperation(
-              value === "text" || value === "relation" ? "=" : undefined,
-            );
+            setOperation(value === "text" || value === "relation" ? "=" : undefined);
             setInput1("");
             setInput2("");
           }}
@@ -201,11 +178,7 @@ function AddSearchParam({
             type="text"
             value={input1}
             placeholder={
-              type === "property"
-                ? "속성 이름"
-                : type === "relation"
-                  ? "관계 이름"
-                  : "이름"
+              type === "property" ? "속성 이름" : type === "relation" ? "관계 이름" : "이름"
             }
             onChange={(e) => setInput1(e.target.value)}
           />

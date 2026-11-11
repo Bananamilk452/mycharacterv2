@@ -33,11 +33,11 @@ export function TagBox({ form }: EditorFormProps) {
   return (
     <div className="flex flex-col gap-4">
       <Label>태그</Label>
-      <div className="border-input flex max-h-[106px] min-h-9 flex-wrap items-center gap-2 overflow-y-auto rounded-md border px-3 py-2 shadow-xs ring-black has-focus-visible:ring-1">
+      <div className="flex max-h-[106px] min-h-9 flex-wrap items-center gap-2 overflow-y-auto rounded-md border border-input px-3 py-2 shadow-xs ring-black has-focus-visible:ring-1">
         {tags.map((tag, i) => (
           <span
             key={i}
-            className="bg-primary/10 flex min-w-0 items-center gap-1 rounded-full px-2 py-0.5 text-sm break-all"
+            className="flex min-w-0 items-center gap-1 rounded-full bg-primary/10 px-2 py-0.5 text-sm break-all"
           >
             {tag}
             <button type="button" onClick={() => handleRemove(i)}>
@@ -45,10 +45,7 @@ export function TagBox({ form }: EditorFormProps) {
             </button>
           </span>
         ))}
-        <input
-          className="min-w-0 grow basis-32 text-sm outline-none"
-          onKeyUp={handleKeyUp}
-        />
+        <input className="min-w-0 grow basis-32 text-sm outline-none" onKeyUp={handleKeyUp} />
       </div>
     </div>
   );

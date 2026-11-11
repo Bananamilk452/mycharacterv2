@@ -23,8 +23,7 @@ export function CharacterFilter({
   setCharacterSize,
   setSortParams,
 }: CharacterFilterProps) {
-  const [isAdvancedSearchModalOpen, setIsAdvancedSearchModalOpen] =
-    useState(false);
+  const [isAdvancedSearchModalOpen, setIsAdvancedSearchModalOpen] = useState(false);
   const [isSortModalOpen, setIsSortModalOpen] = useState(false);
 
   return (
@@ -40,9 +39,7 @@ export function CharacterFilter({
         />
       </div>
       {searchParams.length > 0 && (
-        <p className="text-sm text-gray-600">
-          {searchParams.length}개의 검색 조건 적용됨
-        </p>
+        <p className="text-sm text-gray-600">{searchParams.length}개의 검색 조건 적용됨</p>
       )}
       <Button onClick={() => setIsAdvancedSearchModalOpen(true)}>
         <div className="flex items-center gap-2">
@@ -59,11 +56,7 @@ export function CharacterFilter({
         setOpen={setIsAdvancedSearchModalOpen}
         onComplete={setSearchParams}
       />
-      <SortModal
-        open={isSortModalOpen}
-        setOpen={setIsSortModalOpen}
-        onComplete={setSortParams}
-      />
+      <SortModal open={isSortModalOpen} setOpen={setIsSortModalOpen} onComplete={setSortParams} />
     </div>
   );
 }

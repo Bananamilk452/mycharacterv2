@@ -1,9 +1,6 @@
 import { PlusIcon, TrashIcon } from "lucide-react";
 import { useEffect, useState } from "react";
 
-import { useCollection } from "@/hooks/useCollection";
-import { Character } from "@/lib/db";
-
 import { Button } from "../ui/button";
 import {
   ContextMenu,
@@ -15,6 +12,8 @@ import { Label } from "../ui/label";
 import { AddRelationModal } from "./AddRelationModal";
 import { CharacterCard } from "./CharacterCard";
 import { EditorFormProps } from "./CharacterModal";
+import { useCollection } from "@/hooks/useCollection";
+import { Character } from "@/lib/db";
 
 export function RelationBox({
   form,
@@ -63,16 +62,12 @@ export function RelationBox({
     <div className="flex flex-col">
       <div className="flex items-center justify-between">
         <Label className="shrink-0">관계</Label>
-        <Button
-          type="button"
-          size="sm"
-          onClick={() => setIsAddRelationModalOpen(true)}
-        >
+        <Button type="button" size="sm" onClick={() => setIsAddRelationModalOpen(true)}>
           <PlusIcon />
           관계 추가
         </Button>
       </div>
-      <div className="border-input mt-3.5 flex h-84 flex-wrap gap-4 overflow-scroll rounded-md border p-4 shadow-xs">
+      <div className="mt-3.5 flex h-84 flex-wrap gap-4 overflow-scroll rounded-md border border-input p-4 shadow-xs">
         {relationCharacters.length > 0 ? (
           relationCharacters.map((r, i) => (
             <ContextMenu>

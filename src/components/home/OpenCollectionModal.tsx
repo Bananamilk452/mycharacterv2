@@ -1,25 +1,16 @@
 import { FolderIcon } from "lucide-react";
 import { useEffect, useState } from "react";
 
-import {
-  Dialog,
-  DialogContent,
-  DialogHeader,
-  DialogTitle,
-} from "@/components/ui/dialog";
-import { CollectionInfo, listCollections } from "@/lib/db";
-
 import { Spinner } from "../Spinner";
+import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
+import { CollectionInfo, listCollections } from "@/lib/db";
 
 interface OpenCollectionModalProps {
   open: boolean;
   setOpen: (open: boolean) => void;
 }
 
-export function OpenCollectionModal({
-  open,
-  setOpen,
-}: OpenCollectionModalProps) {
+export function OpenCollectionModal({ open, setOpen }: OpenCollectionModalProps) {
   const [isLoading, setIsLoading] = useState(false);
   const [collections, setCollections] = useState<CollectionInfo[]>([]);
 

@@ -4,8 +4,7 @@
 @custom-variant dark (&:is(.dark *));
 
 @theme inline {
-  --default-font-family:
-    "Pretendard JP Variable", "Pretendard Variable", sans-serif;
+  --default-font-family: "Pretendard JP Variable", "Pretendard Variable", sans-serif;
 }
 
 /* TinyMCE */

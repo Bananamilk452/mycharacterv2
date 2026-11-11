@@ -1,9 +1,8 @@
 import { clsx } from "clsx";
 import { twMerge } from "tailwind-merge";
 
-import { DB_PREFIX } from "@/constant";
-
 import { connectCollection } from "./db";
+import { DB_PREFIX } from "@/constant";
 
 import type { ClassValue } from "clsx";
 

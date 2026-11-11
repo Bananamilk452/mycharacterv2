@@ -15,8 +15,7 @@ export function PropertyBox({ form }: EditorFormProps) {
   // 속성 추가 시 스크롤을 아래로 내림
   useEffect(() => {
     if (propertyContainerRef.current) {
-      propertyContainerRef.current.scrollTop =
-        propertyContainerRef.current.scrollHeight;
+      propertyContainerRef.current.scrollTop = propertyContainerRef.current.scrollHeight;
     }
   }, [propertyKeys, propertyValues]);
 
@@ -48,7 +47,7 @@ export function PropertyBox({ form }: EditorFormProps) {
       <div
         ref={propertyContainerRef}
         tabIndex={-1}
-        className="border-input mt-3.5 flex h-48 grow flex-col gap-3 overflow-auto rounded-md border p-3 shadow-xs"
+        className="mt-3.5 flex h-48 grow flex-col gap-3 overflow-auto rounded-md border border-input p-3 shadow-xs"
       >
         {propertyKeys.map((_, index) => (
           <div key={index} className="grid grid-cols-[1fr_1fr_auto] gap-2">
@@ -79,11 +78,7 @@ export function PropertyBox({ form }: EditorFormProps) {
               )}
             />
 
-            <button
-              type="button"
-              onClick={() => handleRemoveProperty(index)}
-              className="h-9"
-            >
+            <button type="button" onClick={() => handleRemoveProperty(index)} className="h-9">
               <XIcon className="size-5" />
             </button>
           </div>

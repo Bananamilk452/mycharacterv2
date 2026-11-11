@@ -1,6 +1,8 @@
 import { CogIcon, Earth, UserPlus } from "lucide-react";
 import { useMemo, useState } from "react";
 
+import { Spinner } from "../Spinner";
+import { UpdateCollectionModal } from "./UpdateCollectionModal";
 import { CharacterModal } from "@/components/editor/CharacterModal";
 import {
   Sidebar,
@@ -15,9 +17,6 @@ import {
 } from "@/components/ui/sidebar";
 import { useCollection } from "@/hooks/useCollection";
 
-import { Spinner } from "../Spinner";
-import { UpdateCollectionModal } from "./UpdateCollectionModal";
-
 interface AppSidebarProps {
   uuid: string;
 }
@@ -25,8 +24,7 @@ interface AppSidebarProps {
 export function AppSidebar({ uuid }: AppSidebarProps) {
   const { collectionInfo, characters } = useCollection(uuid);
   const [isCharacterDialogOpen, setIsCharacterDialogOpen] = useState(false);
-  const [isUpdateCollectionDialogOpen, setIsUpdateCollectionDialogOpen] =
-    useState(false);
+  const [isUpdateCollectionDialogOpen, setIsUpdateCollectionDialogOpen] = useState(false);
 
   const iconUrl = useMemo(() => {
     if (collectionInfo && collectionInfo.icon) {
@@ -41,19 +39,11 @@ export function AppSidebar({ uuid }: AppSidebarProps) {
           <SidebarHeader>
             <div className="flex items-center gap-3">
               <div className="flex size-12 shrink-0 items-center justify-center rounded-lg bg-gray-300">
-                {iconUrl ? (
-                  <img src={iconUrl} className="size-full" />
-                ) : (
-                  <Earth />
-                )}
+                {iconUrl ? <img src={iconUrl} className="size-full" /> : <Earth />}
               </div>
               <div className="flex min-w-0 flex-col gap-0.5">
-                <h1 className="truncate text-sm font-semibold">
-                  {collectionInfo.name}
-                </h1>
-                <p className="text-xs text-gray-500">
-                  캐릭터 {characters.length}명
-                </p>
+                <h1 className="truncate text-sm font-semibold">{collectionInfo.name}</h1>
+                <p className="text-xs text-gray-500">캐릭터 {characters.length}명</p>
               </div>
             </div>
           </SidebarHeader>
@@ -64,9 +54,7 @@ export function AppSidebar({ uuid }: AppSidebarProps) {
               <SidebarGroupContent>
                 <SidebarMenu>
                   <SidebarMenuItem>
-                    <SidebarMenuButton
-                      onClick={() => setIsCharacterDialogOpen(true)}
-                    >
+                    <SidebarMenuButton onClick={() => setIsCharacterDialogOpen(true)}>
                       <UserPlus />
                       캐릭터 추가
                     </SidebarMenuButton>
@@ -77,9 +65,7 @@ export function AppSidebar({ uuid }: AppSidebarProps) {
                     />
                   </SidebarMenuItem>
                   <SidebarMenuItem>
-                    <SidebarMenuButton
-                      onClick={() => setIsUpdateCollectionDialogOpen(true)}
-                    >
+                    <SidebarMenuButton onClick={() => setIsUpdateCollectionDialogOpen(true)}>
                       <CogIcon />
                       콜렉션 설정
                     </SidebarMenuButton>

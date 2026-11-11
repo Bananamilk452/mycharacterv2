@@ -5,9 +5,7 @@ import { DB_PREFIX } from "@/constant";
 import { Collection, connectCollection } from "@/lib/db";
 
 export function useCollection(uuid: string) {
-  const [collection, setCollection] = useState<Collection | undefined>(
-    undefined,
-  );
+  const [collection, setCollection] = useState<Collection | undefined>(undefined);
   const [error, setError] = useState<Error | undefined>(undefined);
 
   const collectionInfo = useLiveQuery(async () => {
@@ -35,10 +33,7 @@ export function useCollection(uuid: string) {
       throw new Error("콜렉션이 연결되지 않았습니다.");
     }
 
-    const characters = await collection.characters
-      .where("uuid")
-      .equals(uuid)
-      .toArray();
+    const characters = await collection.characters.where("uuid").equals(uuid).toArray();
 
     return characters[0];
   }

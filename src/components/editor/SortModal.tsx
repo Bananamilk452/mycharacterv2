@@ -2,6 +2,11 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm, useWatch } from "react-hook-form";
 import z from "zod";
 
+import { Button } from "../ui/button";
+import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "../ui/form";
+import { Input } from "../ui/input";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "../ui/select";
+import { SortParam } from "./Characters";
 import {
   Dialog,
   DialogContent,
@@ -9,25 +14,6 @@ import {
   DialogHeader,
   DialogTitle,
 } from "@/components/ui/dialog";
-
-import { Button } from "../ui/button";
-import {
-  Form,
-  FormControl,
-  FormField,
-  FormItem,
-  FormLabel,
-  FormMessage,
-} from "../ui/form";
-import { Input } from "../ui/input";
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "../ui/select";
-import { SortParam } from "./Characters";
 
 interface SortModalProps {
   open: boolean;
@@ -98,10 +84,7 @@ export function SortModal({ open, setOpen, onComplete }: SortModalProps) {
                   <FormItem>
                     <FormLabel>정렬 기준</FormLabel>
                     <FormControl>
-                      <Select
-                        onValueChange={field.onChange}
-                        defaultValue={field.value}
-                      >
+                      <Select onValueChange={field.onChange} defaultValue={field.value}>
                         <SelectTrigger className="w-full">
                           <SelectValue placeholder="정렬 기준 선택" />
                         </SelectTrigger>
@@ -124,10 +107,7 @@ export function SortModal({ open, setOpen, onComplete }: SortModalProps) {
                   <FormItem>
                     <FormLabel>정렬 순서</FormLabel>
                     <FormControl>
-                      <Select
-                        onValueChange={field.onChange}
-                        defaultValue={field.value}
-                      >
+                      <Select onValueChange={field.onChange} defaultValue={field.value}>
                         <SelectTrigger className="w-full">
                           <SelectValue placeholder="정렬 순서 선택" />
                         </SelectTrigger>

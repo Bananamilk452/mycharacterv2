@@ -2,6 +2,9 @@ import { usePath } from "crossroad";
 import { useState } from "react";
 import { toast } from "sonner";
 
+import { Button } from "../ui/button";
+import { Input } from "../ui/input";
+import { Message } from "../ui/message";
 import {
   Dialog,
   DialogContent,
@@ -11,19 +14,12 @@ import {
 } from "@/components/ui/dialog";
 import { importCollection } from "@/lib/db/import";
 
-import { Button } from "../ui/button";
-import { Input } from "../ui/input";
-import { Message } from "../ui/message";
-
 interface ImportCollectionModalProps {
   open: boolean;
   setOpen: (open: boolean) => void;
 }
 
-export function ImportCollectionModal({
-  open,
-  setOpen,
-}: ImportCollectionModalProps) {
+export function ImportCollectionModal({ open, setOpen }: ImportCollectionModalProps) {
   const [, setPath] = usePath();
   const [isLoading, setIsLoading] = useState(false);
   const [file, setFile] = useState<File | null>(null);

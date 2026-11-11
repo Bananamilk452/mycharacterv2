@@ -1,12 +1,7 @@
 import JSZip from "jszip";
 
 import { DB_PREFIX } from "../../constant";
-import {
-  Character,
-  CollectionInfo,
-  initCollection,
-  isCollectionExists,
-} from "../db";
+import { Character, CollectionInfo, initCollection, isCollectionExists } from "../db";
 
 onmessage = async (event) => {
   try {
@@ -14,9 +9,7 @@ onmessage = async (event) => {
 
     const zip = await JSZip.loadAsync(await file.arrayBuffer());
 
-    const collectionInfoString = await zip
-      .file("collectionInfo.json")
-      ?.async("string");
+    const collectionInfoString = await zip.file("collectionInfo.json")?.async("string");
     const charactersString = await zip.file("characters.json")?.async("string");
 
     if (!collectionInfoString || !charactersString) {
@@ -30,9 +23,7 @@ onmessage = async (event) => {
       throw new Error("이미 존재하는 콜렉션입니다.");
     }
 
-    const collection = await initCollection(
-      `${DB_PREFIX}${collectionInfo.uuid}`,
-    );
+    const collection = await initCollection(`${DB_PREFIX}${collectionInfo.uuid}`);
 
     const iconFile = zip.file("icon.webp");
     if (iconFile) {
@@ -57,10 +48,7 @@ onmessage = async (event) => {
     console.error(error);
     postMessage({
       success: false,
-      error:
-        error instanceof Error
-          ? error.message
-          : "알 수 없는 오류가 발생했습니다.",
+      error: error instanceof Error ? error.message : "알 수 없는 오류가 발생했습니다.",
     });
   }
 };

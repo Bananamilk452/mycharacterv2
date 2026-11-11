@@ -39,17 +39,12 @@ const noteVariantTitle = {
 };
 
 export interface NoteProps
-  extends React.HTMLAttributes<HTMLDivElement>,
-    VariantProps<typeof noteVariants> {}
+  extends React.HTMLAttributes<HTMLDivElement>, VariantProps<typeof noteVariants> {}
 
 export const Note = React.forwardRef<HTMLDivElement, NoteProps>(
   ({ className, variant, ...props }, ref) => {
     return (
-      <div
-        className={cn(noteVariants({ variant, className }))}
-        ref={ref}
-        {...props}
-      >
+      <div className={cn(noteVariants({ variant, className }))} ref={ref} {...props}>
         <NoteTitle variant={variant} className="font-bold">
           {noteVariantTitle[variant ?? "default"]}
         </NoteTitle>
@@ -62,19 +57,14 @@ export const Note = React.forwardRef<HTMLDivElement, NoteProps>(
 );
 
 interface NoteTextProps
-  extends React.HTMLAttributes<HTMLParagraphElement>,
-    VariantProps<typeof noteTextVariants> {}
+  extends React.HTMLAttributes<HTMLParagraphElement>, VariantProps<typeof noteTextVariants> {}
 
 function NoteTitle({ variant, children, className }: NoteTextProps) {
-  return (
-    <h2 className={cn(noteTextVariants({ variant, className }))}>{children}</h2>
-  );
+  return <h2 className={cn(noteTextVariants({ variant, className }))}>{children}</h2>;
 }
 
 function NoteContent({ variant, children, className }: NoteTextProps) {
-  return (
-    <p className={cn(noteTextVariants({ variant, className }))}>{children}</p>
-  );
+  return <p className={cn(noteTextVariants({ variant, className }))}>{children}</p>;
 }
 
 Note.displayName = "Note";

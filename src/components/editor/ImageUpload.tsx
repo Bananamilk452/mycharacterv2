@@ -52,19 +52,10 @@ export function ImageUpload({
           hidden
           onChange={handleFileChange}
         />
-        <Button
-          type="button"
-          className="size-9"
-          onClick={() => fileRef.current?.click()}
-        >
+        <Button type="button" className="size-9" onClick={() => fileRef.current?.click()}>
           <UploadIcon />
         </Button>
-        <Button
-          type="button"
-          variant="destructive"
-          className="size-9"
-          onClick={handleRemoveAvatar}
-        >
+        <Button type="button" variant="destructive" className="size-9" onClick={handleRemoveAvatar}>
           <Trash2Icon />
         </Button>
       </div>
