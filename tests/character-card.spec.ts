@@ -55,4 +55,38 @@ test.describe("캐릭터 카드 기능", () => {
     expect(download.suggestedFilename()).toMatch(/\.png$/);
     expect(await download.path()).toBeTruthy();
   });
+
+  test("캐릭터 추가/수정 모달에서 카드 미리보기를 열 수 있다", async ({ page }) => {
+    await page.getByTestId("sidebar-add-character-button").click();
+    await page.getByTestId("character-modal-name-input").fill("미리보기 캐릭터");
+    await page.getByTestId("tagbox-input").fill("미리보기");
+    await page.getByTestId("tagbox-input").press("Enter");
+
+    // 생성 중인 입력값으로 카드 미리보기를 연다.
+    await page.getByTestId("character-modal-card-preview-button").click();
+    const card = page.getByTestId("character-card-preview");
+    await expect(card).toBeVisible();
+    await expect(card).toContainText("미리보기 캐릭터");
+    await expect(card).toContainText("#미리보기");
+
+    // 카드만 닫히고 캐릭터 생성 모달은 유지된다.
+    await page.keyboard.press("Escape");
+    await expect(card).toBeHidden();
+    await expect(page.getByTestId("character-modal-name-input")).toBeVisible();
+
+    await page.getByTestId("character-modal-submit-button").click();
+    await expect(helper.characterCard("미리보기 캐릭터")).toBeVisible();
+
+    // 수정 모달에서도 현재 값으로 카드 미리보기를 열 수 있다.
+    await helper.openCharacter("미리보기 캐릭터");
+    await page.getByTestId("character-modal-name-input").fill("수정된 미리보기 캐릭터");
+    await page.getByTestId("character-modal-card-preview-button").click();
+    await expect(page.getByTestId("character-card-preview")).toContainText(
+      "수정된 미리보기 캐릭터",
+    );
+
+    await page.keyboard.press("Escape");
+    await expect(page.getByTestId("character-card-preview")).toBeHidden();
+    await helper.closeDialog();
+  });
 });
