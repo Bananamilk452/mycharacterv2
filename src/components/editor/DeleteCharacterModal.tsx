@@ -72,7 +72,12 @@ export function DeleteCharacterModal({
         {isLoading && <Message variant="loading">캐릭터 삭제 중입니다...</Message>}
 
         <DialogFooter>
-          <Button variant="destructive" disabled={isLoading} onClick={onDelete}>
+          <Button
+            variant="destructive"
+            disabled={isLoading}
+            onClick={onDelete}
+            data-testid="delete-character-submit-button"
+          >
             삭제
           </Button>
         </DialogFooter>

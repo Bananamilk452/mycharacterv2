@@ -126,7 +126,12 @@ export function UpdateCollectionModal({ open, setOpen, collectionUuid }: Props) 
                 <FormItem>
                   <FormLabel>콜렉션 이름</FormLabel>
                   <FormControl>
-                    <Input {...field} type="text" placeholder="콜렉션 이름" />
+                    <Input
+                      {...field}
+                      type="text"
+                      placeholder="콜렉션 이름"
+                      data-testid="collection-modal-name-input"
+                    />
                   </FormControl>
                   <FormMessage />
                 </FormItem>
@@ -140,7 +145,12 @@ export function UpdateCollectionModal({ open, setOpen, collectionUuid }: Props) 
                 <FormItem>
                   <FormLabel>콜렉션 설명</FormLabel>
                   <FormControl>
-                    <Textarea {...field} className="h-24 resize-none" placeholder="콜렉션 설명" />
+                    <Textarea
+                      {...field}
+                      className="h-24 resize-none"
+                      placeholder="콜렉션 설명"
+                      data-testid="collection-modal-description-input"
+                    />
                   </FormControl>
                   <FormMessage />
                 </FormItem>
@@ -158,7 +168,12 @@ export function UpdateCollectionModal({ open, setOpen, collectionUuid }: Props) 
                     &#123;&#123; 종족 &#125;&#125;, 나이: &#123;&#123; 나이 &#125;&#125;
                   </FormDescription>
                   <FormControl>
-                    <Input {...field} type="text" placeholder="캐릭터 설명 템플릿" />
+                    <Input
+                      {...field}
+                      type="text"
+                      placeholder="캐릭터 설명 템플릿"
+                      data-testid="collection-modal-character-description-input"
+                    />
                   </FormControl>
                   <FormMessage />
                 </FormItem>
@@ -170,7 +185,11 @@ export function UpdateCollectionModal({ open, setOpen, collectionUuid }: Props) 
         {isLoading && <Message variant="loading">콜렉션 수정 중입니다...</Message>}
 
         <DialogFooter>
-          <Button disabled={isLoading} onClick={form.handleSubmit(onSubmit)}>
+          <Button
+            disabled={isLoading}
+            onClick={form.handleSubmit(onSubmit)}
+            data-testid="collection-modal-submit-button"
+          >
             수정
           </Button>
         </DialogFooter>

@@ -87,7 +87,10 @@ export function RelationBox({
               </ContextMenuTrigger>
 
               <ContextMenuContent>
-                <ContextMenuItem onClick={() => onDeleteRelation(i)}>
+                <ContextMenuItem
+                  onClick={() => onDeleteRelation(i)}
+                  data-testid="relation-context-menu-delete"
+                >
                   <TrashIcon className="text-red-600" />
                   <span className="text-red-600 hover:text-red-600">삭제</span>
                 </ContextMenuItem>

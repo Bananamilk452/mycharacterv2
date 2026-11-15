@@ -36,18 +36,24 @@ export function CharacterFilter({
           min={0}
           max={3}
           step={1}
+          data-testid="character-size-slider"
         />
       </div>
       {searchParams.length > 0 && (
-        <p className="text-sm text-gray-600">{searchParams.length}개의 검색 조건 적용됨</p>
+        <p className="text-sm text-gray-600" data-testid="applied-search-count">
+          {searchParams.length}개의 검색 조건 적용됨
+        </p>
       )}
-      <Button onClick={() => setIsAdvancedSearchModalOpen(true)}>
+      <Button
+        onClick={() => setIsAdvancedSearchModalOpen(true)}
+        data-testid="advanced-search-open-button"
+      >
         <div className="flex items-center gap-2">
           <SearchIcon className="size-4" />
           고급 검색
         </div>
       </Button>
-      <Button onClick={() => setIsSortModalOpen(true)}>
+      <Button onClick={() => setIsSortModalOpen(true)} data-testid="sort-open-button">
         <ArrowUpDownIcon className="size-4" />
         정렬
       </Button>

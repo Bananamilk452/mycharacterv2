@@ -62,12 +62,17 @@ export function ImportCollectionModal({ open, setOpen }: ImportCollectionModalPr
             const selectedFile = e.target.files?.[0] || null;
             setFile(selectedFile);
           }}
+          data-testid="import-collection-file-input"
         />
 
         <DialogFooter>
           {isLoading && <Message variant="loading">가져오는 중...</Message>}
 
-          <Button disabled={isLoading || !file} onClick={onImport}>
+          <Button
+            disabled={isLoading || !file}
+            onClick={onImport}
+            data-testid="import-collection-submit-button"
+          >
             가져오기
           </Button>
         </DialogFooter>

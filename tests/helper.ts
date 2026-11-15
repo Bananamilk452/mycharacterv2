@@ -9,6 +9,28 @@ import {
   TEST_MEMO,
 } from "./constants";
 
+export interface CharacterOptions {
+  name: string;
+  uploadAvatar?: boolean;
+  tags?: string[];
+  properties?: { key: string; value: string }[];
+  note?: string;
+  relations?: { characterName: string; relationName: string }[];
+}
+
+export interface SearchParamInput {
+  type: "이름" | "속성" | "관계";
+  operation?: string;
+  key?: string;
+  value: string;
+}
+
+export interface SortInput {
+  type: "이름" | "생성일" | "수정일" | "속성";
+  order: "오름차순" | "내림차순";
+  property?: string;
+}
+
 export class Helper {
   constructor(public readonly page: Page) {}
 
@@ -16,19 +38,219 @@ export class Helper {
     await this.page.locator("[data-slot='dialog-close']").first().click();
   }
 
-  async createCollection() {
-    // 홈 화면(WelcomeMenu)과 에디터(메뉴바) 중 어디에 있든 동작하도록 한다.
-    // isVisible()은 대기하지 않으므로 or()로 두 버튼 중 하나를 기다린다.
-    const createCollectionButton = this.page
-      .getByTestId("welcomemenu-create-collection")
-      .or(this.page.getByTestId("menubar-create-collection"));
+  async gotoHome() {
+    await this.page.goto("/");
+    await this.closeDialog();
+  }
 
-    await createCollectionButton.first().click();
+  async goHome() {
+    await this.clickMenubar("menubar-home");
+    await expect(this.page.getByTestId("welcomemenu-create-collection")).toBeVisible();
+    await this.closeDialog();
+  }
 
-    await this.page.getByTestId("create-collection-name-input").fill(TEST_COLLECTION_NAME);
+  async openMenubar() {
+    await this.page.getByRole("menuitem", { name: "파일" }).click();
+  }
+
+  async clickMenubar(testId: string) {
+    await this.openMenubar();
+    await this.page.getByTestId(testId).click();
+  }
+
+  async createCollection(
+    name: string = TEST_COLLECTION_NAME,
+    { fromEditor = false }: { fromEditor?: boolean } = {},
+  ) {
+    if (fromEditor) {
+      await this.clickMenubar("menubar-create-collection");
+    } else {
+      await this.page.getByTestId("welcomemenu-create-collection").click();
+    }
+
+    await this.page.getByTestId("create-collection-name-input").fill(name);
     await this.page.getByTestId("create-collection-submit-button").click();
 
-    await expect(this.page.getByTestId("sidebar-collection-name")).toHaveText(TEST_COLLECTION_NAME);
+    await expect(this.page.getByTestId("sidebar-collection-name")).toHaveText(name);
+  }
+
+  async updateCollection({
+    name,
+    description,
+    characterDescription,
+    uploadIcon = false,
+  }: {
+    name?: string;
+    description?: string;
+    characterDescription?: string;
+    uploadIcon?: boolean;
+  }) {
+    await this.page.getByTestId("sidebar-update-collection-button").click();
+
+    const dialog = this.page.getByRole("dialog", { name: "콜렉션 수정" });
+    await expect(dialog).toBeVisible();
+
+    if (name !== undefined) {
+      await this.page.getByTestId("collection-modal-name-input").fill(name);
+    }
+    if (description !== undefined) {
+      await this.page.getByTestId("collection-modal-description-input").fill(description);
+    }
+    if (characterDescription !== undefined) {
+      await this.page
+        .getByTestId("collection-modal-character-description-input")
+        .fill(characterDescription);
+    }
+    if (uploadIcon) {
+      await this.uploadImage();
+    }
+
+    await this.page.getByTestId("collection-modal-submit-button").click();
+    await expect(dialog).toBeHidden();
+  }
+
+  async exportCollection() {
+    await this.clickMenubar("menubar-export-collection");
+
+    const dialog = this.page.getByRole("dialog", { name: "콜렉션 내보내기" });
+    await expect(dialog).toBeVisible();
+
+    const downloadPromise = this.page.waitForEvent("download");
+    await this.page.getByTestId("export-collection-submit-button").click();
+    const download = await downloadPromise;
+    const path = await download.path();
+
+    expect(path).toBeTruthy();
+    await expect(dialog).toBeHidden();
+
+    return path!;
+  }
+
+  async importCollection(filePath: string, { fromHome = true }: { fromHome?: boolean } = {}) {
+    if (fromHome) {
+      await this.page.getByTestId("welcomemenu-import-collection").click();
+    } else {
+      await this.clickMenubar("menubar-import-collection");
+    }
+
+    const dialog = this.page.getByRole("dialog", { name: "콜렉션 가져오기" });
+    await expect(dialog).toBeVisible();
+
+    await this.page.getByTestId("import-collection-file-input").setInputFiles(filePath);
+    await this.page.getByTestId("import-collection-submit-button").click();
+
+    await expect(dialog).toBeHidden();
+  }
+
+  async openCollectionFromHome(name: string) {
+    await this.page.getByTestId("welcomemenu-open-collection").click();
+
+    const dialog = this.page.getByRole("dialog", { name: "콜렉션 열기" });
+    await expect(dialog).toBeVisible();
+    await dialog.getByRole("link", { name }).click();
+
+    await expect(this.page.getByTestId("sidebar-collection-name")).toHaveText(name);
+  }
+
+  characterCard(name: string) {
+    return this.page
+      .locator("#characters button")
+      .filter({ has: this.page.getByText(name, { exact: true }) });
+  }
+
+  async characterNames() {
+    return await this.page.locator("#characters h2").allTextContents();
+  }
+
+  async openCharacter(name: string) {
+    await this.characterCard(name).click();
+    await expect(this.page.getByTestId("character-modal-name-input")).toHaveValue(name);
+  }
+
+  async openCharacterContextMenu(name: string, action: "edit" | "delete") {
+    await this.characterCard(name).click({ button: "right" });
+    await this.page
+      .getByTestId(
+        action === "edit" ? "character-context-menu-edit" : "character-context-menu-delete",
+      )
+      .click();
+  }
+
+  async deleteCharacter(name: string) {
+    await this.openCharacterContextMenu(name, "delete");
+
+    const dialog = this.page.getByRole("dialog", { name: "캐릭터 삭제" });
+    await expect(dialog).toBeVisible();
+    await this.page.getByTestId("delete-character-submit-button").click();
+    await expect(dialog).toBeHidden();
+  }
+
+  async applySearch(params: SearchParamInput[]) {
+    await this.page.getByTestId("advanced-search-open-button").click();
+
+    const dialog = this.page.getByRole("dialog", { name: "고급 검색" });
+    await expect(dialog).toBeVisible();
+
+    // 이전에 적용한 검색 조건이 남아 있을 수 있으므로 초기화한다.
+    await this.page.getByTestId("advanced-search-reset-button").click();
+
+    for (const param of params) {
+      await this.page.getByTestId("advanced-search-type-select").click();
+      await this.page.getByRole("option", { name: param.type, exact: true }).click();
+
+      if (param.type === "속성") {
+        await this.page.getByTestId("advanced-search-operation-select").click();
+        await this.page
+          .getByRole("option", { name: param.operation ?? "완전히 일치", exact: true })
+          .click();
+        await this.page.getByTestId("advanced-search-key-input").fill(param.key!);
+        await this.page.getByTestId("advanced-search-value-input").fill(param.value);
+      } else {
+        await this.page.getByTestId("advanced-search-key-input").fill(param.value);
+      }
+
+      await this.page.getByTestId("advanced-search-add-button").click();
+    }
+
+    await this.page.getByTestId("advanced-search-submit-button").click();
+    await expect(dialog).toBeHidden();
+  }
+
+  async resetSearch() {
+    await this.page.getByTestId("advanced-search-open-button").click();
+
+    const dialog = this.page.getByRole("dialog", { name: "고급 검색" });
+    await expect(dialog).toBeVisible();
+
+    // 조건을 하나 추가한 뒤 초기화하는 흐름까지 확인한다.
+    await this.page.getByTestId("advanced-search-type-select").click();
+    await this.page.getByRole("option", { name: "이름", exact: true }).click();
+    await this.page.getByTestId("advanced-search-key-input").fill("초기화");
+    await this.page.getByTestId("advanced-search-add-button").click();
+    await this.page.getByTestId("advanced-search-reset-button").click();
+
+    await this.page.getByTestId("advanced-search-submit-button").click();
+    await expect(dialog).toBeHidden();
+  }
+
+  async sortBy({ type, order, property }: SortInput) {
+    await this.page.getByTestId("sort-open-button").click();
+
+    const dialog = this.page.getByRole("dialog", { name: "정렬" });
+    await expect(dialog).toBeVisible();
+
+    await this.page.getByTestId("sort-type-select").click();
+    await this.page.getByRole("option", { name: type, exact: true }).click();
+
+    await this.page.getByTestId("sort-order-select").click();
+    await this.page.getByRole("option", { name: order, exact: true }).click();
+
+    if (type === "속성") {
+      await this.page.getByTestId("sort-property-input").fill(property!);
+    }
+
+    await this.page.getByTestId("sort-submit-button").click();
+    await expect(dialog).toBeHidden();
   }
 
   async createCharacter({ uploadAvatar = true }: { uploadAvatar?: boolean } = {}) {
@@ -37,15 +259,15 @@ export class Helper {
     // 캐릭터 이름 입력
     await this.page.getByTestId("character-modal-name-input").fill(TEST_CHARACTER_NAME);
 
-    // 캐릭터 이미지 업로드 (이미지 제거/재업로드 포함)
+    // 캐릭터 이미지 업로드 (이미지 제거/재업로드, 비율 변경 포함)
     if (uploadAvatar) {
-      await this.uploadAvatar();
+      await this.uploadImage({ aspect: "자유" });
 
       // 이미지 제거 기능 작동하는지 확인
-      await this.removeAvatar();
+      await this.removeImage();
 
       // 다시 이미지 업로드
-      await this.uploadAvatar();
+      await this.uploadImage({ aspect: "1:1" });
     }
 
     // 태그 기능 작동하는지 확인
@@ -91,6 +313,13 @@ export class Helper {
     // 캐릭터 생성 확인
     await expect(this.page.getByTestId("character-card-0")).toHaveText(TEST_CHARACTER_NAME);
 
+    // 업로드한 아바타가 카드에 표시되는지 확인
+    if (uploadAvatar) {
+      await expect(
+        this.page.locator(`#characters img[alt='${TEST_CHARACTER_NAME}']`),
+      ).toHaveAttribute("src", /^blob:/);
+    }
+
     // 다시 캐릭터 모달 열어서 내용 확인
     await this.page.getByTestId("character-card-0").click();
 
@@ -120,6 +349,60 @@ export class Helper {
 
     // 닫기
     await this.closeDialog();
+  }
+
+  async addCharacter({
+    name,
+    uploadAvatar = false,
+    tags = [],
+    properties = [],
+    note,
+    relations = [],
+  }: CharacterOptions) {
+    await this.page.getByTestId("sidebar-add-character-button").click();
+    await this.page.getByTestId("character-modal-name-input").fill(name);
+
+    if (uploadAvatar) {
+      await this.uploadImage();
+    }
+
+    for (const tag of tags) {
+      await this.page.getByTestId("tagbox-input").fill(tag);
+      await this.page.getByTestId("tagbox-input").press("Enter");
+    }
+
+    for (let i = 0; i < properties.length; i++) {
+      await this.page.getByTestId("propertybox-add-button").click();
+      await this.page.getByTestId(`propertybox-key-${i}`).fill(properties[i].key);
+      await this.page.getByTestId(`propertybox-value-${i}`).fill(properties[i].value);
+    }
+
+    if (note !== undefined) {
+      await this.page.waitForSelector("iframe.tox-edit-area__iframe");
+      const frameHandle = await this.page.$("iframe.tox-edit-area__iframe");
+      const frame = await frameHandle!.contentFrame();
+      await frame!.fill("body", note);
+    }
+
+    for (const relation of relations) {
+      await this.addRelation(relation.characterName, relation.relationName);
+    }
+
+    await this.page.getByTestId("character-modal-submit-button").click();
+    await expect(this.characterCard(name)).toBeVisible();
+  }
+
+  async addRelation(characterName: string, relationName: string) {
+    await this.page.getByTestId("relationbox-add-button").click();
+
+    const dialog = this.page.getByRole("dialog", { name: "관계 추가" });
+    await expect(dialog).toBeVisible();
+
+    await dialog.getByRole("button").filter({ hasText: characterName }).click();
+    await this.page.getByTestId("add-relation-modal-relation-name-input").fill(relationName);
+    await this.page.getByTestId("add-relation-modal-submit-button").click();
+
+    await expect(dialog).toBeHidden();
   }
 
   async editCharacter() {
@@ -187,7 +470,7 @@ export class Helper {
     );
   }
 
-  private async uploadAvatar() {
+  async uploadImage({ aspect }: { aspect?: "자유" | "1:1" } = {}) {
     await this.page.getByTestId("image-upload-upload-button").click();
     await this.page.setInputFiles("input[data-testid='image-upload-file-input']", TEST_AVATAR_PATH);
 
@@ -196,6 +479,12 @@ export class Helper {
     const cropImage = this.page.locator("img[alt='To be cropped']");
     await expect(cropImage).toBeVisible();
     await this.expectImageLoaded(cropImage);
+
+    if (aspect === "자유") {
+      await this.page.getByTestId("image-crop-modal-free-aspect-button").click();
+    } else if (aspect === "1:1") {
+      await this.page.getByTestId("image-crop-modal-square-aspect-button").click();
+    }
 
     await this.page.getByTestId("image-crop-modal-save-button").click();
     await expect(this.page.getByTestId("image-crop-modal-save-button")).toBeHidden();
@@ -206,7 +495,7 @@ export class Helper {
     await this.expectImageLoaded(preview);
   }
 
-  private async removeAvatar() {
+  async removeImage() {
     await this.page.getByTestId("image-upload-remove-button").click();
 
     const preview = this.page.getByTestId("image-upload-preview");
