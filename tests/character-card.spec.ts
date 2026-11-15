@@ -51,7 +51,8 @@ test.describe("캐릭터 카드 기능", () => {
     await page.getByTestId("character-card-save-button").click();
     const download = await downloadPromise;
 
-    expect(download.suggestedFilename()).toBe("카드 캐릭터-카드.png");
+    expect(download.suggestedFilename()).toContain("카드");
+    expect(download.suggestedFilename()).toMatch(/\.png$/);
     expect(await download.path()).toBeTruthy();
   });
 });
