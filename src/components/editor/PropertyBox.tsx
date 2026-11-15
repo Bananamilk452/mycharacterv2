@@ -1,4 +1,4 @@
-import { PlusIcon, XIcon } from "lucide-react";
+import { ArrowDownIcon, ArrowUpIcon, PlusIcon, XIcon } from "lucide-react";
 import { useEffect, useRef } from "react";
 
 import { Button } from "../ui/button";
@@ -35,6 +35,31 @@ export function PropertyBox({ form }: EditorFormProps) {
     );
   }
 
+  function moveProperty(index: number, direction: -1 | 1) {
+    const propertyKeys = form.getValues("propertyKeys");
+    const propertyValues = form.getValues("propertyValues");
+    const targetIndex = index + direction;
+
+    if (targetIndex < 0 || targetIndex >= propertyKeys.length) {
+      return;
+    }
+
+    const nextPropertyKeys = [...propertyKeys];
+    const nextPropertyValues = [...propertyValues];
+
+    [nextPropertyKeys[index], nextPropertyKeys[targetIndex]] = [
+      nextPropertyKeys[targetIndex],
+      nextPropertyKeys[index],
+    ];
+    [nextPropertyValues[index], nextPropertyValues[targetIndex]] = [
+      nextPropertyValues[targetIndex],
+      nextPropertyValues[index],
+    ];
+
+    form.setValue("propertyKeys", nextPropertyKeys);
+    form.setValue("propertyValues", nextPropertyValues);
+  }
+
   return (
     <div className="flex flex-col">
       <div className="flex items-center justify-between">
@@ -55,7 +80,7 @@ export function PropertyBox({ form }: EditorFormProps) {
         className="mt-3.5 flex h-48 grow flex-col gap-3 overflow-auto rounded-md border border-input p-3 shadow-xs"
       >
         {propertyKeys.map((_, index) => (
-          <div key={index} className="grid grid-cols-[1fr_1fr_auto] gap-2">
+          <div key={index} className="grid grid-cols-[1fr_1fr_auto_auto] items-center gap-2">
             <FormField
               control={form.control}
               name={`propertyKeys.${index}`}
@@ -90,6 +115,29 @@ export function PropertyBox({ form }: EditorFormProps) {
                 </FormItem>
               )}
             />
+
+            <div className="flex flex-col gap-0.5">
+              <button
+                type="button"
+                className="flex size-5 items-center justify-center rounded hover:bg-gray-200 disabled:pointer-events-none disabled:opacity-30"
+                disabled={index === 0}
+                onClick={() => moveProperty(index, -1)}
+                aria-label={`${index + 1}번째 속성 위로 이동`}
+                data-testid={`propertybox-move-up-${index}`}
+              >
+                <ArrowUpIcon className="size-4" />
+              </button>
+              <button
+                type="button"
+                className="flex size-5 items-center justify-center rounded hover:bg-gray-200 disabled:pointer-events-none disabled:opacity-30"
+                disabled={index === propertyKeys.length - 1}
+                onClick={() => moveProperty(index, 1)}
+                aria-label={`${index + 1}번째 속성 아래로 이동`}
+                data-testid={`propertybox-move-down-${index}`}
+              >
+                <ArrowDownIcon className="size-4" />
+              </button>
+            </div>
 
             <button
               type="button"
