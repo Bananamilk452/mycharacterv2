@@ -13,10 +13,12 @@ test.describe("검색/정렬/크기 기능", () => {
     // 생성 순서: 하늘 → 가람 (기본 정렬은 생성일 오름차순)
     await helper.addCharacter({
       name: "하늘",
+      tags: ["하늘태그", "공통태그"],
       properties: [{ key: "나이", value: "30" }],
     });
     await helper.addCharacter({
       name: "가람",
+      tags: ["가람태그", "공통태그"],
       properties: [{ key: "나이", value: "10" }],
       relations: [{ characterName: "하늘", relationName: "친구" }],
     });
@@ -57,6 +59,23 @@ test.describe("검색/정렬/크기 기능", () => {
 
     await helper.applySearch([{ type: "관계", value: "친구" }]);
     await expect.poll(() => helper.characterNames()).toEqual(["가람"]);
+  });
+
+  test("태그로 검색할 수 있다", async ({ page }) => {
+    await helper.applySearch([{ type: "태그", value: "하늘태그" }]);
+    await expect.poll(() => helper.characterNames()).toEqual(["하늘"]);
+
+    // 대소문자 구분 없이 검색된다.
+    await helper.applySearch([{ type: "태그", value: "공통태그" }]);
+    await expect.poll(() => helper.characterNames()).toEqual(["하늘", "가람"]);
+
+    // 이름과 태그 검색을 함께 적용할 수 있다.
+    await helper.applySearch([
+      { type: "태그", value: "공통태그" },
+      { type: "이름", value: "가람" },
+    ]);
+    await expect.poll(() => helper.characterNames()).toEqual(["가람"]);
+    await expect(page.getByTestId("applied-search-count")).toHaveText("2개의 검색 조건 적용됨");
   });
 
   test("여러 검색 조건을 AND로 적용하고 초기화할 수 있다", async ({ page }) => {
