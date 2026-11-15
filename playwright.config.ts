@@ -21,8 +21,8 @@ export default defineConfig({
   retries: process.env.CI ? 2 : 0,
   /* 재시도로 통과한 flaky 테스트도 CI 실패로 처리한다. */
   failOnFlakyTests: !!process.env.CI,
-  /* Opt out of parallel tests on CI. */
-  workers: process.env.CI ? 1 : undefined,
+  /* Limit parallelism on CI (GitHub-hosted runner has 4 vCPUs). */
+  workers: process.env.CI ? 2 : undefined,
   /* Timeout per test. CI machines can be slow, especially while TinyMCE loads. */
   timeout: 60_000,
   /* Reporter to use. See https://playwright.dev/docs/test-reporters */
