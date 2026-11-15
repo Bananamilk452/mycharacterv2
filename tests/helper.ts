@@ -50,7 +50,22 @@ export class Helper {
   }
 
   async openMenubar() {
-    await this.page.getByRole("menuitem", { name: "파일" }).click();
+    const menu = this.page.getByRole("menu", { name: "파일" });
+    const trigger = this.page.getByRole("menuitem", { name: "파일" });
+
+    // 모달이 닫히는 중이면 첫 클릭이 무시될 수 있으므로 메뉴가 열릴 때까지 재시도한다.
+    for (let attempt = 0; attempt < 3; attempt++) {
+      await trigger.click();
+
+      try {
+        await expect(menu).toBeVisible({ timeout: 2000 });
+        return;
+      } catch {
+        // 메뉴가 열리지 않았으면 다시 시도한다.
+      }
+    }
+
+    await expect(menu).toBeVisible();
   }
 
   async clickMenubar(testId: string) {
