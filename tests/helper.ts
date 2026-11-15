@@ -19,7 +19,7 @@ export interface CharacterOptions {
 }
 
 export interface SearchParamInput {
-  type: "이름" | "속성" | "관계";
+  type: "이름" | "속성" | "관계" | "태그";
   operation?: string;
   key?: string;
   value: string;
