@@ -28,6 +28,14 @@ export function useCollection(uuid: string) {
     return characters;
   }, [collection]);
 
+  const gallery = useLiveQuery(async () => {
+    if (!collection) {
+      return undefined;
+    }
+
+    return await collection.gallery.toArray();
+  }, [collection]);
+
   async function getCharacterByUuid(uuid: string) {
     if (!collection) {
       throw new Error("콜렉션이 연결되지 않았습니다.");
@@ -52,13 +60,14 @@ export function useCollection(uuid: string) {
     throw error;
   }
 
-  const ready = Boolean(collection && collectionInfo && characters);
+  const ready = Boolean(collection && collectionInfo && characters && gallery);
 
   return {
     ready,
     collection,
     collectionInfo,
     characters,
+    gallery,
     getCharacterByUuid,
   };
 }

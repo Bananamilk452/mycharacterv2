@@ -4,6 +4,7 @@ import { useEffect, useState } from "react";
 import { AppSidebar } from "@/components/editor/AppSidebar";
 import { Characters } from "@/components/editor/Characters";
 import { ExportCollectionModal } from "@/components/editor/ExportCollectionModal";
+import { CollectionGallery } from "@/components/editor/Gallery";
 import { ImportCollectionModal } from "@/components/editor/ImportCollectionModal";
 import { CreateCollectionDialog } from "@/components/home/CreateCollectionDialog";
 import { OpenCollectionModal } from "@/components/home/OpenCollectionModal";
@@ -28,6 +29,7 @@ function Editor() {
   const [isOpenCollectionDialogOpen, setIsOpenCollectionDialogOpen] = useState(false);
   const [isExportCollectionDialogOpen, setIsExportCollectionDialogOpen] = useState(false);
   const [isImportCollectionDialogOpen, setIsImportCollectionDialogOpen] = useState(false);
+  const [activeView, setActiveView] = useState<"characters" | "gallery">("characters");
 
   useEffect(() => {
     if (collectionInfo) {
@@ -91,8 +93,16 @@ function Editor() {
             setOpen={setIsImportCollectionDialogOpen}
           />
           <SidebarProvider>
-            <AppSidebar uuid={collectionUuid as string} />
-            <Characters collectionUuid={collectionUuid as string} />
+            <AppSidebar
+              uuid={collectionUuid as string}
+              activeView={activeView}
+              onViewChange={setActiveView}
+            />
+            {activeView === "characters" ? (
+              <Characters collectionUuid={collectionUuid as string} />
+            ) : (
+              <CollectionGallery collectionUuid={collectionUuid as string} />
+            )}
           </SidebarProvider>
         </>
       ) : (
