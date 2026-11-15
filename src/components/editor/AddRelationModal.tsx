@@ -68,7 +68,11 @@ export function AddRelationModal({ open, setOpen, uuid, onComplete }: AddRelatio
         />
 
         <DialogFooter className="shrink-0">
-          <Button disabled={!selectedCharacter || !relationName} onClick={onAdd}>
+          <Button
+            disabled={!selectedCharacter || !relationName}
+            onClick={onAdd}
+            data-testid="add-relation-modal-submit-button"
+          >
             추가
           </Button>
         </DialogFooter>

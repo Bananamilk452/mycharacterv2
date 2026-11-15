@@ -176,7 +176,12 @@ export function CharacterModal({ open, setOpen, collectionUuid, character }: Pro
                       <FormItem>
                         <FormLabel>캐릭터 이름</FormLabel>
                         <FormControl>
-                          <Input {...field} type="text" placeholder="캐릭터 이름" />
+                          <Input
+                            {...field}
+                            type="text"
+                            placeholder="캐릭터 이름"
+                            data-testid="character-modal-name-input"
+                          />
                         </FormControl>
                         <FormMessage />
                       </FormItem>

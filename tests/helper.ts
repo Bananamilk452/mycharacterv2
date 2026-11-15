@@ -1,4 +1,4 @@
-import { expect, Page } from "@playwright/test";
+import { expect, type Locator, Page } from "@playwright/test";
 
 import {
   EDITED_CHARACTER_NAME,
@@ -13,53 +13,40 @@ export class Helper {
   constructor(public readonly page: Page) {}
 
   async closeDialog() {
-    await this.page.locator("[data-slot='dialog-close']").click();
+    await this.page.locator("[data-slot='dialog-close']").first().click();
   }
 
   async createCollection() {
-    if (await this.page.getByTestId("welcomemenu-create-collection").isVisible()) {
-      await this.page.getByTestId("welcomemenu-create-collection").click();
-    } else if (await this.page.getByTestId("menubar-create-collection").isVisible()) {
-      await this.page.getByTestId("menubar-create-collection").click();
-    }
+    // 홈 화면(WelcomeMenu)과 에디터(메뉴바) 중 어디에 있든 동작하도록 한다.
+    // isVisible()은 대기하지 않으므로 or()로 두 버튼 중 하나를 기다린다.
+    const createCollectionButton = this.page
+      .getByTestId("welcomemenu-create-collection")
+      .or(this.page.getByTestId("menubar-create-collection"));
+
+    await createCollectionButton.first().click();
 
     await this.page.getByTestId("create-collection-name-input").fill(TEST_COLLECTION_NAME);
     await this.page.getByTestId("create-collection-submit-button").click();
 
-    await this.page.getByTestId("sidebar-collection-name").waitFor();
     await expect(this.page.getByTestId("sidebar-collection-name")).toHaveText(TEST_COLLECTION_NAME);
   }
 
-  async createCharacter() {
+  async createCharacter({ uploadAvatar = true }: { uploadAvatar?: boolean } = {}) {
     await this.page.getByTestId("sidebar-add-character-button").click();
 
     // 캐릭터 이름 입력
     await this.page.getByTestId("character-modal-name-input").fill(TEST_CHARACTER_NAME);
 
-    // 캐릭터 이미지 업로드
-    await this.page.getByTestId("image-upload-upload-button").click();
-    await this.page.setInputFiles("input[data-testid='image-upload-file-input']", TEST_AVATAR_PATH);
-    await this.page.getByTestId("image-crop-modal-save-button").click();
-    await this.page.waitForTimeout(250); // 이미지 로딩 대기
+    // 캐릭터 이미지 업로드 (이미지 제거/재업로드 포함)
+    if (uploadAvatar) {
+      await this.uploadAvatar();
 
-    // 이미지가 업로드 되었는지 확인
-    await expect(this.page.getByTestId("image-upload-preview")).not.toHaveAttribute("src", "");
-    const isLoaded = await this.page
-      .getByTestId("image-upload-preview")
-      .evaluate((img: HTMLImageElement) => img.complete && img.naturalWidth > 0);
-    await expect(isLoaded).toBe(true);
+      // 이미지 제거 기능 작동하는지 확인
+      await this.removeAvatar();
 
-    // 이미지 제거 기능 작동하는지 확인
-    await this.page.getByTestId("image-upload-remove-button").click();
-    const isRemoved = await this.page
-      .getByTestId("image-upload-preview")
-      .evaluate((img: HTMLImageElement) => img.naturalWidth === 0);
-    await expect(isRemoved).toBe(true);
-    // 다시 이미지 업로드
-    await this.page.getByTestId("image-upload-upload-button").click();
-    await this.page.setInputFiles("input[data-testid='image-upload-file-input']", TEST_AVATAR_PATH);
-    await this.page.getByTestId("image-crop-modal-save-button").click();
-    await this.page.waitForTimeout(250); // 이미지 로딩 대기
+      // 다시 이미지 업로드
+      await this.uploadAvatar();
+    }
 
     // 태그 기능 작동하는지 확인
     await this.page.getByTestId("tagbox-input").fill("태그1");
@@ -91,7 +78,7 @@ export class Helper {
     await expect(this.page.getByTestId("propertybox-value-0")).toHaveValue("속성값2");
 
     // TinyMCE 에디터 로딩 대기
-    await this.page.waitForSelector(".tox-tinymce");
+    await this.page.waitForSelector("iframe.tox-edit-area__iframe");
 
     // 설명 입력
     const frameHandle = await this.page.$("iframe.tox-edit-area__iframe");
@@ -102,7 +89,6 @@ export class Helper {
     await this.page.getByTestId("character-modal-submit-button").click();
 
     // 캐릭터 생성 확인
-    await this.page.getByTestId("character-card-0").waitFor();
     await expect(this.page.getByTestId("character-card-0")).toHaveText(TEST_CHARACTER_NAME);
 
     // 다시 캐릭터 모달 열어서 내용 확인
@@ -114,8 +100,10 @@ export class Helper {
     );
 
     // 캐릭터 이미지 확인
-    const modalImageSrc = await this.page.getByTestId("image-upload-preview").getAttribute("src");
-    expect(modalImageSrc).toBeTruthy();
+    if (uploadAvatar) {
+      const modalImageSrc = await this.page.getByTestId("image-upload-preview").getAttribute("src");
+      expect(modalImageSrc).toBeTruthy();
+    }
 
     // 태그 확인
     await expect(this.page.getByTestId("tagbox-tag-0")).toHaveText("태그2");
@@ -170,7 +158,6 @@ export class Helper {
     await this.page.getByTestId("character-modal-submit-button").click();
 
     // 수정된 캐릭터 확인
-    await this.page.getByTestId("character-card-0").waitFor();
     await expect(this.page.getByTestId("character-card-0")).toHaveText(EDITED_CHARACTER_NAME);
 
     // 다시 캐릭터 모달 열어서 수정된 내용 확인
@@ -198,5 +185,40 @@ export class Helper {
     await expect(this.page.getByTestId("relationbox-character-card-0")).toHaveText(
       `${EDITED_CHARACTER_NAME}친구`,
     );
+  }
+
+  private async uploadAvatar() {
+    await this.page.getByTestId("image-upload-upload-button").click();
+    await this.page.setInputFiles("input[data-testid='image-upload-file-input']", TEST_AVATAR_PATH);
+
+    // ReactCrop은 이미지가 로드된 뒤에야 크롭 영역을 만든다.
+    // 로드 전에 저장을 누르면 아무 일도 일어나지 않으므로 로드를 기다린다.
+    const cropImage = this.page.locator("img[alt='To be cropped']");
+    await expect(cropImage).toBeVisible();
+    await this.expectImageLoaded(cropImage);
+
+    await this.page.getByTestId("image-crop-modal-save-button").click();
+    await expect(this.page.getByTestId("image-crop-modal-save-button")).toBeHidden();
+
+    // 이미지가 업로드 되었는지 확인
+    const preview = this.page.getByTestId("image-upload-preview");
+    await expect(preview).toHaveAttribute("src", /^blob:/);
+    await this.expectImageLoaded(preview);
+  }
+
+  private async removeAvatar() {
+    await this.page.getByTestId("image-upload-remove-button").click();
+
+    const preview = this.page.getByTestId("image-upload-preview");
+    await expect(preview).not.toHaveAttribute("src", /^blob:/);
+    await expect
+      .poll(() => preview.evaluate((img: HTMLImageElement) => img.naturalWidth === 0))
+      .toBe(true);
+  }
+
+  private async expectImageLoaded(image: Locator) {
+    await expect
+      .poll(() => image.evaluate((img: HTMLImageElement) => img.complete && img.naturalWidth > 0))
+      .toBe(true);
   }
 }
