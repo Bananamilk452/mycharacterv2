@@ -167,11 +167,15 @@ export class Helper {
     await expect(this.page.getByTestId("character-modal-name-input")).toHaveValue(name);
   }
 
-  async openCharacterContextMenu(name: string, action: "edit" | "delete") {
+  async openCharacterContextMenu(name: string, action: "edit" | "delete" | "card") {
     await this.characterCard(name).click({ button: "right" });
     await this.page
       .getByTestId(
-        action === "edit" ? "character-context-menu-edit" : "character-context-menu-delete",
+        action === "edit"
+          ? "character-context-menu-edit"
+          : action === "delete"
+            ? "character-context-menu-delete"
+            : "character-context-menu-card",
       )
       .click();
   }

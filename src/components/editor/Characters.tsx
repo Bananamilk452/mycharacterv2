@@ -1,4 +1,4 @@
-import { SquarePenIcon, TrashIcon } from "lucide-react";
+import { CreditCardIcon, SquarePenIcon, TrashIcon } from "lucide-react";
 import { useEffect, useState } from "react";
 
 import {
@@ -8,6 +8,7 @@ import {
   ContextMenuTrigger,
 } from "../ui/context-menu";
 import { CharacterCard } from "./CharacterCard";
+import { CharacterCardModal } from "./CharacterCardModal";
 import { CharacterFilter } from "./CharacterFilter";
 import { CharacterModal } from "./CharacterModal";
 import { DeleteCharacterModal } from "./DeleteCharacterModal";
@@ -212,6 +213,7 @@ function CharacterCards({
   collectionUuid: string;
 }) {
   const [isCharacterModalOpen, setIsCharacterModalOpen] = useState(false);
+  const [isCharacterCardModalOpen, setIsCharacterCardModalOpen] = useState(false);
   const [selectedCharacter, setSelectedCharacter] = useState<Character | null>(null);
   const [isDeleteCharacterModalOpen, setIsDeleteCharacterModalOpen] = useState(false);
 
@@ -261,6 +263,16 @@ function CharacterCards({
             <ContextMenuItem
               onClick={() => {
                 setSelectedCharacter(character);
+                setIsCharacterCardModalOpen(true);
+              }}
+              data-testid="character-context-menu-card"
+            >
+              <CreditCardIcon />
+              카드 보기
+            </ContextMenuItem>
+            <ContextMenuItem
+              onClick={() => {
+                setSelectedCharacter(character);
                 setIsCharacterModalOpen(true);
               }}
               data-testid="character-context-menu-edit"
@@ -287,6 +299,14 @@ function CharacterCards({
         collectionUuid={collectionUuid}
         character={selectedCharacter!}
       />
+      {selectedCharacter && (
+        <CharacterCardModal
+          open={isCharacterCardModalOpen}
+          setOpen={setIsCharacterCardModalOpen}
+          collectionUuid={collectionUuid}
+          character={selectedCharacter}
+        />
+      )}
       <DeleteCharacterModal
         open={isDeleteCharacterModalOpen}
         setOpen={setIsDeleteCharacterModalOpen}
