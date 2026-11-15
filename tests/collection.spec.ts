@@ -165,4 +165,53 @@ test.describe("콜렉션 기능", () => {
     await helper.goHome();
     await expect(page.getByTestId("welcomemenu-create-collection")).toBeVisible();
   });
+
+  test("메뉴바에서 콜렉션을 삭제하면 홈으로 이동한다", async ({ page }) => {
+    await helper.createCollection("삭제할 콜렉션");
+
+    await helper.clickMenubar("menubar-delete-collection");
+
+    const dialog = page.getByRole("dialog", { name: "콜렉션 삭제" });
+    await expect(dialog).toBeVisible();
+    await expect(dialog).toContainText("삭제할 콜렉션");
+    await expect(dialog).toContainText("되돌릴 수 없습니다");
+
+    await page.getByTestId("delete-collection-submit-button").click();
+    await expect(dialog).toBeHidden();
+
+    await expect(page.getByTestId("welcomemenu-create-collection")).toBeVisible();
+    await expect(page.getByText("최근 콜렉션이 없습니다.")).toBeVisible();
+    await expect(page.getByText("콜렉션이 삭제되었습니다.")).toBeVisible();
+  });
+
+  test("콜렉션 열기 목록에서 콜렉션을 삭제할 수 있다", async ({ page }) => {
+    await helper.createCollection("남길 콜렉션");
+    await helper.goHome();
+    await helper.createCollection("삭제할 콜렉션");
+    await helper.goHome();
+
+    await page.getByTestId("welcomemenu-open-collection").click();
+    const dialog = page.getByRole("dialog", { name: "콜렉션 열기" });
+    await expect(dialog).toBeVisible();
+
+    const target = dialog.getByRole("listitem").filter({ hasText: "삭제할 콜렉션" });
+    await target.getByTestId("open-collection-delete-button").click();
+
+    const deleteDialog = page.getByRole("dialog", { name: "콜렉션 삭제" });
+    await expect(deleteDialog).toBeVisible();
+    await page.getByTestId("delete-collection-submit-button").click();
+    await expect(deleteDialog).toBeHidden();
+
+    await expect(dialog.getByRole("listitem").filter({ hasText: "삭제할 콜렉션" })).toHaveCount(0);
+    await expect(dialog.getByRole("listitem").filter({ hasText: "남길 콜렉션" })).toBeVisible();
+
+    // 새로고침 후에도 삭제된 콜렉션이 남아있지 않다.
+    await page.reload();
+    await helper.closeDialog();
+    await page.getByTestId("welcomemenu-open-collection").click();
+    const reloadedDialog = page.getByRole("dialog", { name: "콜렉션 열기" });
+    await expect(reloadedDialog).toBeVisible();
+    await expect(reloadedDialog.getByText("삭제할 콜렉션")).toHaveCount(0);
+    await expect(reloadedDialog.getByText("남길 콜렉션")).toBeVisible();
+  });
 });
