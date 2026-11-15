@@ -5,6 +5,7 @@ import { AppSidebar } from "@/components/editor/AppSidebar";
 import { Characters } from "@/components/editor/Characters";
 import { DeleteCollectionModal } from "@/components/editor/DeleteCollectionModal";
 import { ExportCollectionModal } from "@/components/editor/ExportCollectionModal";
+import { CollectionGallery } from "@/components/editor/Gallery";
 import { ImportCollectionModal } from "@/components/editor/ImportCollectionModal";
 import { CreateCollectionDialog } from "@/components/home/CreateCollectionDialog";
 import { OpenCollectionModal } from "@/components/home/OpenCollectionModal";
@@ -25,6 +26,7 @@ function Editor() {
   const { collectionUuid } = useParams();
   const { collectionInfo, characters } = useCollection(collectionUuid as string);
 
+  const [activeView, setActiveView] = useState<"characters" | "gallery">("characters");
   const [isCreateCollectionDialogOpen, setIsCreateCollectionDialogOpen] = useState(false);
   const [isOpenCollectionDialogOpen, setIsOpenCollectionDialogOpen] = useState(false);
   const [isExportCollectionDialogOpen, setIsExportCollectionDialogOpen] = useState(false);
@@ -107,8 +109,16 @@ function Editor() {
             onDeleted={() => setPath("/")}
           />
           <SidebarProvider>
-            <AppSidebar uuid={collectionUuid as string} />
-            <Characters collectionUuid={collectionUuid as string} />
+            <AppSidebar
+              uuid={collectionUuid as string}
+              activeView={activeView}
+              onViewChange={setActiveView}
+            />
+            {activeView === "characters" ? (
+              <Characters collectionUuid={collectionUuid as string} />
+            ) : (
+              <CollectionGallery collectionUuid={collectionUuid as string} />
+            )}
           </SidebarProvider>
         </>
       ) : (

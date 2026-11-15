@@ -11,6 +11,7 @@ onmessage = async (event) => {
 
     const collectionInfoString = await zip.file("collectionInfo.json")?.async("string");
     const charactersString = await zip.file("characters.json")?.async("string");
+    const galleryString = await zip.file("gallery.json")?.async("string");
 
     if (!collectionInfoString || !charactersString) {
       throw new Error("잘못된 파일 형식입니다.");
@@ -41,6 +42,27 @@ onmessage = async (event) => {
       }
 
       await collection.characters.add(character);
+    }
+
+    if (galleryString) {
+      const galleryImages = JSON.parse(galleryString) as {
+        id: string;
+        characterId?: string;
+        createdAt: string;
+      }[];
+
+      for (const image of galleryImages) {
+        const imageFile = zip.file(`gallery/${image.id}.webp`);
+
+        if (imageFile) {
+          await collection.gallery.add({
+            id: image.id,
+            characterId: image.characterId,
+            createdAt: new Date(image.createdAt),
+            image: await imageFile.async("blob"),
+          });
+        }
+      }
     }
 
     postMessage({ success: true, uuid: collectionInfo.uuid });

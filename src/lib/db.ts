@@ -31,9 +31,17 @@ interface CollectionInfo {
   updatedAt: Date;
 }
 
+interface GalleryImage {
+  id: string;
+  characterId?: string;
+  image: Blob;
+  createdAt: Date;
+}
+
 type Collection = Dexie & {
   characters: EntityTable<Character, "id">;
   collectionInfo: EntityTable<CollectionInfo, "id">;
+  gallery: EntityTable<GalleryImage, "id">;
 };
 
 const collectionInfoSchema = z.object({
@@ -56,6 +64,10 @@ export async function initCollection(name: string) {
   db.version(1).stores({
     characters: "$$id, name, *propertyKeys, *propertyValues, *tags, createdAt, updatedAt",
     collectionInfo: "++id, uuid, name, description, characterDescription, createdAt, updatedAt",
+  });
+
+  db.version(2).stores({
+    gallery: "$$id, characterId, createdAt",
   });
 
   return db;
@@ -112,5 +124,5 @@ async function listCollections() {
   return result;
 }
 
-export type { Character, CollectionInfo, Collection };
+export type { Character, CollectionInfo, Collection, GalleryImage };
 export { isCollectionExists, createCollection, connectCollection, listCollections };

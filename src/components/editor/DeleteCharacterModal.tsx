@@ -39,8 +39,10 @@ export function DeleteCharacterModal({
 
     setIsLoading(true);
 
-    collection.characters
-      .delete(character.id)
+    Promise.all([
+      collection.characters.delete(character.id),
+      collection.gallery.where("characterId").equals(character.id).delete(),
+    ])
       .then(() => {
         updateCollectionUpdatedAt(collectionUuid);
         toast.success("캐릭터가 삭제되었습니다.");

@@ -9,6 +9,7 @@ import { NoteBox } from "./NoteBox";
 import { PropertyBox } from "./PropertyBox";
 import { RelationBox } from "./RelationBox";
 import { TagBox } from "./TagBox";
+import { CharacterGallery } from "./Gallery";
 import { Button } from "@/components/ui/button";
 import {
   Dialog,
@@ -202,6 +203,10 @@ export function CharacterModal({ open, setOpen, collectionUuid, character }: Pro
                 <NoteBox form={form} />
                 <RelationBox form={form} collectionUuid={collectionUuid} />
               </div>
+
+              <hr className="mt-6 mb-4" />
+
+              <CharacterGallery collectionUuid={collectionUuid} characterId={character?.id} />
             </div>
           </form>
         </Form>

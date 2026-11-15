@@ -1,4 +1,4 @@
-import { CogIcon, Earth, UserPlus } from "lucide-react";
+import { CogIcon, Earth, ImagesIcon, UserPlus, UsersIcon } from "lucide-react";
 import { useMemo, useState } from "react";
 
 import { Spinner } from "../Spinner";
@@ -19,9 +19,15 @@ import { useCollection } from "@/hooks/useCollection";
 
 interface AppSidebarProps {
   uuid: string;
+  activeView?: "characters" | "gallery";
+  onViewChange?: (view: "characters" | "gallery") => void;
 }
 
-export function AppSidebar({ uuid }: AppSidebarProps) {
+export function AppSidebar({
+  uuid,
+  activeView = "characters",
+  onViewChange,
+}: AppSidebarProps) {
   const { collectionInfo, characters } = useCollection(uuid);
   const [isCharacterDialogOpen, setIsCharacterDialogOpen] = useState(false);
   const [isUpdateCollectionDialogOpen, setIsUpdateCollectionDialogOpen] = useState(false);
@@ -62,6 +68,26 @@ export function AppSidebar({ uuid }: AppSidebarProps) {
               <SidebarGroupLabel>콜렉션</SidebarGroupLabel>
               <SidebarGroupContent>
                 <SidebarMenu>
+                  <SidebarMenuItem>
+                    <SidebarMenuButton
+                      isActive={activeView === "characters"}
+                      onClick={() => onViewChange?.("characters")}
+                      data-testid="sidebar-characters-button"
+                    >
+                      <UsersIcon />
+                      캐릭터
+                    </SidebarMenuButton>
+                  </SidebarMenuItem>
+                  <SidebarMenuItem>
+                    <SidebarMenuButton
+                      isActive={activeView === "gallery"}
+                      onClick={() => onViewChange?.("gallery")}
+                      data-testid="sidebar-gallery-button"
+                    >
+                      <ImagesIcon />
+                      갤러리
+                    </SidebarMenuButton>
+                  </SidebarMenuItem>
                   <SidebarMenuItem>
                     <SidebarMenuButton
                       onClick={() => setIsCharacterDialogOpen(true)}
