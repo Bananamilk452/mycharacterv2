@@ -3,6 +3,7 @@ import { useEffect, useState } from "react";
 
 import { AppSidebar } from "@/components/editor/AppSidebar";
 import { Characters } from "@/components/editor/Characters";
+import { DeleteCollectionModal } from "@/components/editor/DeleteCollectionModal";
 import { ExportCollectionModal } from "@/components/editor/ExportCollectionModal";
 import { ImportCollectionModal } from "@/components/editor/ImportCollectionModal";
 import { CreateCollectionDialog } from "@/components/home/CreateCollectionDialog";
@@ -28,6 +29,7 @@ function Editor() {
   const [isOpenCollectionDialogOpen, setIsOpenCollectionDialogOpen] = useState(false);
   const [isExportCollectionDialogOpen, setIsExportCollectionDialogOpen] = useState(false);
   const [isImportCollectionDialogOpen, setIsImportCollectionDialogOpen] = useState(false);
+  const [isDeleteCollectionDialogOpen, setIsDeleteCollectionDialogOpen] = useState(false);
 
   useEffect(() => {
     if (collectionInfo) {
@@ -70,6 +72,13 @@ function Editor() {
                 >
                   가져오기
                 </MenubarItem>
+                <MenubarItem
+                  className="text-red-600 data-[highlighted]:text-red-600"
+                  onClick={() => setIsDeleteCollectionDialogOpen(true)}
+                  data-testid="menubar-delete-collection"
+                >
+                  콜렉션 삭제
+                </MenubarItem>
               </MenubarContent>
             </MenubarMenu>
           </Menubar>
@@ -89,6 +98,13 @@ function Editor() {
           <ImportCollectionModal
             open={isImportCollectionDialogOpen}
             setOpen={setIsImportCollectionDialogOpen}
+          />
+          <DeleteCollectionModal
+            open={isDeleteCollectionDialogOpen}
+            setOpen={setIsDeleteCollectionDialogOpen}
+            collectionUuid={collectionUuid as string}
+            collectionName={collectionInfo.name}
+            onDeleted={() => setPath("/")}
           />
           <SidebarProvider>
             <AppSidebar uuid={collectionUuid as string} />

@@ -99,6 +99,7 @@ async function listCollections() {
     onlyCollections.map(async (name) => {
       const db = await connectCollection(name);
       const info = await db.collectionInfo.get(1);
+      db.close();
 
       if (!info) {
         throw new Error("콜렉션 정보를 불러올 수 없습니다.");

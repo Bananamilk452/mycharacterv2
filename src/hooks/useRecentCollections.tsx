@@ -13,6 +13,7 @@ async function getRecentCollections() {
     collectionNames.map(async (name) => {
       const db = await connectCollection(name);
       const info = await db.collectionInfo.get(1);
+      db.close();
 
       return info;
     }),
