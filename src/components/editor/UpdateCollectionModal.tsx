@@ -4,6 +4,10 @@ import { useForm } from "react-hook-form";
 import { toast } from "sonner";
 import { z } from "zod";
 
+import { Input } from "../ui/input";
+import { Label } from "../ui/label";
+import { Textarea } from "../ui/textarea";
+import { ImageUpload } from "./ImageUpload";
 import { Button } from "@/components/ui/button";
 import {
   Dialog,
@@ -26,11 +30,6 @@ import { useCollection } from "@/hooks/useCollection";
 import { updateCollectionUpdatedAt } from "@/lib/utils";
 import errorMessages from "@/utils/errorMessages";
 
-import { Input } from "../ui/input";
-import { Label } from "../ui/label";
-import { Textarea } from "../ui/textarea";
-import { ImageUpload } from "./ImageUpload";
-
 const formSchema = z.object({
   name: z.string().min(1, errorMessages.MIN_1_CHAR),
   description: z.string().optional(),
@@ -46,11 +45,7 @@ interface Props {
   collectionUuid: string;
 }
 
-export function UpdateCollectionModal({
-  open,
-  setOpen,
-  collectionUuid,
-}: Props) {
+export function UpdateCollectionModal({ open, setOpen, collectionUuid }: Props) {
   const { collection, collectionInfo } = useCollection(collectionUuid);
   const [isLoading, setIsLoading] = useState(false);
 
@@ -113,10 +108,7 @@ export function UpdateCollectionModal({
         </DialogHeader>
 
         <Form {...form}>
-          <form
-            className="flex flex-col gap-6"
-            onSubmit={form.handleSubmit(onSubmit)}
-          >
+          <form className="flex flex-col gap-6" onSubmit={form.handleSubmit(onSubmit)}>
             <div className="flex flex-col gap-2">
               <Label>아이콘</Label>
               <div className="w-36">
@@ -148,11 +140,7 @@ export function UpdateCollectionModal({
                 <FormItem>
                   <FormLabel>콜렉션 설명</FormLabel>
                   <FormControl>
-                    <Textarea
-                      {...field}
-                      className="h-24 resize-none"
-                      placeholder="콜렉션 설명"
-                    />
+                    <Textarea {...field} className="h-24 resize-none" placeholder="콜렉션 설명" />
                   </FormControl>
                   <FormMessage />
                 </FormItem>
@@ -166,16 +154,11 @@ export function UpdateCollectionModal({
                 <FormItem>
                   <FormLabel>캐릭터 설명 템플릿</FormLabel>
                   <FormDescription>
-                    원하는 속성을 &#123;&#123; 속성명 &#125;&#125; 형식으로
-                    입력하세요. 예: 종족: &#123;&#123; 종족 &#125;&#125;, 나이:
-                    &#123;&#123; 나이 &#125;&#125;
+                    원하는 속성을 &#123;&#123; 속성명 &#125;&#125; 형식으로 입력하세요. 예: 종족:
+                    &#123;&#123; 종족 &#125;&#125;, 나이: &#123;&#123; 나이 &#125;&#125;
                   </FormDescription>
                   <FormControl>
-                    <Input
-                      {...field}
-                      type="text"
-                      placeholder="캐릭터 설명 템플릿"
-                    />
+                    <Input {...field} type="text" placeholder="캐릭터 설명 템플릿" />
                   </FormControl>
                   <FormMessage />
                 </FormItem>
@@ -184,9 +167,7 @@ export function UpdateCollectionModal({
           </form>
         </Form>
 
-        {isLoading && (
-          <Message variant="loading">콜렉션 수정 중입니다...</Message>
-        )}
+        {isLoading && <Message variant="loading">콜렉션 수정 중입니다...</Message>}
 
         <DialogFooter>
           <Button disabled={isLoading} onClick={form.handleSubmit(onSubmit)}>

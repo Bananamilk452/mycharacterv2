@@ -11,7 +11,8 @@ const cardVariants = cva(
       size: {
         sm: "p-3",
         md: "p-4",
-        lg: "p-6",
+        lg: "p-4",
+        xl: "p-4",
       },
     },
     defaultVariants: {
@@ -28,6 +29,7 @@ const imageVariants = cva(
         sm: "size-24",
         md: "size-32",
         lg: "size-40",
+        xl: "size-48",
       },
     },
     defaultVariants: {

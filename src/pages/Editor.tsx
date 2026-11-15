@@ -22,18 +22,12 @@ import { useCollection } from "@/hooks/useCollection";
 function Editor() {
   const [, setPath] = usePath();
   const { collectionUuid } = useParams();
-  const { collectionInfo, characters } = useCollection(
-    collectionUuid as string,
-  );
+  const { collectionInfo, characters } = useCollection(collectionUuid as string);
 
-  const [isCreateCollectionDialogOpen, setIsCreateCollectionDialogOpen] =
-    useState(false);
-  const [isOpenCollectionDialogOpen, setIsOpenCollectionDialogOpen] =
-    useState(false);
-  const [isExportCollectionDialogOpen, setIsExportCollectionDialogOpen] =
-    useState(false);
-  const [isImportCollectionDialogOpen, setIsImportCollectionDialogOpen] =
-    useState(false);
+  const [isCreateCollectionDialogOpen, setIsCreateCollectionDialogOpen] = useState(false);
+  const [isOpenCollectionDialogOpen, setIsOpenCollectionDialogOpen] = useState(false);
+  const [isExportCollectionDialogOpen, setIsExportCollectionDialogOpen] = useState(false);
+  const [isImportCollectionDialogOpen, setIsImportCollectionDialogOpen] = useState(false);
 
   useEffect(() => {
     if (collectionInfo) {
@@ -56,19 +50,13 @@ function Editor() {
                 >
                   콜렉션 추가
                 </MenubarItem>
-                <MenubarItem
-                  onClick={() => setIsOpenCollectionDialogOpen(true)}
-                >
+                <MenubarItem onClick={() => setIsOpenCollectionDialogOpen(true)}>
                   콜렉션 열기
                 </MenubarItem>
-                <MenubarItem
-                  onClick={() => setIsExportCollectionDialogOpen(true)}
-                >
+                <MenubarItem onClick={() => setIsExportCollectionDialogOpen(true)}>
                   내보내기
                 </MenubarItem>
-                <MenubarItem
-                  onClick={() => setIsImportCollectionDialogOpen(true)}
-                >
+                <MenubarItem onClick={() => setIsImportCollectionDialogOpen(true)}>
                   가져오기
                 </MenubarItem>
               </MenubarContent>

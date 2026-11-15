@@ -16,8 +16,7 @@ const messageVariants = cva("flex items-center gap-2", {
 });
 
 export interface MessageProps
-  extends HTMLAttributes<HTMLDivElement>,
-    VariantProps<typeof messageVariants> {}
+  extends HTMLAttributes<HTMLDivElement>, VariantProps<typeof messageVariants> {}
 
 const Icon = {
   loading: Spinner,
@@ -30,12 +29,8 @@ export function Message({ className, variant, ...props }: MessageProps) {
 
   return (
     <div className={cn(messageVariants({ variant, className }))} {...props}>
-      <IconComponent
-        className={cn("size-5 shrink-0", messageVariants({ variant }))}
-      />
-      <span className={cn("text-sm", messageVariants({ variant }))}>
-        {props.children}
-      </span>
+      <IconComponent className={cn("size-5 shrink-0", messageVariants({ variant }))} />
+      <span className={cn("text-sm", messageVariants({ variant }))}>{props.children}</span>
     </div>
   );
 }

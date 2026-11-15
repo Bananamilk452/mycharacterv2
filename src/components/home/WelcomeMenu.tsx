@@ -1,20 +1,16 @@
 import { FolderIcon, ImportIcon, PlusIcon } from "lucide-react";
 import { useState } from "react";
 
+import { ImportCollectionModal } from "../editor/ImportCollectionModal";
+import { OpenCollectionModal } from "./OpenCollectionModal";
 import { CreateCollectionDialog } from "@/components/home/CreateCollectionDialog";
 import { useRecentCollections } from "@/hooks/useRecentCollections";
 
-import { ImportCollectionModal } from "../editor/ImportCollectionModal";
-import { OpenCollectionModal } from "./OpenCollectionModal";
-
 export function WelcomeMenu() {
   const { recentCollections } = useRecentCollections();
-  const [isCreateCollectionDialogOpen, setIsCreateCollectionDialogOpen] =
-    useState(false);
-  const [isOpenCollectionDialogOpen, setIsOpenCollectionDialogOpen] =
-    useState(false);
-  const [isImportCollectionDialogOpen, setIsImportCollectionDialogOpen] =
-    useState(false);
+  const [isCreateCollectionDialogOpen, setIsCreateCollectionDialogOpen] = useState(false);
+  const [isOpenCollectionDialogOpen, setIsOpenCollectionDialogOpen] = useState(false);
+  const [isImportCollectionDialogOpen, setIsImportCollectionDialogOpen] = useState(false);
 
   return (
     <div className="flex gap-24">
@@ -77,9 +73,7 @@ export function WelcomeMenu() {
         <ul className="mt-2 space-y-3">
           {recentCollections.length === 0 && (
             <li>
-              <span className="text-sm text-gray-500">
-                최근 콜렉션이 없습니다.
-              </span>
+              <span className="text-sm text-gray-500">최근 콜렉션이 없습니다.</span>
             </li>
           )}
 
@@ -109,18 +103,17 @@ export function WelcomeMenu() {
           </a>
         </p>
         <p className="text-sm break-keep text-gray-600">
-          피드백 / 버그 리포트 주시는 곳 (편히 연락 주세요 진짜 원하는 기능
-          가능하면 다 넣어드려요):
+          피드백 / 버그 리포트 주시는 곳 (편히 연락 주세요 진짜 원하는 기능 가능하면 다 넣어드려요):
           <br />
           <br />
           트위터{" "}
           <a
-            href="https://x.com/starterdroid"
+            href="https://x.com/lemon_gr_"
             target="_blank"
             rel="noreferrer"
             className="text-violet-600 hover:underline"
           >
-            @starterdroid
+            @lemon_gr_
           </a>
           <br />
           블루스카이{" "}
@@ -130,7 +123,7 @@ export function WelcomeMenu() {
             rel="noreferrer"
             className="text-violet-600 hover:underline"
           >
-            @junsu.io
+            @seoa.dev
           </a>
           <br />
           연합우주{" "}
@@ -140,17 +133,20 @@ export function WelcomeMenu() {
             rel="noreferrer"
             className="text-violet-600 hover:underline"
           >
-            @starterdroid
+            @starterdroid@serafuku.moe
           </a>
           <br />
           이메일{" "}
-          <a
-            href="mailto:bananamilk452@gmail.com"
-            className="text-violet-600 hover:underline"
-          >
-            bananamilk452@gmail.com
+          <a href="mailto:me@seoa.dev" className="text-violet-600 hover:underline">
+            me@seoa.dev
           </a>
           <br />
+        </p>
+
+        <p className="text-sm break-keep text-gray-600">
+          패치노트
+          <br />- 캐릭터 크기 조절 기능 추가 (11.25)
+          <br />- 캐릭터 정렬 기능 추가 (11.27)
         </p>
       </div>
     </div>

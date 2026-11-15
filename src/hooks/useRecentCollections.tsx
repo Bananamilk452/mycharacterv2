@@ -6,9 +6,7 @@ import { CollectionInfo, connectCollection, isCollectionInfo } from "@/lib/db";
 
 async function getRecentCollections() {
   const databaseNames = await Dexie.getDatabaseNames();
-  const collectionNames = databaseNames.filter((name) =>
-    name.startsWith(DB_PREFIX),
-  );
+  const collectionNames = databaseNames.filter((name) => name.startsWith(DB_PREFIX));
 
   // 모든 콜렉션의 메타데이터 가져오기
   const collectionDatas = await Promise.all(
@@ -21,8 +19,8 @@ async function getRecentCollections() {
   );
 
   // 메타데이터가 없는 콜렉션 제거
-  const collectionsWithMetadata = collectionDatas.filter(
-    (info): info is CollectionInfo => isCollectionInfo(info),
+  const collectionsWithMetadata = collectionDatas.filter((info): info is CollectionInfo =>
+    isCollectionInfo(info),
   );
 
   // 업데이트된 시간 순으로 정렬
@@ -35,9 +33,7 @@ async function getRecentCollections() {
 }
 
 export function useRecentCollections() {
-  const [recentCollections, setRecentCollections] = useState<CollectionInfo[]>(
-    [],
-  );
+  const [recentCollections, setRecentCollections] = useState<CollectionInfo[]>([]);
 
   useEffect(() => {
     getRecentCollections()

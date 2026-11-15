@@ -1,5 +1,8 @@
 import { useState } from "react";
 
+import { Button } from "../ui/button";
+import { Input } from "../ui/input";
+import { CharacterCard } from "./CharacterCard";
 import {
   Dialog,
   DialogContent,
@@ -9,10 +12,6 @@ import {
 } from "@/components/ui/dialog";
 import { useCollection } from "@/hooks/useCollection";
 
-import { Button } from "../ui/button";
-import { Input } from "../ui/input";
-import { CharacterCard } from "./CharacterCard";
-
 interface AddRelationModalProps {
   open: boolean;
   setOpen: (open: boolean) => void;
@@ -20,16 +19,9 @@ interface AddRelationModalProps {
   onComplete: (option: { characterUuid: string; relationName: string }) => void;
 }
 
-export function AddRelationModal({
-  open,
-  setOpen,
-  uuid,
-  onComplete,
-}: AddRelationModalProps) {
+export function AddRelationModal({ open, setOpen, uuid, onComplete }: AddRelationModalProps) {
   const { characters } = useCollection(uuid);
-  const [selectedCharacter, setSelectedCharacter] = useState<string | null>(
-    null,
-  );
+  const [selectedCharacter, setSelectedCharacter] = useState<string | null>(null);
   const [relationName, setRelationName] = useState("");
 
   function onAdd() {
@@ -46,23 +38,19 @@ export function AddRelationModal({
 
   return (
     <Dialog open={open} onOpenChange={setOpen}>
-      <DialogContent className="max-w-xl!">
+      <DialogContent className="flex h-fit max-h-[calc(100dvh-48px)]! max-w-3xl! flex-col">
         <DialogHeader>
           <DialogTitle>관계 추가</DialogTitle>
         </DialogHeader>
 
-        <div className="border-input flex flex-wrap gap-4 rounded-md border p-4">
+        <div className="flex min-h-0 flex-1 flex-wrap content-start gap-4 overflow-y-auto rounded-md border border-input p-4">
           {characters && characters.length > 0 ? (
             characters.map((character, i) => (
               <CharacterCard
                 key={character.id}
                 character={character}
                 onClick={() => setSelectedCharacter(character.id)}
-                className={
-                  selectedCharacter === character.id
-                    ? "border-primary border-2"
-                    : ""
-                }
+                className={selectedCharacter === character.id ? "border-2 border-primary" : ""}
                 data-testid={`add-relation-modal-character-card-${i}`}
               />
             ))
@@ -72,18 +60,15 @@ export function AddRelationModal({
         </div>
 
         <Input
+          className="shrink-0"
           placeholder="관계 이름"
           value={relationName}
           onChange={(e) => setRelationName(e.target.value)}
           data-testid="add-relation-modal-relation-name-input"
         />
 
-        <DialogFooter>
-          <Button
-            disabled={!selectedCharacter || !relationName}
-            onClick={onAdd}
-            data-testid="add-relation-modal-submit-button"
-          >
+        <DialogFooter className="shrink-0">
+          <Button disabled={!selectedCharacter || !relationName} onClick={onAdd}>
             추가
           </Button>
         </DialogFooter>
