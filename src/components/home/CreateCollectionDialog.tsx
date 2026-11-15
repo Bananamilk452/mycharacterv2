@@ -85,7 +85,12 @@ export function CreateCollectionDialog({ open, setOpen }: Props) {
                 <FormItem>
                   <FormLabel>콜렉션 이름</FormLabel>
                   <FormControl>
-                    <Input {...field} type="text" placeholder="콜렉션 이름" />
+                    <Input
+                      {...field}
+                      type="text"
+                      placeholder="콜렉션 이름"
+                      data-testid="create-collection-name-input"
+                    />
                   </FormControl>
                   <FormMessage />
                 </FormItem>
@@ -97,7 +102,11 @@ export function CreateCollectionDialog({ open, setOpen }: Props) {
         {isLoading && <Message variant="loading">콜렉션을 생성 중입니다...</Message>}
 
         <DialogFooter>
-          <Button disabled={isLoading} onClick={form.handleSubmit(onSubmit)}>
+          <Button
+            disabled={isLoading}
+            onClick={form.handleSubmit(onSubmit)}
+            data-testid="create-collection-submit-button"
+          >
             생성
           </Button>
         </DialogFooter>

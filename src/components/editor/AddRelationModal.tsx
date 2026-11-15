@@ -45,12 +45,13 @@ export function AddRelationModal({ open, setOpen, uuid, onComplete }: AddRelatio
 
         <div className="flex min-h-0 flex-1 flex-wrap content-start gap-4 overflow-y-auto rounded-md border border-input p-4">
           {characters && characters.length > 0 ? (
-            characters.map((character) => (
+            characters.map((character, i) => (
               <CharacterCard
                 key={character.id}
                 character={character}
                 onClick={() => setSelectedCharacter(character.id)}
                 className={selectedCharacter === character.id ? "border-2 border-primary" : ""}
+                data-testid={`add-relation-modal-character-card-${i}`}
               />
             ))
           ) : (
@@ -63,10 +64,15 @@ export function AddRelationModal({ open, setOpen, uuid, onComplete }: AddRelatio
           placeholder="관계 이름"
           value={relationName}
           onChange={(e) => setRelationName(e.target.value)}
+          data-testid="add-relation-modal-relation-name-input"
         />
 
         <DialogFooter className="shrink-0">
-          <Button disabled={!selectedCharacter || !relationName} onClick={onAdd}>
+          <Button
+            disabled={!selectedCharacter || !relationName}
+            onClick={onAdd}
+            data-testid="add-relation-modal-submit-button"
+          >
             추가
           </Button>
         </DialogFooter>

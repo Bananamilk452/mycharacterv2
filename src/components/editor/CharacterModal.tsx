@@ -149,7 +149,7 @@ export function CharacterModal({ open, setOpen, collectionUuid, character }: Pro
     <Dialog open={open} onOpenChange={setOpen}>
       <DialogContent className="flex h-fit max-h-[calc(100dvh-48px)]! max-w-5xl! flex-col gap-0">
         <DialogHeader className="pb-2">
-          <DialogTitle>캐릭터 생성</DialogTitle>
+          <DialogTitle>캐릭터 {character ? "수정" : "생성"}</DialogTitle>
           <DialogDescription>
             제발 스크롤 내려주세요 스크롤 내리면 더 많은 옵션이 있어요
           </DialogDescription>
@@ -176,7 +176,12 @@ export function CharacterModal({ open, setOpen, collectionUuid, character }: Pro
                       <FormItem>
                         <FormLabel>캐릭터 이름</FormLabel>
                         <FormControl>
-                          <Input {...field} type="text" placeholder="캐릭터 이름" />
+                          <Input
+                            {...field}
+                            type="text"
+                            placeholder="캐릭터 이름"
+                            data-testid="character-modal-name-input"
+                          />
                         </FormControl>
                         <FormMessage />
                       </FormItem>
@@ -206,7 +211,11 @@ export function CharacterModal({ open, setOpen, collectionUuid, character }: Pro
         )}
 
         <DialogFooter className="pt-2">
-          <Button disabled={isLoading} onClick={form.handleSubmit(onSubmit)}>
+          <Button
+            disabled={isLoading}
+            onClick={form.handleSubmit(onSubmit)}
+            data-testid="character-modal-submit-button"
+          >
             {character ? "수정" : "생성"}
           </Button>
         </DialogFooter>

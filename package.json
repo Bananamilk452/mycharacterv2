@@ -51,6 +51,7 @@
     "zod": "^4.1.12"
   },
   "devDependencies": {
+    "@playwright/test": "^1.65.1",
     "@types/file-saver": "^2.0.7",
     "@types/fs-extra": "^11.0.4",
     "@types/lodash-es": "^4.17.12",

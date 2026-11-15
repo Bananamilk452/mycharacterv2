@@ -85,7 +85,7 @@ export function SortModal({ open, setOpen, onComplete }: SortModalProps) {
                     <FormLabel>정렬 기준</FormLabel>
                     <FormControl>
                       <Select onValueChange={field.onChange} defaultValue={field.value}>
-                        <SelectTrigger className="w-full">
+                        <SelectTrigger className="w-full" data-testid="sort-type-select">
                           <SelectValue placeholder="정렬 기준 선택" />
                         </SelectTrigger>
                         <SelectContent>
@@ -108,7 +108,7 @@ export function SortModal({ open, setOpen, onComplete }: SortModalProps) {
                     <FormLabel>정렬 순서</FormLabel>
                     <FormControl>
                       <Select onValueChange={field.onChange} defaultValue={field.value}>
-                        <SelectTrigger className="w-full">
+                        <SelectTrigger className="w-full" data-testid="sort-order-select">
                           <SelectValue placeholder="정렬 순서 선택" />
                         </SelectTrigger>
                         <SelectContent>
@@ -130,7 +130,11 @@ export function SortModal({ open, setOpen, onComplete }: SortModalProps) {
                   <FormItem className="mt-4">
                     <FormLabel>속성 이름</FormLabel>
                     <FormControl>
-                      <Input placeholder="속성 이름 입력" {...field} />
+                      <Input
+                        placeholder="속성 이름 입력"
+                        {...field}
+                        data-testid="sort-property-input"
+                      />
                     </FormControl>
                     <FormMessage />
                   </FormItem>
@@ -141,7 +145,9 @@ export function SortModal({ open, setOpen, onComplete }: SortModalProps) {
         </Form>
 
         <DialogFooter>
-          <Button onClick={form.handleSubmit(onSubmit)}>정렬</Button>
+          <Button onClick={form.handleSubmit(onSubmit)} data-testid="sort-submit-button">
+            정렬
+          </Button>
         </DialogFooter>
       </DialogContent>
     </Dialog>

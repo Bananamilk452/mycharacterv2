@@ -31,6 +31,7 @@ export function WelcomeMenu() {
             <button
               onClick={() => setIsCreateCollectionDialogOpen(true)}
               className="flex items-center gap-2 text-violet-600 hover:underline"
+              data-testid="welcomemenu-create-collection"
             >
               <PlusIcon className="size-5" />
               <span className="text-sm">콜렉션 추가</span>
@@ -44,6 +45,7 @@ export function WelcomeMenu() {
             <button
               onClick={() => setIsOpenCollectionDialogOpen(true)}
               className="flex items-center gap-2 text-violet-600 hover:underline"
+              data-testid="welcomemenu-open-collection"
             >
               <FolderIcon className="size-5" />
               <span className="text-sm">콜렉션 열기</span>
@@ -57,6 +59,7 @@ export function WelcomeMenu() {
             <button
               onClick={() => setIsImportCollectionDialogOpen(true)}
               className="flex items-center gap-2 text-violet-600 hover:underline"
+              data-testid="welcomemenu-import-collection"
             >
               <ImportIcon className="size-5" />
               <span className="text-sm">가져오기</span>

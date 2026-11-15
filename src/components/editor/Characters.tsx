@@ -85,9 +85,13 @@ export function Characters({ collectionUuid }: CharactersProps) {
           }
         });
       } else if (searchParam.type === "relation") {
+        // relationValues에는 관계 이름이 저장된다. (relationKeys는 상대 캐릭터 id)
         return await collection.characters
-          .where("relations")
-          .equalsIgnoreCase(searchParam.value)
+          .filter((character) =>
+            character.relationValues.some(
+              (relationName) => relationName.toLowerCase() === searchParam.value.toLowerCase(),
+            ),
+          )
           .toArray();
       } else {
         return [];
@@ -238,7 +242,7 @@ function CharacterCards({
 
   return (
     <>
-      {characters.map((character) => (
+      {characters.map((character, i) => (
         <ContextMenu key={character.id}>
           <ContextMenuTrigger>
             <CharacterCard
@@ -250,6 +254,7 @@ function CharacterCards({
                 setSelectedCharacter(character);
                 setIsCharacterModalOpen(true);
               }}
+              data-testid={`character-card-${i}`}
             />
           </ContextMenuTrigger>
           <ContextMenuContent>
@@ -258,6 +263,7 @@ function CharacterCards({
                 setSelectedCharacter(character);
                 setIsCharacterModalOpen(true);
               }}
+              data-testid="character-context-menu-edit"
             >
               <SquarePenIcon />
               수정
@@ -267,6 +273,7 @@ function CharacterCards({
                 setSelectedCharacter(character);
                 setIsDeleteCharacterModalOpen(true);
               }}
+              data-testid="character-context-menu-delete"
             >
               <TrashIcon className="text-red-600" />
               <span className="text-red-600 hover:text-red-600">삭제</span>

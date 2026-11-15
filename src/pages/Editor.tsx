@@ -43,17 +43,31 @@ function Editor() {
             <MenubarMenu>
               <MenubarTrigger>파일</MenubarTrigger>
               <MenubarContent>
-                <MenubarItem onClick={() => setPath("/")}>홈</MenubarItem>
-                <MenubarItem onClick={() => setIsCreateCollectionDialogOpen(true)}>
+                <MenubarItem onClick={() => setPath("/")} data-testid="menubar-home">
+                  홈
+                </MenubarItem>
+                <MenubarItem
+                  onClick={() => setIsCreateCollectionDialogOpen(true)}
+                  data-testid="menubar-create-collection"
+                >
                   콜렉션 추가
                 </MenubarItem>
-                <MenubarItem onClick={() => setIsOpenCollectionDialogOpen(true)}>
+                <MenubarItem
+                  onClick={() => setIsOpenCollectionDialogOpen(true)}
+                  data-testid="menubar-open-collection"
+                >
                   콜렉션 열기
                 </MenubarItem>
-                <MenubarItem onClick={() => setIsExportCollectionDialogOpen(true)}>
+                <MenubarItem
+                  onClick={() => setIsExportCollectionDialogOpen(true)}
+                  data-testid="menubar-export-collection"
+                >
                   내보내기
                 </MenubarItem>
-                <MenubarItem onClick={() => setIsImportCollectionDialogOpen(true)}>
+                <MenubarItem
+                  onClick={() => setIsImportCollectionDialogOpen(true)}
+                  data-testid="menubar-import-collection"
+                >
                   가져오기
                 </MenubarItem>
               </MenubarContent>

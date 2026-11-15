@@ -62,7 +62,12 @@ export function RelationBox({
     <div className="flex flex-col">
       <div className="flex items-center justify-between">
         <Label className="shrink-0">관계</Label>
-        <Button type="button" size="sm" onClick={() => setIsAddRelationModalOpen(true)}>
+        <Button
+          type="button"
+          size="sm"
+          onClick={() => setIsAddRelationModalOpen(true)}
+          data-testid="relationbox-add-button"
+        >
           <PlusIcon />
           관계 추가
         </Button>
@@ -77,11 +82,15 @@ export function RelationBox({
                   size="sm"
                   character={r.character}
                   description={r.relationName}
+                  data-testid={`relationbox-character-card-${i}`}
                 />
               </ContextMenuTrigger>
 
               <ContextMenuContent>
-                <ContextMenuItem onClick={() => onDeleteRelation(i)}>
+                <ContextMenuItem
+                  onClick={() => onDeleteRelation(i)}
+                  data-testid="relation-context-menu-delete"
+                >
                   <TrashIcon className="text-red-600" />
                   <span className="text-red-600 hover:text-red-600">삭제</span>
                 </ContextMenuItem>

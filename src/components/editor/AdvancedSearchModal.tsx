@@ -61,13 +61,16 @@ export function AdvancedSearchModal({ open, setOpen, onComplete }: AdvancedSearc
             onClick={() => {
               setSearchParams([]);
             }}
+            data-testid="advanced-search-reset-button"
           >
             검색 조건 초기화
           </Button>
         </div>
 
         <DialogFooter>
-          <Button onClick={onSearch}>검색</Button>
+          <Button onClick={onSearch} data-testid="advanced-search-submit-button">
+            검색
+          </Button>
         </DialogFooter>
       </DialogContent>
     </Dialog>
@@ -113,8 +116,8 @@ function AddSearchParam({
     const newParam: SearchParam = {
       type,
       operation,
-      key: type === "text" ? undefined : input1,
-      value: type === "text" ? input1 : input2,
+      key: type === "property" ? input1 : undefined,
+      value: type === "property" ? input2 : input1,
     };
 
     setSearchParams((prev) => [...prev, newParam]);
@@ -134,7 +137,7 @@ function AddSearchParam({
             setInput2("");
           }}
         >
-          <SelectTrigger>
+          <SelectTrigger data-testid="advanced-search-type-select">
             <SelectValue placeholder="유형 선택" />
           </SelectTrigger>
           <SelectContent>
@@ -155,7 +158,7 @@ function AddSearchParam({
             setInput2("");
           }}
         >
-          <SelectTrigger>
+          <SelectTrigger data-testid="advanced-search-operation-select">
             <SelectValue placeholder="연산자 선택" />
           </SelectTrigger>
           <SelectContent>
@@ -181,6 +184,7 @@ function AddSearchParam({
               type === "property" ? "속성 이름" : type === "relation" ? "관계 이름" : "이름"
             }
             onChange={(e) => setInput1(e.target.value)}
+            data-testid="advanced-search-key-input"
           />
           {type === "property" && (
             <Input
@@ -189,6 +193,7 @@ function AddSearchParam({
               value={input2}
               placeholder="속성 값"
               onChange={(e) => setInput2(e.target.value)}
+              data-testid="advanced-search-value-input"
             />
           )}
         </div>
@@ -197,7 +202,11 @@ function AddSearchParam({
       <p className="text-sm text-gray-600">{searchParamDescription}</p>
 
       <div className="flex justify-end">
-        <Button disabled={!type || !operation || !input1} onClick={onAdd}>
+        <Button
+          disabled={!type || !operation || !input1}
+          onClick={onAdd}
+          data-testid="advanced-search-add-button"
+        >
           추가
         </Button>
       </div>

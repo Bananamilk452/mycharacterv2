@@ -140,13 +140,23 @@ export function ImageCropModal({ open, setOpen, image, onComplete }: ImageCropMo
         </ReactCrop>
 
         <DialogFooter>
-          <Button variant="outline" onClick={() => handleAspectChange(undefined)}>
+          <Button
+            variant="outline"
+            onClick={() => handleAspectChange(undefined)}
+            data-testid="image-crop-modal-free-aspect-button"
+          >
             자유 비율
           </Button>
-          <Button variant="outline" onClick={() => handleAspectChange(1)}>
+          <Button
+            variant="outline"
+            onClick={() => handleAspectChange(1)}
+            data-testid="image-crop-modal-square-aspect-button"
+          >
             1:1 비율
           </Button>
-          <Button onClick={onSave}>저장</Button>
+          <Button onClick={onSave} data-testid="image-crop-modal-save-button">
+            저장
+          </Button>
         </DialogFooter>
       </DialogContent>
     </Dialog>

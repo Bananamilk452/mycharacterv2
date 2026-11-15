@@ -39,10 +39,19 @@ export function AppSidebar({ uuid }: AppSidebarProps) {
           <SidebarHeader>
             <div className="flex items-center gap-3">
               <div className="flex size-12 shrink-0 items-center justify-center rounded-lg bg-gray-300">
-                {iconUrl ? <img src={iconUrl} className="size-full" /> : <Earth />}
+                {iconUrl ? (
+                  <img src={iconUrl} className="size-full" data-testid="sidebar-collection-icon" />
+                ) : (
+                  <Earth />
+                )}
               </div>
               <div className="flex min-w-0 flex-col gap-0.5">
-                <h1 className="truncate text-sm font-semibold">{collectionInfo.name}</h1>
+                <h1
+                  className="truncate text-sm font-semibold"
+                  data-testid="sidebar-collection-name"
+                >
+                  {collectionInfo.name}
+                </h1>
                 <p className="text-xs text-gray-500">캐릭터 {characters.length}명</p>
               </div>
             </div>
@@ -54,7 +63,10 @@ export function AppSidebar({ uuid }: AppSidebarProps) {
               <SidebarGroupContent>
                 <SidebarMenu>
                   <SidebarMenuItem>
-                    <SidebarMenuButton onClick={() => setIsCharacterDialogOpen(true)}>
+                    <SidebarMenuButton
+                      onClick={() => setIsCharacterDialogOpen(true)}
+                      data-testid="sidebar-add-character-button"
+                    >
                       <UserPlus />
                       캐릭터 추가
                     </SidebarMenuButton>
@@ -65,7 +77,10 @@ export function AppSidebar({ uuid }: AppSidebarProps) {
                     />
                   </SidebarMenuItem>
                   <SidebarMenuItem>
-                    <SidebarMenuButton onClick={() => setIsUpdateCollectionDialogOpen(true)}>
+                    <SidebarMenuButton
+                      onClick={() => setIsUpdateCollectionDialogOpen(true)}
+                      data-testid="sidebar-update-collection-button"
+                    >
                       <CogIcon />
                       콜렉션 설정
                     </SidebarMenuButton>

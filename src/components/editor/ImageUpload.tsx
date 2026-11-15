@@ -42,6 +42,7 @@ export function ImageUpload({
           src={blobUrl}
           alt="이미지가 없습니다."
           className="flex size-full items-center justify-center object-contain text-sm"
+          data-testid="image-upload-preview"
         />
       </div>
       <div className="flex justify-end gap-2">
@@ -51,11 +52,23 @@ export function ImageUpload({
           accept="image/jpeg, image/png, image/gif, image/webp, image/avif"
           hidden
           onChange={handleFileChange}
+          data-testid="image-upload-file-input"
         />
-        <Button type="button" className="size-9" onClick={() => fileRef.current?.click()}>
+        <Button
+          type="button"
+          className="size-9"
+          onClick={() => fileRef.current?.click()}
+          data-testid="image-upload-upload-button"
+        >
           <UploadIcon />
         </Button>
-        <Button type="button" variant="destructive" className="size-9" onClick={handleRemoveAvatar}>
+        <Button
+          type="button"
+          variant="destructive"
+          className="size-9"
+          onClick={handleRemoveAvatar}
+          data-testid="image-upload-remove-button"
+        >
           <Trash2Icon />
         </Button>
       </div>

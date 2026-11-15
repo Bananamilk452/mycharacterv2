@@ -56,7 +56,11 @@ export function ExportCollectionModal({
         <DialogFooter>
           {isLoading && <Message variant="loading">내보내는 중...</Message>}
 
-          <Button disabled={isLoading} onClick={onExport}>
+          <Button
+            disabled={isLoading}
+            onClick={onExport}
+            data-testid="export-collection-submit-button"
+          >
             내보내기
           </Button>
         </DialogFooter>

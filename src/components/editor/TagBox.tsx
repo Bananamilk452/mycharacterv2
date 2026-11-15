@@ -38,14 +38,19 @@ export function TagBox({ form }: EditorFormProps) {
           <span
             key={i}
             className="flex min-w-0 items-center gap-1 rounded-full bg-primary/10 px-2 py-0.5 text-sm break-all"
+            data-testid={`tagbox-tag-${i}`}
           >
             {tag}
             <button type="button" onClick={() => handleRemove(i)}>
-              <XIcon className="size-3 text-gray-700" />
+              <XIcon className="size-3 text-gray-700" data-testid={`tagbox-tag-remove-${i}`} />
             </button>
           </span>
         ))}
-        <input className="min-w-0 grow basis-32 text-sm outline-none" onKeyUp={handleKeyUp} />
+        <input
+          className="min-w-0 grow basis-32 text-sm outline-none"
+          onKeyUp={handleKeyUp}
+          data-testid="tagbox-input"
+        />
       </div>
     </div>
   );
