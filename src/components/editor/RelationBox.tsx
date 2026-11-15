@@ -1,4 +1,4 @@
-import { PlusIcon, TrashIcon } from "lucide-react";
+import { ArrowDownIcon, ArrowUpIcon, PlusIcon, TrashIcon } from "lucide-react";
 import { useEffect, useState } from "react";
 
 import { Button } from "../ui/button";
@@ -58,6 +58,29 @@ export function RelationBox({
     );
   }
 
+  function moveRelation(index: number, direction: -1 | 1) {
+    const targetIndex = index + direction;
+
+    if (targetIndex < 0 || targetIndex >= relationKeys.length) {
+      return;
+    }
+
+    const nextRelationKeys = [...relationKeys];
+    const nextRelationValues = [...relationValues];
+
+    [nextRelationKeys[index], nextRelationKeys[targetIndex]] = [
+      nextRelationKeys[targetIndex],
+      nextRelationKeys[index],
+    ];
+    [nextRelationValues[index], nextRelationValues[targetIndex]] = [
+      nextRelationValues[targetIndex],
+      nextRelationValues[index],
+    ];
+
+    form.setValue("relationKeys", nextRelationKeys);
+    form.setValue("relationValues", nextRelationValues);
+  }
+
   return (
     <div className="flex flex-col">
       <div className="flex items-center justify-between">
@@ -75,15 +98,42 @@ export function RelationBox({
       <div className="mt-3.5 flex h-84 flex-wrap gap-4 overflow-scroll rounded-md border border-input p-4 shadow-xs">
         {relationCharacters.length > 0 ? (
           relationCharacters.map((r, i) => (
-            <ContextMenu>
+            <ContextMenu key={`${r.character.id}-${i}`}>
               <ContextMenuTrigger>
-                <CharacterCard
-                  key={crypto.randomUUID()}
-                  size="sm"
-                  character={r.character}
-                  description={r.relationName}
-                  data-testid={`relationbox-character-card-${i}`}
-                />
+                <div className="relative">
+                  <CharacterCard
+                    size="sm"
+                    character={r.character}
+                    description={r.relationName}
+                    data-testid={`relationbox-character-card-${i}`}
+                  />
+                  <div className="absolute top-1 right-1 flex flex-col gap-1">
+                    <Button
+                      type="button"
+                      size="icon-sm"
+                      variant="secondary"
+                      className="shadow"
+                      disabled={i === 0}
+                      onClick={() => moveRelation(i, -1)}
+                      aria-label={`${r.character.name} 관계 위로 이동`}
+                      data-testid={`relationbox-move-up-${i}`}
+                    >
+                      <ArrowUpIcon />
+                    </Button>
+                    <Button
+                      type="button"
+                      size="icon-sm"
+                      variant="secondary"
+                      className="shadow"
+                      disabled={i === relationCharacters.length - 1}
+                      onClick={() => moveRelation(i, 1)}
+                      aria-label={`${r.character.name} 관계 아래로 이동`}
+                      data-testid={`relationbox-move-down-${i}`}
+                    >
+                      <ArrowDownIcon />
+                    </Button>
+                  </div>
+                </div>
               </ContextMenuTrigger>
 
               <ContextMenuContent>
