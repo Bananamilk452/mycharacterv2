@@ -25,11 +25,11 @@ function Editor() {
   const { collectionUuid } = useParams();
   const { collectionInfo, characters } = useCollection(collectionUuid as string);
 
+  const [activeView, setActiveView] = useState<"characters" | "gallery">("characters");
   const [isCreateCollectionDialogOpen, setIsCreateCollectionDialogOpen] = useState(false);
   const [isOpenCollectionDialogOpen, setIsOpenCollectionDialogOpen] = useState(false);
   const [isExportCollectionDialogOpen, setIsExportCollectionDialogOpen] = useState(false);
   const [isImportCollectionDialogOpen, setIsImportCollectionDialogOpen] = useState(false);
-  const [activeView, setActiveView] = useState<"characters" | "gallery">("characters");
 
   useEffect(() => {
     if (collectionInfo) {
