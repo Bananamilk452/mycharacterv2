@@ -16,6 +16,12 @@ export default defineConfig({
     }),
   ],
 
+  // export/import 웹 워커가 사용하는 의존성.
+  // 첫 사용 시 Vite가 뒤늦게 최적화하면서 페이지를 리로드해 다운로드가 유실되는 것을 방지한다.
+  optimizeDeps: {
+    include: ["jszip"],
+  },
+
   build: {
     sourcemap: true,
   },
