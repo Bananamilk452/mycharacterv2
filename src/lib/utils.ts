@@ -59,5 +59,10 @@ export function getSearchParamDescription(
       result = `관계가 "${value}"인 캐릭터`;
     }
   }
+  if (type === "tag") {
+    if (operation === "=") {
+      result = `태그가 "${value}"인 캐릭터`;
+    }
+  }
   return result;
 }
