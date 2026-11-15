@@ -15,7 +15,7 @@ import { useCollection } from "@/hooks/useCollection";
 import { Character, CollectionInfo } from "@/lib/db";
 
 export interface SearchParam {
-  type: "relation" | "property" | "text";
+  type: "relation" | "property" | "text" | "tag";
   operation: ">" | "<" | ">=" | "<=" | "=";
   key?: string;
   value: string;
@@ -91,6 +91,12 @@ export function Characters({ collectionUuid }: CharactersProps) {
             character.relationValues.some(
               (relationName) => relationName.toLowerCase() === searchParam.value.toLowerCase(),
             ),
+          )
+          .toArray();
+      } else if (searchParam.type === "tag") {
+        return await collection.characters
+          .filter((character) =>
+            character.tags.some((tag) => tag.toLowerCase() === searchParam.value.toLowerCase()),
           )
           .toArray();
       } else {
