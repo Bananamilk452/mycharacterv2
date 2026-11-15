@@ -95,7 +95,7 @@ function AddSearchParam({
   ];
 
   const searchParamDescription = useMemo(() => {
-    if (type === "text" || type === "relation") {
+    if (type === "text" || type === "relation" || type === "tag") {
       return getSearchParamDescription(type, operation, undefined, input1);
     } else if (type === "property") {
       return getSearchParamDescription(type, operation, input1, input2);
@@ -132,7 +132,9 @@ function AddSearchParam({
           value={type}
           onValueChange={(value) => {
             setType(value as SearchParam["type"]);
-            setOperation(value === "text" || value === "relation" ? "=" : undefined);
+            setOperation(
+              value === "text" || value === "relation" || value === "tag" ? "=" : undefined,
+            );
             setInput1("");
             setInput2("");
           }}
@@ -144,6 +146,7 @@ function AddSearchParam({
             <SelectItem value="text">이름</SelectItem>
             <SelectItem value="property">속성</SelectItem>
             <SelectItem value="relation">관계</SelectItem>
+            <SelectItem value="tag">태그</SelectItem>
           </SelectContent>
         </Select>
       </div>
@@ -181,7 +184,13 @@ function AddSearchParam({
             type="text"
             value={input1}
             placeholder={
-              type === "property" ? "속성 이름" : type === "relation" ? "관계 이름" : "이름"
+              type === "property"
+                ? "속성 이름"
+                : type === "relation"
+                  ? "관계 이름"
+                  : type === "tag"
+                    ? "태그"
+                    : "이름"
             }
             onChange={(e) => setInput1(e.target.value)}
             data-testid="advanced-search-key-input"
