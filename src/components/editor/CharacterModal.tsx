@@ -1,15 +1,17 @@
 import { zodResolver } from "@hookform/resolvers/zod";
+import { CreditCardIcon } from "lucide-react";
 import { useEffect, useState } from "react";
 import { useForm, UseFormReturn } from "react-hook-form";
 import { toast } from "sonner";
 import { z } from "zod";
 
+import { CharacterCardModal } from "./CharacterCardModal";
+import { CharacterGallery } from "./Gallery";
 import { ImageUpload } from "./ImageUpload";
 import { NoteBox } from "./NoteBox";
 import { PropertyBox } from "./PropertyBox";
 import { RelationBox } from "./RelationBox";
 import { TagBox } from "./TagBox";
-import { CharacterGallery } from "./Gallery";
 import { Button } from "@/components/ui/button";
 import {
   Dialog,
@@ -69,6 +71,8 @@ export interface EditorFormProps {
 export function CharacterModal({ open, setOpen, collectionUuid, character }: Props) {
   const { collection } = useCollection(collectionUuid);
   const [isLoading, setIsLoading] = useState(false);
+  const [isCardPreviewOpen, setIsCardPreviewOpen] = useState(false);
+  const [previewCharacter, setPreviewCharacter] = useState<Character | null>(null);
 
   const form = useForm<FormSchema>({
     resolver: zodResolver(formSchema),
@@ -146,85 +150,125 @@ export function CharacterModal({ open, setOpen, collectionUuid, character }: Pro
     }
   }
 
+  function openCardPreview() {
+    const values = form.getValues();
+
+    setPreviewCharacter({
+      id: character?.id ?? "preview",
+      name: values.name,
+      avatar: values.avatar,
+      propertyKeys: values.propertyKeys,
+      propertyValues: values.propertyValues,
+      tags: values.tags,
+      note: values.note,
+      relationKeys: values.relationKeys,
+      relationValues: values.relationValues,
+      createdAt: character?.createdAt ?? new Date(),
+      updatedAt: character?.updatedAt ?? new Date(),
+    });
+    setIsCardPreviewOpen(true);
+  }
+
   return (
-    <Dialog open={open} onOpenChange={setOpen}>
-      <DialogContent className="flex h-fit max-h-[calc(100dvh-48px)]! max-w-5xl! flex-col gap-0">
-        <DialogHeader className="pb-2">
-          <DialogTitle>캐릭터 {character ? "수정" : "생성"}</DialogTitle>
-          <DialogDescription>
-            제발 스크롤 내려주세요 스크롤 내리면 더 많은 옵션이 있어요
-          </DialogDescription>
-        </DialogHeader>
+    <>
+      <Dialog open={open} onOpenChange={setOpen}>
+        <DialogContent className="flex h-fit max-h-[calc(100dvh-48px)]! max-w-5xl! flex-col gap-0">
+          <DialogHeader className="pb-2">
+            <DialogTitle>캐릭터 {character ? "수정" : "생성"}</DialogTitle>
+            <DialogDescription>
+              제발 스크롤 내려주세요 스크롤 내리면 더 많은 옵션이 있어요
+            </DialogDescription>
+          </DialogHeader>
 
-        <Form {...form}>
-          <form className="min-h-0 overflow-y-auto" onSubmit={form.handleSubmit(onSubmit)}>
-            <div className="flex flex-col">
-              <div className="grid grid-cols-[minmax(0,3fr)_minmax(0,7fr)] gap-6">
-                <section id="left" className="flex shrink-0 flex-col">
-                  {/* 아바타 이미지 */}
-                  <ImageUpload
-                    blob={form.watch("avatar")}
-                    setBlob={(blob) => form.setValue("avatar", blob)}
-                  />
-                </section>
+          <Form {...form}>
+            <form className="min-h-0 overflow-y-auto" onSubmit={form.handleSubmit(onSubmit)}>
+              <div className="flex flex-col">
+                <div className="grid grid-cols-[minmax(0,3fr)_minmax(0,7fr)] gap-6">
+                  <section id="left" className="flex shrink-0 flex-col">
+                    {/* 아바타 이미지 */}
+                    <ImageUpload
+                      blob={form.watch("avatar")}
+                      setBlob={(blob) => form.setValue("avatar", blob)}
+                    />
+                  </section>
 
-                <section id="right" className="flex flex-col gap-4">
-                  {/* 캐릭터 이름 */}
-                  <FormField
-                    control={form.control}
-                    name="name"
-                    render={({ field }) => (
-                      <FormItem>
-                        <FormLabel>캐릭터 이름</FormLabel>
-                        <FormControl>
-                          <Input
-                            {...field}
-                            type="text"
-                            placeholder="캐릭터 이름"
-                            data-testid="character-modal-name-input"
-                          />
-                        </FormControl>
-                        <FormMessage />
-                      </FormItem>
-                    )}
-                  />
+                  <section id="right" className="flex flex-col gap-4">
+                    {/* 캐릭터 이름 */}
+                    <FormField
+                      control={form.control}
+                      name="name"
+                      render={({ field }) => (
+                        <FormItem>
+                          <FormLabel>캐릭터 이름</FormLabel>
+                          <FormControl>
+                            <Input
+                              {...field}
+                              type="text"
+                              placeholder="캐릭터 이름"
+                              data-testid="character-modal-name-input"
+                            />
+                          </FormControl>
+                          <FormMessage />
+                        </FormItem>
+                      )}
+                    />
 
-                  {/* 태그 */}
-                  <TagBox form={form} />
+                    {/* 태그 */}
+                    <TagBox form={form} />
 
-                  {/* 캐릭터 속성 */}
-                  <PropertyBox form={form} />
-                </section>
+                    {/* 캐릭터 속성 */}
+                    <PropertyBox form={form} />
+                  </section>
+                </div>
+
+                <hr className="mt-6 mb-4" />
+
+                <div className="grid grid-cols-2 gap-4">
+                  <NoteBox form={form} />
+                  <RelationBox form={form} collectionUuid={collectionUuid} />
+                </div>
+
+                <hr className="mt-6 mb-4" />
+
+                <CharacterGallery collectionUuid={collectionUuid} characterId={character?.id} />
               </div>
+            </form>
+          </Form>
 
-              <hr className="mt-6 mb-4" />
+          {isLoading && (
+            <Message variant="loading">캐릭터를 {character ? "수정" : "생성"} 중입니다...</Message>
+          )}
 
-              <div className="grid grid-cols-2 gap-4">
-                <NoteBox form={form} />
-                <RelationBox form={form} collectionUuid={collectionUuid} />
-              </div>
+          <DialogFooter className="pt-2">
+            <Button
+              type="button"
+              variant="outline"
+              disabled={isLoading}
+              onClick={openCardPreview}
+              data-testid="character-modal-card-preview-button"
+            >
+              <CreditCardIcon />
+              카드 {character ? "보기" : "미리보기"}
+            </Button>
+            <Button
+              disabled={isLoading}
+              onClick={form.handleSubmit(onSubmit)}
+              data-testid="character-modal-submit-button"
+            >
+              {character ? "수정" : "생성"}
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
 
-              <hr className="mt-6 mb-4" />
-
-              <CharacterGallery collectionUuid={collectionUuid} characterId={character?.id} />
-            </div>
-          </form>
-        </Form>
-
-        {isLoading && (
-          <Message variant="loading">캐릭터를 {character ? "수정" : "생성"} 중입니다...</Message>
-        )}
-
-        <DialogFooter className="pt-2">
-          <Button
-            disabled={isLoading}
-            onClick={form.handleSubmit(onSubmit)}
-            data-testid="character-modal-submit-button"
-          >
-            {character ? "수정" : "생성"}
-          </Button>
-        </DialogFooter>
-      </DialogContent>
-    </Dialog>
+      {previewCharacter && (
+        <CharacterCardModal
+          open={isCardPreviewOpen}
+          setOpen={setIsCardPreviewOpen}
+          collectionUuid={collectionUuid}
+          character={previewCharacter}
+        />
+      )}
+    </>
   );
 }
